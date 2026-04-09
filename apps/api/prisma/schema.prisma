@@ -1,0 +1,156 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PruebaType {
+  MAYORES_25
+  MAYORES_40
+  MAYORES_45
+}
+
+enum TipoPregunta {
+  TEST
+  ABIERTA
+}
+
+enum Dificultad {
+  BASICO
+  INTERMEDIO
+  AVANZADO
+}
+
+enum FuentePregunta {
+  OFICIAL
+  GENERADA
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  PAST_DUE
+  TRIALING
+}
+
+model User {
+  id               String      @id @default(cuid())
+  email            String      @unique
+  passwordHash     String
+  nombre           String?
+  pruebaType       PruebaType?
+  comunidad        String?
+  onboardingDone   Boolean     @default(false)
+  stripeCustomerId String?     @unique
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  subscription Subscription?
+  sesiones     Sesion[]
+  respuestas   RespuestaUsuario[]
+
+  @@map("users")
+}
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  userId               String             @unique
+  stripeSubscriptionId String             @unique
+  status               SubscriptionStatus
+  currentPeriodEnd     DateTime
+  cancelAtPeriodEnd    Boolean            @default(false)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("subscriptions")
+}
+
+model Materia {
+  id          String       @id @default(cuid())
+  nombre      String
+  descripcion String?
+  pruebaType  PruebaType[]
+  fase        String
+  orden       Int          @default(0)
+  activa      Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+
+  preguntas Pregunta[]
+  sesiones  Sesion[]
+
+  @@map("materias")
+}
+
+model Pregunta {
+  id         String         @id @default(cuid())
+  materiaId  String
+  enunciado  String
+  tipo       TipoPregunta   @default(TEST)
+  dificultad Dificultad     @default(INTERMEDIO)
+  fuente     FuentePregunta @default(OFICIAL)
+  anio       Int?
+  comunidad  String?
+  activa     Boolean        @default(true)
+  createdAt  DateTime       @default(now())
+
+  materia    Materia            @relation(fields: [materiaId], references: [id])
+  opciones   Opcion[]
+  respuestas RespuestaUsuario[]
+
+  @@map("preguntas")
+}
+
+model Opcion {
+  id         String @id @default(cuid())
+  preguntaId String
+  texto      String
+  esCorrecta Boolean @default(false)
+  orden      Int     @default(0)
+
+  pregunta   Pregunta           @relation(fields: [preguntaId], references: [id])
+  respuestas RespuestaUsuario[]
+
+  @@map("opciones")
+}
+
+model Sesion {
+  id               String   @id @default(cuid())
+  userId           String
+  materiaId        String
+  totalPreguntas   Int
+  aciertos         Int      @default(0)
+  completada       Boolean  @default(false)
+  duracionSegundos Int?
+  createdAt        DateTime @default(now())
+
+  user       User               @relation(fields: [userId], references: [id])
+  materia    Materia            @relation(fields: [materiaId], references: [id])
+  respuestas RespuestaUsuario[]
+
+  @@map("sesiones")
+}
+
+model RespuestaUsuario {
+  id              String   @id @default(cuid())
+  userId          String
+  preguntaId      String
+  sesionId        String
+  opcionId        String?
+  respuestaTexto  String?
+  esCorrecta      Boolean
+  feedbackIA      String?
+  tiempoRespuesta Int?
+  createdAt       DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id])
+  pregunta Pregunta @relation(fields: [preguntaId], references: [id])
+  sesion   Sesion   @relation(fields: [sesionId], references: [id])
+  opcion   Opcion?  @relation(fields: [opcionId], references: [id])
+
+  @@map("respuestas_usuario")
+}
