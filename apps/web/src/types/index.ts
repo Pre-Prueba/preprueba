@@ -5,6 +5,7 @@ export interface User {
   pruebaType: 'MAYORES_25' | 'MAYORES_40' | 'MAYORES_45' | null;
   comunidad: string | null;
   onboardingDone: boolean;
+  role: 'USER' | 'ADMIN';
 }
 
 export interface Subscription {

@@ -9,16 +9,20 @@
     "start": "node dist/index.js",
     "db:migrate": "prisma migrate dev",
     "db:seed": "ts-node prisma/seed.ts",
-    "db:studio": "prisma studio"
+    "db:seed:test-users": "ts-node prisma/seed-test-users.ts",
+    "db:studio": "prisma studio",
+    "generate:questions": "ts-node prisma/generate-questions.ts"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.39.0",
     "@prisma/client": "^5.22.0",
+    "@sentry/node": "^10.48.0",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
+    "multer": "^2.1.1",
+    "openai": "^6.34.0",
     "stripe": "^17.4.0",
     "zod": "^3.23.8"
   },
@@ -27,6 +31,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.7",
+    "@types/multer": "^2.1.0",
     "@types/node": "^22.10.2",
     "prisma": "^5.22.0",
     "ts-node-dev": "^2.0.0",

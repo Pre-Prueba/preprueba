@@ -1,4 +1,5 @@
 import { PrismaClient, PruebaType } from '@prisma/client';
+import { execSync } from 'child_process';
 
 const prisma = new PrismaClient();
 
@@ -35,6 +36,12 @@ async function main() {
     });
   }
   console.log('Seed completo.');
+
+  const totalPreguntas = await prisma.pregunta.count();
+  if (totalPreguntas === 0) {
+    console.log('\nNo hay preguntas en la DB. Iniciando generación...');
+    execSync('npm run generate:questions', { stdio: 'inherit', cwd: process.cwd() });
+  }
 }
 
 main()

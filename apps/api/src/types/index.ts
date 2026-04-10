@@ -8,6 +8,7 @@ export interface UserPayload {
   pruebaType: 'MAYORES_25' | 'MAYORES_40' | 'MAYORES_45' | null;
   comunidad: string | null;
   onboardingDone: boolean;
+  role: 'USER' | 'ADMIN';
   stripeCustomerId: string | null;
   createdAt: Date;
   updatedAt: Date;

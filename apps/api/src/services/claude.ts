@@ -1,6 +1,9 @@
-import Anthropic from '@anthropic-ai/sdk';
+import OpenAI from 'openai';
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const groq = new OpenAI({
+  apiKey: process.env.GROQ_API_KEY,
+  baseURL: 'https://api.groq.com/openai/v1',
+});
 
 interface FeedbackResult {
   correcta: boolean;
@@ -31,14 +34,17 @@ export async function generarFeedback(
   const userMessage = `Pregunta: ${enunciado}\nRespuesta del estudiante: ${respuestaUsuario}\nRespuesta correcta: ${respuestaCorrecta}`;
 
   try {
-    const response = await client.messages.create({
-      model: 'claude-sonnet-4-5',
+    const response = await groq.chat.completions.create({
+      model: 'openai/gpt-oss-120b',
       max_tokens: 300,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: userMessage }],
+      temperature: 0.3,
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'user', content: userMessage },
+      ],
     });
 
-    const text = response.content[0].type === 'text' ? response.content[0].text : '';
+    const text = response.choices[0]?.message?.content ?? '';
     return JSON.parse(text) as FeedbackResult;
   } catch {
     return {

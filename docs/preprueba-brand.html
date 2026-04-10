@@ -1,0 +1,1687 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preprueba — Brand Identity System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #0038BC;
+    --blue-soft: #EAF1FF;
+    --blue-mid: #3560D0;
+    --blue-dim: #C3D4F5;
+    --orange: #EF8F00;
+    --orange-soft: #FFF3DC;
+    --orange-deep: #C97500;
+    --text: #12213D;
+    --text-2: #4A5878;
+    --text-3: #8A96AC;
+    --bg: #F7F9FC;
+    --white: #FFFFFF;
+    --surface: #EEF2FA;
+    --success: #1FA971;
+    --error: #D64545;
+    --border: #D9E2F2;
+    --shadow: 0 2px 16px rgba(0,56,188,0.07);
+    --shadow-md: 0 8px 32px rgba(0,56,188,0.10);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 16px;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(247,249,252,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    display: flex; align-items: center; gap: 8px;
+    height: 56px;
+    overflow-x: auto;
+  }
+  nav a {
+    color: var(--text-2); text-decoration: none;
+    font-size: 12px; font-weight: 500; letter-spacing: 0.04em;
+    padding: 6px 12px; border-radius: 6px;
+    white-space: nowrap;
+    transition: all .2s;
+  }
+  nav a:hover { background: var(--blue-soft); color: var(--blue); }
+  .nav-logo {
+    font-family: 'Fraunces', serif; font-size: 16px; font-weight: 600;
+    color: var(--blue); margin-right: 12px; flex-shrink: 0;
+  }
+  .nav-sep { color: var(--border); font-size: 18px; flex-shrink: 0; }
+
+  /* ─── SECTIONS ─── */
+  section { padding: 80px 0; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+  .section-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--blue);
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-label::before {
+    content: ''; display: inline-block;
+    width: 20px; height: 2px; background: var(--orange);
+  }
+  h1 { font-family: 'Fraunces', serif; font-size: clamp(48px, 5vw, 72px); font-weight: 600; line-height: 1.1; }
+  h2 { font-family: 'Fraunces', serif; font-size: clamp(32px, 4vw, 48px); font-weight: 600; line-height: 1.15; }
+  h3 { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 600; }
+  h4 { font-size: 14px; font-weight: 600; letter-spacing: 0.03em; }
+
+  /* ─── HERO ─── */
+  #hero {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 120px 0 80px;
+    overflow: hidden;
+    position: relative;
+  }
+  .hero-grid {
+    display: grid; grid-template-columns: 1fr 420px; gap: 64px;
+    align-items: center;
+  }
+  .hero-kicker {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--blue-soft); border: 1px solid var(--blue-dim);
+    border-radius: 100px; padding: 6px 14px;
+    font-size: 12px; font-weight: 500; color: var(--blue);
+    margin-bottom: 24px;
+  }
+  .hero-kicker span { width: 6px; height: 6px; background: var(--blue); border-radius: 50%; }
+  .hero-sub {
+    font-size: 18px; color: var(--text-2); max-width: 480px;
+    margin: 20px 0 36px; line-height: 1.7;
+  }
+  .hero-meta {
+    display: flex; gap: 32px;
+  }
+  .hero-meta-item { }
+  .hero-meta-num {
+    font-family: 'Fraunces', serif; font-size: 28px; font-weight: 600; color: var(--blue);
+  }
+  .hero-meta-label { font-size: 12px; color: var(--text-3); }
+
+  /* Logo Preview Box */
+  .logo-preview-box {
+    background: var(--blue);
+    border-radius: 24px;
+    padding: 48px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .logo-preview-box::before {
+    content: '';
+    position: absolute; top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    background: rgba(239,143,0,0.15);
+    border-radius: 50%;
+  }
+  .logo-preview-box::after {
+    content: '';
+    position: absolute; bottom: -20px; left: -20px;
+    width: 120px; height: 120px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+  }
+
+  /* ─── LOGO SECTION ─── */
+  #logo { background: var(--white); border-bottom: 1px solid var(--border); }
+  .logo-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    margin-top: 40px;
+  }
+  .logo-variant {
+    border-radius: 16px; padding: 40px;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 16px; border: 1px solid var(--border);
+  }
+  .logo-variant.dark { background: var(--blue); border-color: var(--blue); }
+  .logo-variant.light { background: var(--white); }
+  .logo-variant.neutral { background: var(--bg); }
+  .logo-label {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text-3);
+  }
+  .logo-label.inv { color: rgba(255,255,255,0.5); }
+
+  .logo-anatomy {
+    margin-top: 48px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 48px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
+    align-items: center;
+  }
+  .anatomy-rule {
+    display: flex; align-items: flex-start; gap: 16px;
+    margin-bottom: 24px;
+  }
+  .anatomy-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--blue); color: white;
+    font-size: 12px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .anatomy-text h4 { margin-bottom: 4px; }
+  .anatomy-text p { font-size: 13px; color: var(--text-2); line-height: 1.5; }
+
+  /* ─── COLORS ─── */
+  #colors { background: var(--bg); }
+  .color-system { margin-top: 40px; }
+  .color-group { margin-bottom: 32px; }
+  .color-group-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-3);
+    margin-bottom: 12px;
+  }
+  .swatches { display: flex; gap: 12px; flex-wrap: wrap; }
+  .swatch {
+    width: 120px; border-radius: 12px; overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .swatch-color { height: 72px; }
+  .swatch-info { padding: 10px 12px; background: white; }
+  .swatch-name { font-size: 12px; font-weight: 600; }
+  .swatch-hex { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-3); }
+  .swatch-role { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+  .color-roles {
+    margin-top: 40px;
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+  }
+  .color-role-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px;
+    display: flex; gap: 16px; align-items: flex-start;
+  }
+  .color-role-dot { width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0; }
+  .color-role-text h4 { font-size: 14px; margin-bottom: 4px; }
+  .color-role-text p { font-size: 13px; color: var(--text-2); line-height: 1.5; }
+
+  /* ─── TYPOGRAPHY ─── */
+  #typography { background: var(--white); border-bottom: 1px solid var(--border); }
+  .type-pair {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+    margin-top: 40px; margin-bottom: 40px;
+  }
+  .type-card {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 16px; padding: 32px;
+  }
+  .type-card-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-3); margin-bottom: 16px;
+  }
+  .type-sample { font-size: 40px; font-weight: 600; line-height: 1.1; margin-bottom: 12px; }
+  .type-sample.serif { font-family: 'Fraunces', serif; }
+  .type-sample.sans { font-family: 'DM Sans'; }
+  .type-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .type-desc { font-size: 13px; color: var(--text-2); }
+
+  .type-scale { margin-top: 40px; }
+  .scale-row {
+    display: flex; align-items: baseline; gap: 24px;
+    padding: 20px 0; border-bottom: 1px solid var(--border);
+  }
+  .scale-meta { width: 140px; flex-shrink: 0; }
+  .scale-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-3); }
+  .scale-spec { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--blue); margin-top: 2px; }
+  .scale-example { flex: 1; }
+  .type-rule {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px 24px;
+    margin-bottom: 12px;
+    display: flex; gap: 16px; align-items: flex-start;
+  }
+  .rule-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 14px;
+  }
+  .rule-icon.ok { background: #E6F7EF; color: var(--success); }
+  .rule-icon.no { background: #FDEAEA; color: var(--error); }
+  .rule-text { font-size: 13px; color: var(--text-2); }
+  .rule-text strong { color: var(--text); }
+
+  /* ─── COMPONENTS ─── */
+  #components { background: var(--bg); }
+  .comp-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;
+    margin-top: 40px;
+  }
+  .comp-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 20px; padding: 32px;
+  }
+  .comp-card-title {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.05em;
+    text-transform: uppercase; color: var(--text-3);
+    margin-bottom: 24px;
+  }
+
+  /* Buttons */
+  .btn-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: none; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    font-weight: 500; border-radius: 12px; transition: all .2s;
+    text-decoration: none;
+  }
+  .btn-primary {
+    background: var(--blue); color: white;
+    padding: 12px 24px; font-size: 14px;
+  }
+  .btn-primary:hover { background: var(--blue-mid); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .btn-secondary {
+    background: var(--blue-soft); color: var(--blue);
+    padding: 12px 24px; font-size: 14px;
+    border: 1px solid var(--blue-dim);
+  }
+  .btn-ghost {
+    background: transparent; color: var(--text-2);
+    padding: 12px 24px; font-size: 14px;
+    border: 1px solid var(--border);
+  }
+  .btn-orange {
+    background: var(--orange); color: white;
+    padding: 12px 24px; font-size: 14px;
+  }
+  .btn-sm { padding: 8px 16px; font-size: 13px; border-radius: 9px; }
+  .btn-lg { padding: 16px 32px; font-size: 16px; border-radius: 14px; }
+
+  /* Cards */
+  .question-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px;
+    margin-bottom: 16px;
+  }
+  .question-card:last-child { margin-bottom: 0; }
+  .q-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-3); margin-bottom: 12px; }
+  .q-text { font-size: 15px; line-height: 1.6; color: var(--text); margin-bottom: 16px; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px; border-radius: 10px;
+    font-size: 13px; cursor: pointer;
+    border: 1px solid var(--border); transition: all .15s;
+  }
+  .option:hover { border-color: var(--blue); background: var(--blue-soft); }
+  .option.correct { border-color: var(--success); background: #E6F7EF; color: var(--success); }
+  .option.wrong { border-color: var(--error); background: #FDEAEA; color: var(--error); }
+  .opt-letter {
+    width: 24px; height: 24px; border-radius: 6px;
+    border: 1.5px solid currentColor;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
+  }
+
+  /* Feedback block */
+  .feedback-block {
+    background: var(--blue-soft); border: 1px solid var(--blue-dim);
+    border-radius: 16px; padding: 24px; margin-top: 16px;
+  }
+  .feedback-title {
+    font-size: 13px; font-weight: 600; color: var(--blue); margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .feedback-title svg { width: 16px; height: 16px; }
+  .feedback-row {
+    display: flex; gap: 12px; align-items: flex-start;
+    margin-bottom: 10px; font-size: 13px; color: var(--text-2); line-height: 1.5;
+  }
+  .feedback-row:last-child { margin-bottom: 0; }
+  .feedback-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    flex-shrink: 0; margin-top: 6px;
+  }
+  .fd-ok { background: var(--success); }
+  .fd-no { background: var(--orange); }
+  .fd-tip { background: var(--blue); }
+
+  /* Progress */
+  .progress-demo {
+    margin-top: 20px;
+  }
+  .progress-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px;
+  }
+  .progress-label { font-size: 13px; font-weight: 500; }
+  .progress-count { font-size: 13px; color: var(--text-3); font-family: 'DM Mono', monospace; }
+  .progress-bar {
+    height: 8px; background: var(--surface);
+    border-radius: 100px; overflow: hidden; margin-bottom: 20px;
+  }
+  .progress-fill {
+    height: 100%; border-radius: 100px;
+    background: linear-gradient(90deg, var(--blue), var(--blue-mid));
+    transition: width .6s cubic-bezier(.4,0,.2,1);
+  }
+  .streak-row { display: flex; gap: 8px; margin-top: 16px; }
+  .streak-day {
+    flex: 1; height: 36px; border-radius: 8px;
+    background: var(--surface); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; color: var(--text-3);
+    transition: all .2s;
+  }
+  .streak-day.done { background: var(--blue); color: white; border-color: var(--blue); }
+  .streak-day.today { background: var(--orange-soft); color: var(--orange-deep); border-color: var(--orange); }
+
+  /* ─── VOICE ─── */
+  #voice { background: var(--white); border-bottom: 1px solid var(--border); }
+  .voice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 40px; }
+  .voice-card {
+    border-radius: 16px; padding: 28px; border: 1px solid var(--border);
+  }
+  .voice-card.bad { background: #FAFAFA; opacity: 0.7; }
+  .voice-card.good { background: var(--blue-soft); border-color: var(--blue-dim); }
+  .voice-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; margin-bottom: 16px;
+    padding: 4px 10px; border-radius: 100px;
+  }
+  .voice-tag.no { background: #FDEAEA; color: var(--error); }
+  .voice-tag.yes { background: #E6F7EF; color: var(--success); }
+  .voice-context { font-size: 11px; color: var(--text-3); margin-bottom: 8px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
+  .voice-quote { font-size: 14px; line-height: 1.6; color: var(--text); }
+  .voice-quote.bad { color: var(--text-2); text-decoration: line-through; text-decoration-color: var(--error); }
+
+  .brand-pillars { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-top: 40px; }
+  .pillar {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px; text-align: center;
+  }
+  .pillar-icon { font-size: 28px; margin-bottom: 12px; }
+  .pillar-name { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .pillar-desc { font-size: 12px; color: var(--text-2); line-height: 1.5; }
+
+  /* ─── BENCHMARK ─── */
+  #benchmark { background: var(--bg); }
+  .bench-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
+  .bench-card {
+    border-radius: 16px; overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .bench-screen {
+    height: 160px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; padding: 20px;
+    font-size: 13px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .bench-label {
+    padding: 12px 16px; background: var(--white);
+    border-top: 1px solid var(--border);
+  }
+  .bench-label h4 { font-size: 13px; margin-bottom: 4px; }
+  .bench-label p { font-size: 12px; color: var(--text-2); line-height: 1.4; }
+  .bench-verdict {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 100px; margin-top: 6px;
+  }
+  .v-learn { background: #E6F7EF; color: var(--success); }
+  .v-avoid { background: #FDEAEA; color: var(--error); }
+  .v-us { background: var(--blue-soft); color: var(--blue); }
+
+  /* Duolingo-style mock */
+  .mock-duo {
+    background: linear-gradient(135deg, #58CC02, #3BAE01);
+    color: white;
+  }
+  .mock-duo-inner { font-family: 'DM Sans'; font-weight: 700; font-size: 22px; color: white; }
+  .mock-duo-streak { background: rgba(255,255,255,.2); border-radius: 100px; padding: 4px 12px; font-size: 12px; margin-top: 8px; }
+
+  /* Khan mock */
+  .mock-khan { background: #1D1D1F; }
+  .mock-khan-line { width: 80%; height: 8px; background: #333; border-radius: 4px; margin: 4px 0; }
+  .mock-khan-line.w60 { width: 60%; }
+  .mock-khan-line.accent { background: #1865F2; width: 40%; }
+
+  /* Ferretto mock */
+  .mock-ferretto { background: linear-gradient(135deg, #1547cc, #0038BC); }
+  .mock-ferretto-inner { color: white; font-weight: 700; font-size: 16px; text-align: center; }
+  .mock-ferretto-btn { background: #4CAF50; color: white; border-radius: 8px; padding: 8px 16px; font-size: 12px; font-weight: 600; margin-top: 10px; display: inline-block; }
+
+  /* Preprueba mock */
+  .mock-us { background: var(--blue); }
+  .mock-us-card { background: white; border-radius: 12px; padding: 14px; width: 85%; }
+  .mock-us-q { font-size: 11px; color: var(--text); margin-bottom: 8px; line-height: 1.4; }
+  .mock-us-opt { height: 22px; background: var(--blue-soft); border-radius: 6px; margin-bottom: 4px; display: flex; align-items: center; padding: 0 8px; }
+  .mock-us-opt-dot { width: 5px; height: 5px; background: var(--blue); border-radius: 50%; margin-right: 6px; }
+  .mock-us-opt-line { height: 4px; background: var(--blue-dim); border-radius: 2px; flex: 1; }
+
+  /* Generic quiz mock */
+  .mock-pdf { background: #EFEFEF; }
+  .mock-pdf-inner { display: flex; flex-direction: column; align-items: center; gap: 6px; opacity: 0.6; }
+  .mock-pdf-rect { width: 70%; height: 8px; background: #999; border-radius: 2px; }
+  .mock-pdf-rect.sm { width: 50%; }
+  .mock-pdf-icon { font-size: 32px; }
+
+  /* Generic app mock */
+  .mock-generic {
+    background: #6C2DC7;
+  }
+  .mock-generic-inner { color: white; font-size: 28px; font-weight: 800; }
+  .mock-generic-sub { color: rgba(255,255,255,.6); font-size: 11px; }
+
+  /* ─── MICROCOPY ─── */
+  #microcopy { background: var(--white); border-bottom: 1px solid var(--border); }
+  .micro-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 40px; }
+  .micro-card {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px;
+  }
+  .micro-context {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-3); margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .micro-context::before { content: ''; width: 12px; height: 2px; background: var(--orange); }
+  .micro-copy { font-size: 15px; line-height: 1.6; color: var(--text); }
+  .micro-note { font-size: 12px; color: var(--text-3); margin-top: 8px; font-style: italic; }
+
+  /* ─── UX ─── */
+  #ux { background: var(--bg); }
+  .ux-principles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
+  .ux-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 20px; padding: 28px;
+  }
+  .ux-number {
+    font-family: 'Fraunces', serif; font-size: 48px; font-weight: 600;
+    color: var(--blue-dim); line-height: 1; margin-bottom: 16px;
+  }
+  .ux-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .ux-desc { font-size: 13px; color: var(--text-2); line-height: 1.6; }
+  .ux-example {
+    margin-top: 16px; padding: 12px 14px;
+    background: var(--blue-soft); border-radius: 10px;
+    font-size: 12px; color: var(--blue); font-style: italic; line-height: 1.5;
+  }
+
+  /* ─── MANIFESTO ─── */
+  #manifesto {
+    background: var(--blue);
+    color: white;
+  }
+  .manifesto-inner { max-width: 640px; }
+  .manifesto-inner .section-label { color: rgba(255,255,255,0.5); }
+  .manifesto-inner .section-label::before { background: var(--orange); }
+  .manifesto-text {
+    font-family: 'Fraunces', serif; font-size: clamp(22px, 3vw, 32px);
+    font-weight: 300; line-height: 1.6; color: rgba(255,255,255,0.9);
+  }
+  .manifesto-text strong { font-weight: 600; color: white; }
+  .manifesto-text em { font-style: italic; color: #FFC55C; }
+  .tagline-display {
+    margin-top: 48px;
+    padding-top: 48px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  }
+  .tagline-item { }
+  .tagline-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.4); margin-bottom: 8px; }
+  .tagline-text { font-family: 'Fraunces', serif; font-size: 18px; color: white; line-height: 1.4; }
+  .tagline-text.primary { font-size: 22px; }
+
+  /* ─── SUMMARY ─── */
+  #summary { background: var(--white); }
+  .summary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-top: 40px; }
+  .summary-card {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 20px; padding: 28px;
+  }
+  .summary-card.featured {
+    background: var(--blue); border-color: var(--blue); grid-column: 1 / -1;
+  }
+  .summary-card-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); margin-bottom: 16px; }
+  .summary-card.featured .summary-card-title { color: rgba(255,255,255,0.5); }
+  .summary-list { list-style: none; }
+  .summary-list li {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 14px; line-height: 1.5; margin-bottom: 10px;
+    color: var(--text);
+  }
+  .summary-card.featured .summary-list li { color: rgba(255,255,255,0.85); }
+  .summary-list li::before {
+    content: '→'; color: var(--orange); flex-shrink: 0; font-weight: 600;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--text); color: rgba(255,255,255,0.4);
+    padding: 32px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 13px;
+  }
+  footer strong { color: white; }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-up { animation: fadeUp .6s ease both; }
+  .fade-up-1 { animation-delay: .1s; }
+  .fade-up-2 { animation-delay: .2s; }
+  .fade-up-3 { animation-delay: .3s; }
+
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .6; } }
+  .pulse { animation: pulse 2s infinite; }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    height: 1px; background: var(--border); margin: 40px 0;
+  }
+
+  /* ─── TAG ─── */
+  .tag {
+    display: inline-flex; align-items: center;
+    background: var(--blue-soft); color: var(--blue);
+    border: 1px solid var(--blue-dim);
+    border-radius: 100px; padding: 4px 12px;
+    font-size: 12px; font-weight: 500;
+  }
+  .tag.orange { background: var(--orange-soft); color: var(--orange-deep); border-color: rgba(239,143,0,0.2); }
+
+  /* Responsive adjustments */
+  @media (max-width: 900px) {
+    .hero-grid, .type-pair, .comp-grid, .voice-grid, .micro-grid,
+    .logo-grid, .tagline-display, .summary-grid, .color-roles { grid-template-columns: 1fr; }
+    .brand-pillars { grid-template-columns: repeat(2, 1fr); }
+    .bench-grid { grid-template-columns: repeat(2, 1fr); }
+    .ux-principles { grid-template-columns: 1fr; }
+    nav { padding: 0 20px; }
+    .container { padding: 0 20px; }
+    section { padding: 60px 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-logo">Preprueba</span>
+  <span class="nav-sep">·</span>
+  <a href="#logo">Logo</a>
+  <a href="#colors">Cores</a>
+  <a href="#typography">Tipografia</a>
+  <a href="#components">Componentes</a>
+  <a href="#voice">Voz</a>
+  <a href="#benchmark">Benchmark</a>
+  <a href="#microcopy">Microcopy</a>
+  <a href="#ux">UX</a>
+  <a href="#manifesto">Manifesto</a>
+  <a href="#summary">Resumo</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="fade-up">
+        <div class="hero-kicker"><span></span> Brand Identity System — v1.0</div>
+        <h1>Preprueba<br><em style="font-style:italic; color:var(--blue);">Brand Book</em></h1>
+        <p class="hero-sub">Um sistema de identidade completo para uma plataforma que transforma adultos em candidatos prontos — sem ansiedade, sem academias, no próprio ritmo.</p>
+        <div class="hero-meta">
+          <div class="hero-meta-item">
+            <div class="hero-meta-num">2</div>
+            <div class="hero-meta-label">Cores primárias</div>
+          </div>
+          <div class="hero-meta-item">
+            <div class="hero-meta-num">2</div>
+            <div class="hero-meta-label">Fontes do sistema</div>
+          </div>
+          <div class="hero-meta-item">
+            <div class="hero-meta-num">5</div>
+            <div class="hero-meta-label">Pilares de voz</div>
+          </div>
+          <div class="hero-meta-item">
+            <div class="hero-meta-num">6</div>
+            <div class="hero-meta-label">Princípios UX</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live logo preview in box -->
+      <div class="logo-preview-box fade-up fade-up-2">
+        <!-- MAIN LOGO SVG -->
+        <svg width="220" height="56" viewBox="0 0 220 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Mark: stylized open book / path upward -->
+          <rect x="0" y="14" width="28" height="28" rx="8" fill="white" opacity="0.15"/>
+          <!-- Book pages -->
+          <path d="M7 20 Q14 18 14 28 Q14 18 21 20 L21 36 Q14 34 14 28 Q14 34 7 36 Z" fill="white" opacity="0.9"/>
+          <!-- Orange accent: progress spark -->
+          <circle cx="22" cy="14" r="5" fill="#EF8F00"/>
+          <path d="M20 14 L22 11 L24 14" fill="white" opacity="0.9" stroke="none"/>
+          <!-- Wordmark -->
+          <text x="40" y="34" font-family="Fraunces, serif" font-size="26" font-weight="600" fill="white" opacity="0.95">prep</text>
+          <text x="101" y="34" font-family="Fraunces, serif" font-size="26" font-weight="600" fill="#EF8F00">prueba</text>
+        </svg>
+
+        <div style="text-align:center;">
+          <div style="font-size:12px; color:rgba(255,255,255,0.5); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:4px;">Tagline principal</div>
+          <div style="font-family:'Fraunces',serif; font-size:15px; color:rgba(255,255,255,0.85); font-style:italic;">Tu acceso a la universidad,<br>claro y a tu ritmo.</div>
+        </div>
+
+        <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
+          <span class="tag">Mentor</span>
+          <span class="tag">Cuidador</span>
+          <span class="tag orange">+25 · +40 · +45</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- LOGO SYSTEM -->
+<section id="logo">
+  <div class="container">
+    <div class="section-label">01 · Logo</div>
+    <h2>Sistema de Logo</h2>
+    <p style="color:var(--text-2); margin-top:12px; max-width:560px; font-size:16px; line-height:1.7;">
+      O logo do Preprueba combina um símbolo (mark) construído sobre um livro aberto estilizado com um acento de progresso, e um wordmark em dois pesos que cria hierarquia visual imediata.
+    </p>
+
+    <div class="logo-grid">
+      <!-- Variant 1: Blue bg -->
+      <div class="logo-variant dark">
+        <svg width="180" height="46" viewBox="0 0 220 56" fill="none">
+          <rect x="0" y="14" width="28" height="28" rx="8" fill="white" opacity="0.15"/>
+          <path d="M7 20 Q14 18 14 28 Q14 18 21 20 L21 36 Q14 34 14 28 Q14 34 7 36 Z" fill="white" opacity="0.9"/>
+          <circle cx="22" cy="14" r="5" fill="#EF8F00"/>
+          <path d="M20 14 L22 11 L24 14" fill="white" opacity="0.9"/>
+          <text x="40" y="34" font-family="Fraunces, serif" font-size="26" font-weight="600" fill="white" opacity="0.95">prep</text>
+          <text x="101" y="34" font-family="Fraunces, serif" font-size="26" font-weight="600" fill="#EF8F00">prueba</text>
+        </svg>
+        <span class="logo-label inv">Fundo escuro</span>
+      </div>
+      <!-- Variant 2: White bg -->
+      <div class="logo-variant light">
+        <svg width="180" height="46" viewBox="0 0 220 56" fill="none">
+          <rect x="0" y="14" width="28" height="28" rx="8" fill="#0038BC" opacity="0.08"/>
+          <path d="M7 20 Q14 18 14 28 Q14 18 21 20 L21 36 Q14 34 14 28 Q14 34 7 36 Z" fill="#0038BC"/>
+          <circle cx="22" cy="14" r="5" fill="#EF8F00"/>
+          <path d="M20 14 L22 11 L24 14" fill="white"/>
+          <text x="40" y="34" font-family="Fraunces, serif" font-size="26" font-weight="600" fill="#12213D">prep</text>
+          <text x="101" y="34" font-family="Fraunces, serif" font-size="26" font-weight="600" fill="#0038BC">prueba</text>
+        </svg>
+        <span class="logo-label">Fundo branco</span>
+      </div>
+      <!-- Variant 3: Mark only -->
+      <div class="logo-variant neutral">
+        <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+          <rect width="56" height="56" rx="14" fill="#0038BC"/>
+          <rect x="6" y="18" width="28" height="28" rx="8" fill="white" opacity="0.1"/>
+          <path d="M13 24 Q20 22 20 32 Q20 22 27 24 L27 40 Q20 38 20 32 Q20 38 13 40 Z" fill="white" opacity="0.9"/>
+          <circle cx="33" cy="17" r="7" fill="#EF8F00"/>
+          <path d="M30.5 17 L33 13.5 L35.5 17" fill="white"/>
+        </svg>
+        <span class="logo-label">App icon / Favicon</span>
+      </div>
+    </div>
+
+    <!-- Logo anatomy -->
+    <div class="logo-anatomy">
+      <div>
+        <h3 style="margin-bottom:24px;">Anatomia do Logo</h3>
+        <div class="anatomy-rule">
+          <div class="anatomy-num">1</div>
+          <div class="anatomy-text">
+            <h4>Livro aberto (mark)</h4>
+            <p>Representa conhecimento acessível. As páginas abertas sugerem caminho bilateral: quem estuda e o conteúdo em encontro.</p>
+          </div>
+        </div>
+        <div class="anatomy-rule">
+          <div class="anatomy-num">2</div>
+          <div class="anatomy-text">
+            <h4>Acento laranja (spark)</h4>
+            <p>O círculo laranja acima do mark representa energia de ação, o pequeno progresso que vem depois do estudo. É o "próximo passo" visível.</p>
+          </div>
+        </div>
+        <div class="anatomy-rule">
+          <div class="anatomy-num">3</div>
+          <div class="anatomy-text">
+            <h4>Wordmark "prep" + "prueba"</h4>
+            <p>"prep" em peso neutro = ferramenta, o caminho. "prueba" em destaque = o objetivo. Hierarquia emocional clara numa única leitura.</p>
+          </div>
+        </div>
+        <div class="anatomy-rule">
+          <div class="anatomy-num">4</div>
+          <div class="anatomy-text">
+            <h4>Fonte: Fraunces (serif suave)</h4>
+            <p>Nem clássica demais (evita ar de instituição antiga), nem moderna demais (evita ar de startup juvenil). Warm, inteligente, adulta.</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <!-- Large logo render -->
+        <div style="background:var(--bg); border:1px solid var(--border); border-radius:16px; padding:40px; display:flex; flex-direction:column; gap:24px;">
+          <svg width="100%" viewBox="0 0 220 56" fill="none">
+            <rect x="0" y="14" width="28" height="28" rx="8" fill="#0038BC" opacity="0.08"/>
+            <path d="M7 20 Q14 18 14 28 Q14 18 21 20 L21 36 Q14 34 14 28 Q14 34 7 36 Z" fill="#0038BC"/>
+            <circle cx="22" cy="14" r="5" fill="#EF8F00"/>
+            <path d="M20 14 L22 11 L24 14" fill="white"/>
+            <text x="40" y="34" font-family="Fraunces, serif" font-size="26" font-weight="600" fill="#12213D">prep</text>
+            <text x="101" y="34" font-family="Fraunces, serif" font-size="26" font-weight="600" fill="#0038BC">prueba</text>
+          </svg>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <span class="tag">Não altere proporções</span>
+            <span class="tag">Espaço mín: 16px</span>
+            <span class="tag orange">Sem sombras no mark</span>
+          </div>
+          <p style="font-size:13px; color:var(--text-2); line-height:1.6;">
+            O logo funciona a partir de <strong>24px de altura</strong>. Abaixo disso, use apenas o app icon (mark quadrado). O wordmark nunca deve ter outline ou sombra — a leitura depende da clareza do contraste.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- COLORS -->
+<section id="colors">
+  <div class="container">
+    <div class="section-label">02 · Cores</div>
+    <h2>Sistema de Cores</h2>
+    <p style="color:var(--text-2); margin-top:12px; max-width:560px; font-size:16px; line-height:1.7;">
+      Duas cores dominam, cada uma com papel funcional claro. O azul carrega confiança e foco; o laranja carrega ação e progresso. Juntos, criam um ambiente de estudo calmo mas energizante.
+    </p>
+
+    <div class="color-system">
+      <div class="color-group">
+        <div class="color-group-label">Primária — Azul</div>
+        <div class="swatches">
+          <div class="swatch">
+            <div class="swatch-color" style="background:#0038BC;"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Blue</div>
+              <div class="swatch-hex">#0038BC</div>
+              <div class="swatch-role">Confiança · Foco</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#3560D0;"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Blue Mid</div>
+              <div class="swatch-hex">#3560D0</div>
+              <div class="swatch-role">Hover state</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#EAF1FF;"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Blue Soft</div>
+              <div class="swatch-hex">#EAF1FF</div>
+              <div class="swatch-role">Backgrounds</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#C3D4F5;"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Blue Dim</div>
+              <div class="swatch-hex">#C3D4F5</div>
+              <div class="swatch-role">Borders · Dividers</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="color-group">
+        <div class="color-group-label">Acento — Laranja</div>
+        <div class="swatches">
+          <div class="swatch">
+            <div class="swatch-color" style="background:#EF8F00;"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Orange</div>
+              <div class="swatch-hex">#EF8F00</div>
+              <div class="swatch-role">Ação · CTA · Progresso</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#C97500;"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Orange Deep</div>
+              <div class="swatch-hex">#C97500</div>
+              <div class="swatch-role">Hover · Press</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#FFF3DC;"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Orange Soft</div>
+              <div class="swatch-hex">#FFF3DC</div>
+              <div class="swatch-role">Alerts · Highlights</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="color-group">
+        <div class="color-group-label">Texto & Neutros</div>
+        <div class="swatches">
+          <div class="swatch">
+            <div class="swatch-color" style="background:#12213D;"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Text</div>
+              <div class="swatch-hex">#12213D</div>
+              <div class="swatch-role">Texto principal</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#4A5878;"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Text 2</div>
+              <div class="swatch-hex">#4A5878</div>
+              <div class="swatch-role">Texto secundário</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#F7F9FC;"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Background</div>
+              <div class="swatch-hex">#F7F9FC</div>
+              <div class="swatch-role">App bg</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="color-group">
+        <div class="color-group-label">Feedback</div>
+        <div class="swatches">
+          <div class="swatch">
+            <div class="swatch-color" style="background:#1FA971;"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Success</div>
+              <div class="swatch-hex">#1FA971</div>
+              <div class="swatch-role">Acerto</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background:#D64545;"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Error</div>
+              <div class="swatch-hex">#D64545</div>
+              <div class="swatch-role">Erro</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="color-roles">
+      <div class="color-role-card">
+        <div class="color-role-dot" style="background:var(--blue);"></div>
+        <div class="color-role-text">
+          <h4>Azul = Confiança e Estrutura</h4>
+          <p>Usado em navegação, CTAs principais, elementos de interface que precisam inspirar segurança. É o "eu sei o que estou fazendo" da marca.</p>
+        </div>
+      </div>
+      <div class="color-role-card">
+        <div class="color-role-dot" style="background:var(--orange);"></div>
+        <div class="color-role-text">
+          <h4>Laranja = Ação e Momentum</h4>
+          <p>Reservado para CTAs de alto impacto, barras de progresso, streaks e momentos de celebração. Aparece menos que o azul — isso é intencional.</p>
+        </div>
+      </div>
+      <div class="color-role-card">
+        <div class="color-role-dot" style="background:var(--blue-soft);"></div>
+        <div class="color-role-text">
+          <h4>Azul Suave = Zona de Suporte</h4>
+          <p>Fundos de feedback do tutor, blocos de dica, estados selecionados. Cria profundidade sem peso visual.</p>
+        </div>
+      </div>
+      <div class="color-role-card">
+        <div class="color-role-dot" style="background:var(--bg);"></div>
+        <div class="color-role-text">
+          <h4>Fundo Frio-Neutro = Respiro</h4>
+          <p>#F7F9FC não é branco puro — é levemente azulado, criando coerência sutil com a paleta e reduzindo fadiga visual em sessões longas de estudo.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- TYPOGRAPHY -->
+<section id="typography">
+  <div class="container">
+    <div class="section-label">03 · Tipografia</div>
+    <h2>Sistema Tipográfico</h2>
+    <p style="color:var(--text-2); margin-top:12px; max-width:560px; font-size:16px; line-height:1.7;">
+      Dois typefaces com funções claras. Fraunces para títulos e momentos emocionais — DM Sans para interface e legibilidade no estudo.
+    </p>
+
+    <div class="type-pair">
+      <div class="type-card">
+        <div class="type-card-label">Display · Emocional</div>
+        <div class="type-sample serif">Fraunces</div>
+        <div class="type-name">Fraunces</div>
+        <div class="type-desc">Serif soft com personalidade. Warm e inteligente — cria a sensação de "professor que escreve na lousa com cuidado". Usada em headlines, taglines, números de destaque e momentos de celebração.</div>
+        <div style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border);">
+          <p style="font-family:'Fraunces',serif; font-size:18px; font-style:italic; color:var(--blue);">"Tu acceso a la universidad,<br>claro y a tu ritmo."</p>
+        </div>
+      </div>
+      <div class="type-card">
+        <div class="type-card-label">Interface · Funcional</div>
+        <div class="type-sample sans">DM Sans</div>
+        <div class="type-name">DM Sans</div>
+        <div class="type-desc">Geométrica com curvas humanistas. Não tem o frieza do Inter nem a genericidade do Roboto. Altamente legível, funciona bem em 16px para o público +25 que passa tempo real lendo no app.</div>
+        <div style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border);">
+          <p style="font-family:'DM Sans'; font-size:14px; color:var(--text-2); line-height:1.6;">No pasa nada. Tu respuesta tiene una buena base, pero le faltó precisión. Te lo explico rápido.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="type-scale">
+      <div class="scale-row">
+        <div class="scale-meta">
+          <div class="scale-label">Display</div>
+          <div class="scale-spec">Fraunces · 600<br>48–72px · lh 1.1</div>
+        </div>
+        <div class="scale-example" style="font-family:'Fraunces',serif; font-size:clamp(36px,5vw,56px); font-weight:600; line-height:1.1;">Vuelve a estudiar.</div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-meta">
+          <div class="scale-label">Heading 1</div>
+          <div class="scale-spec">Fraunces · 600<br>32–40px · lh 1.2</div>
+        </div>
+        <div class="scale-example" style="font-family:'Fraunces',serif; font-size:clamp(28px,3vw,36px); font-weight:600; line-height:1.2;">Prueba de Acceso +25</div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-meta">
+          <div class="scale-label">Heading 2</div>
+          <div class="scale-spec">DM Sans · 600<br>22–26px · lh 1.3</div>
+        </div>
+        <div class="scale-example" style="font-size:clamp(20px,2.5vw,24px); font-weight:600; line-height:1.3;">Comprensión Lectora</div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-meta">
+          <div class="scale-label">Body Large</div>
+          <div class="scale-spec">DM Sans · 400<br>18px · lh 1.7</div>
+        </div>
+        <div class="scale-example" style="font-size:18px; line-height:1.7; color:var(--text-2);">Aquí practicas con exámenes reales. Cada error te explica qué aprender.</div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-meta">
+          <div class="scale-label">Body</div>
+          <div class="scale-spec">DM Sans · 400<br>15–16px · lh 1.6</div>
+        </div>
+        <div class="scale-example" style="font-size:15px; line-height:1.6; color:var(--text-2);">Identificaste bien el tema principal de la pregunta. Te faltó explicar la diferencia entre causa y consecuencia.</div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-meta">
+          <div class="scale-label">Label / UI</div>
+          <div class="scale-spec">DM Sans · 500–600<br>12–13px · UPPER</div>
+        </div>
+        <div class="scale-example" style="font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-3);">Bloque 3 de 5 · Matemáticas</div>
+      </div>
+      <div class="scale-row">
+        <div class="scale-meta">
+          <div class="scale-label">Mono / Code</div>
+          <div class="scale-spec">DM Mono · 400<br>13px</div>
+        </div>
+        <div class="scale-example" style="font-family:'DM Mono',monospace; font-size:13px; color:var(--blue);">7 / 10 preguntas · 84% correcto</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <h3 style="margin-bottom:20px;">Regras tipográficas</h3>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+      <div class="type-rule">
+        <div class="rule-icon ok">✓</div>
+        <div class="rule-text"><strong>Mínimo de 16px para corpo</strong> — o público 30–55+ precisa de conforto visual. 15px aceitável em UI compacta.</div>
+      </div>
+      <div class="type-rule">
+        <div class="rule-icon no">✕</div>
+        <div class="rule-text"><strong>Nunca fonte abaixo de 12px</strong> — mesmo em labels secundários. Acessibilidade é parte do posicionamento.</div>
+      </div>
+      <div class="type-rule">
+        <div class="rule-icon ok">✓</div>
+        <div class="rule-text"><strong>Entrelinha generosa</strong> — mínimo 1.5 para texto funcional, 1.6–1.7 para explicações do tutor.</div>
+      </div>
+      <div class="type-rule">
+        <div class="rule-icon no">✕</div>
+        <div class="rule-text"><strong>Sem all-caps em texto corrido</strong> — reservar apenas para labels de interface (12px, espaçado).</div>
+      </div>
+      <div class="type-rule">
+        <div class="rule-icon ok">✓</div>
+        <div class="rule-text"><strong>Fraunces italic</strong> para taglines, citações e momentos de encorajamento — cria calor emocional.</div>
+      </div>
+      <div class="type-rule">
+        <div class="rule-icon no">✕</div>
+        <div class="rule-text"><strong>Sem misturar mais de 2 pesos</strong> na mesma tela — hierarchy limpa, não chaos tipográfico.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- COMPONENTS -->
+<section id="components">
+  <div class="container">
+    <div class="section-label">04 · Componentes</div>
+    <h2>Biblioteca Visual</h2>
+    <p style="color:var(--text-2); margin-top:12px; max-width:560px; font-size:16px; line-height:1.7;">
+      Cada componente carrega a mesma filosofia: clareza na função, calor no detalhe.
+    </p>
+
+    <div class="comp-grid">
+      <!-- Buttons -->
+      <div class="comp-card">
+        <div class="comp-card-title">Botões</div>
+        <div class="btn-row">
+          <button class="btn btn-primary">Empieza a practicar</button>
+          <button class="btn btn-secondary">Ver cómo funciona</button>
+        </div>
+        <div class="btn-row" style="margin-top:12px;">
+          <button class="btn btn-orange">Continuar →</button>
+          <button class="btn btn-ghost">Volver</button>
+        </div>
+        <div class="btn-row" style="margin-top:12px;">
+          <button class="btn btn-primary btn-sm">Siguiente</button>
+          <button class="btn btn-primary btn-lg">Empieza gratis</button>
+        </div>
+        <div style="margin-top:16px; padding:12px; background:var(--bg); border-radius:10px; font-size:12px; color:var(--text-2); line-height:1.5;">
+          <strong>Hierarquia:</strong> Azul para ações principais de navegação / aprendizado. Laranja exclusivo para CTAs de continuidade e momentos de progresso.
+        </div>
+      </div>
+
+      <!-- Question Card -->
+      <div class="comp-card">
+        <div class="comp-card-title">Questão + Feedback</div>
+        <div class="question-card">
+          <div class="q-label">Pregunta 3 de 10 · Comprensión Lectora</div>
+          <div class="q-text">¿Cuál es la idea principal del texto en el segundo párrafo?</div>
+          <div class="options">
+            <div class="option correct"><span class="opt-letter">A</span> La evolución del pensamiento crítico en la modernidad</div>
+            <div class="option wrong"><span class="opt-letter">B</span> Los efectos del cambio climático en Europa</div>
+            <div class="option"><span class="opt-letter">C</span> La función social de la literatura contemporánea</div>
+          </div>
+        </div>
+        <div class="feedback-block">
+          <div class="feedback-title">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 3a1 1 0 110 2 1 1 0 010-2zm-.5 3h1v4h-1V7z"/></svg>
+            Qué revisé en tu respuesta
+          </div>
+          <div class="feedback-row"><div class="feedback-dot fd-ok"></div>Identificaste bien el tema principal de la pregunta.</div>
+          <div class="feedback-row"><div class="feedback-dot fd-no"></div>La opción B confunde el ejemplo con el argumento central.</div>
+          <div class="feedback-row"><div class="feedback-dot fd-tip"></div><em>Idea clave: si puedes resumirlo en dos frases, ya lo entendiste.</em></div>
+        </div>
+      </div>
+
+      <!-- Progress -->
+      <div class="comp-card">
+        <div class="comp-card-title">Progresso</div>
+        <div class="progress-demo">
+          <div class="progress-header">
+            <span class="progress-label">Matemáticas</span>
+            <span class="progress-count">7 / 10</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:70%;"></div></div>
+
+          <div class="progress-header">
+            <span class="progress-label">Comprensión lectora</span>
+            <span class="progress-count">3 / 10</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:30%;"></div></div>
+
+          <div class="progress-header">
+            <span class="progress-label">Historia de España</span>
+            <span class="progress-count">10 / 10</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:100%; background:linear-gradient(90deg, var(--success), #2dd4a7);"></div>
+          </div>
+
+          <div style="margin-top:20px;">
+            <div style="font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-3); margin-bottom:10px;">Esta semana</div>
+            <div class="streak-row">
+              <div class="streak-day done">L</div>
+              <div class="streak-day done">M</div>
+              <div class="streak-day done">X</div>
+              <div class="streak-day today">J</div>
+              <div class="streak-day">V</div>
+              <div class="streak-day">S</div>
+              <div class="streak-day">D</div>
+            </div>
+            <div style="margin-top:10px; font-size:13px; color:var(--text-2);">Hoy ya avanzaste más que ayer. <span style="color:var(--orange-deep); font-weight:600;">Sigue así.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Microcopy states -->
+      <div class="comp-card">
+        <div class="comp-card-title">Estados de Interface</div>
+
+        <!-- Empty state -->
+        <div style="background:var(--bg); border-radius:12px; padding:24px; text-align:center; margin-bottom:12px;">
+          <div style="font-size:28px; margin-bottom:8px;">📖</div>
+          <div style="font-size:14px; font-weight:600; margin-bottom:4px;">Tu progreso empieza aquí</div>
+          <div style="font-size:13px; color:var(--text-2);">La primera pregunta te está esperando.</div>
+          <button class="btn btn-primary" style="margin-top:16px; font-size:13px; padding:10px 20px;">Empezar</button>
+        </div>
+
+        <!-- Recovery -->
+        <div style="background:var(--orange-soft); border:1px solid rgba(239,143,0,0.2); border-radius:12px; padding:16px; display:flex; gap:12px; align-items:flex-start; margin-bottom:12px;">
+          <div style="font-size:18px;">⏰</div>
+          <div>
+            <div style="font-size:13px; font-weight:600; color:var(--orange-deep); margin-bottom:2px;">Llevas unos días sin entrar.</div>
+            <div style="font-size:13px; color:var(--text-2);">Volvamos con 10 minutos. Puedes.</div>
+          </div>
+        </div>
+
+        <!-- Success toast -->
+        <div style="background:#E6F7EF; border:1px solid rgba(31,169,113,0.2); border-radius:12px; padding:16px; display:flex; gap:12px; align-items:center;">
+          <div style="font-size:18px;">✓</div>
+          <div>
+            <div style="font-size:13px; font-weight:600; color:var(--success);">Bien hecho. Entendiste el concepto clave.</div>
+            <div style="font-size:12px; color:var(--text-2);">+1 respuesta correcta esta sesión.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- VOICE & TONE -->
+<section id="voice">
+  <div class="container">
+    <div class="section-label">05 · Voz e Tom</div>
+    <h2>Personalidade da Marca</h2>
+    <p style="color:var(--text-2); margin-top:12px; max-width:560px; font-size:16px; line-height:1.7;">
+      O Preprueba fala como um professor que respeita o aluno: explica sem diminuir, corrige sem constranger, encoraja sem prometer milagres.
+    </p>
+
+    <div class="brand-pillars">
+      <div class="pillar">
+        <div class="pillar-icon">🤝</div>
+        <div class="pillar-name">Próxima</div>
+        <div class="pillar-desc">Não é distante como uma instituição. Soa como alguém ao lado.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">💡</div>
+        <div class="pillar-name">Didática</div>
+        <div class="pillar-desc">Explica de forma clara, no nível certo. Nunca condescendente.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">🌿</div>
+        <div class="pillar-name">Calma</div>
+        <div class="pillar-desc">Sem urgência artificial, sem FOMO. Estuda quando puder.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">🎯</div>
+        <div class="pillar-name">Prática</div>
+        <div class="pillar-desc">Vai direto ao ponto. Frases curtas. Sem rodeios.</div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">🛡️</div>
+        <div class="pillar-name">Confiável</div>
+        <div class="pillar-desc">Não promete milagres. Promete progresso real, consistente.</div>
+      </div>
+    </div>
+
+    <div class="voice-grid" style="margin-top:40px;">
+      <div class="voice-card bad">
+        <div class="voice-tag no">✕ Evitar</div>
+        <div class="voice-context">Feedback de erro</div>
+        <div class="voice-quote bad">"Respuesta incorrecta. La respuesta correcta es la opción A."</div>
+      </div>
+      <div class="voice-card good">
+        <div class="voice-tag yes">✓ Usar</div>
+        <div class="voice-context">Feedback de erro</div>
+        <div class="voice-quote">"No pasa nada. La base la tienes. Ahora ajustemos lo importante."</div>
+      </div>
+
+      <div class="voice-card bad">
+        <div class="voice-tag no">✕ Evitar</div>
+        <div class="voice-context">IA como motor</div>
+        <div class="voice-quote bad">"La IA analizó semánticamente tu respuesta con NLP para optimizar tu performance."</div>
+      </div>
+      <div class="voice-card good">
+        <div class="voice-tag yes">✓ Usar</div>
+        <div class="voice-context">IA como motor</div>
+        <div class="voice-quote">"Ya revisé tu respuesta. Vas bien en la idea general, pero te faltó el punto clave."</div>
+      </div>
+
+      <div class="voice-card bad">
+        <div class="voice-tag no">✕ Evitar</div>
+        <div class="voice-context">Onboarding</div>
+        <div class="voice-quote bad">"¡Bienvenido! 🚀 ¡Estás a punto de transformar tu futuro con nuestra IA de última generación!"</div>
+      </div>
+      <div class="voice-card good">
+        <div class="voice-tag yes">✓ Usar</div>
+        <div class="voice-context">Onboarding</div>
+        <div class="voice-quote">"Bienvenido. Aquí no vienes a memorizar PDFs. Vienes a practicar, entender y avanzar."</div>
+      </div>
+
+      <div class="voice-card bad">
+        <div class="voice-tag no">✕ Evitar</div>
+        <div class="voice-context">Inatividade</div>
+        <div class="voice-quote bad">"¡¡Llevas 5 días sin estudiar!! 😱 ¡Tu racha está en peligro!"</div>
+      </div>
+      <div class="voice-card good">
+        <div class="voice-tag yes">✓ Usar</div>
+        <div class="voice-context">Inatividade</div>
+        <div class="voice-quote">"Llevas unos días sin entrar. Volvamos con 10 minutos."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- BENCHMARK -->
+<section id="benchmark">
+  <div class="container">
+    <div class="section-label">06 · Benchmark</div>
+    <h2>Análise Competitiva</h2>
+    <p style="color:var(--text-2); margin-top:12px; max-width:560px; font-size:16px; line-height:1.7;">
+      Onde o Preprueba se posiciona no espectro de apps de estudo — o que aprender, o que evitar, onde está o território livre.
+    </p>
+
+    <div class="bench-grid">
+      <!-- Duolingo -->
+      <div class="bench-card">
+        <div class="bench-screen mock-duo">
+          <div class="mock-duo-inner">🦉 ¡Streak!</div>
+          <div class="mock-duo-streak">🔥 47 días</div>
+        </div>
+        <div class="bench-label">
+          <h4>Duolingo</h4>
+          <p>Gamificação intensa, mascote, streaks agressivos. Funciona para hábito — mas é infantil para adultos sérios.</p>
+          <span class="bench-verdict v-learn">Aprender: hábito visual</span>
+          <span class="bench-verdict v-avoid" style="margin-left:4px;">Evitar: tom e pressão</span>
+        </div>
+      </div>
+
+      <!-- Khan Academy -->
+      <div class="bench-card">
+        <div class="bench-screen mock-khan" style="padding:24px;">
+          <div class="mock-khan-line"></div>
+          <div class="mock-khan-line w60"></div>
+          <div class="mock-khan-line accent"></div>
+          <div class="mock-khan-line"></div>
+          <div class="mock-khan-line w60"></div>
+        </div>
+        <div class="bench-label">
+          <h4>Khan Academy</h4>
+          <p>UI clean, conteúdo sólido. Muito orientado a jovens em escola. Estrutura acadêmica densa, sem acolhimento emocional.</p>
+          <span class="bench-verdict v-learn">Aprender: hierarquia limpa</span>
+          <span class="bench-verdict v-avoid" style="margin-left:4px;">Evitar: foco demais em teens</span>
+        </div>
+      </div>
+
+      <!-- Ferretto -->
+      <div class="bench-card">
+        <div class="bench-screen mock-ferretto">
+          <div class="mock-ferretto-inner">FERRETTO</div>
+          <div class="mock-ferretto-btn">Ver turmas</div>
+        </div>
+        <div class="bench-label">
+          <h4>Prof. Ferretto</h4>
+          <p>Referência direta. Azul dominante, interface completa, orientado a vestibular brasileiro. Modelo de escala, mas UX complexa para adultos.</p>
+          <span class="bench-verdict v-learn">Aprender: profundidade</span>
+          <span class="bench-verdict v-avoid" style="margin-left:4px;">Evitar: atrito de UI</span>
+        </div>
+      </div>
+
+      <!-- Generic quiz -->
+      <div class="bench-card">
+        <div class="bench-screen mock-pdf">
+          <div class="mock-pdf-inner">
+            <div class="mock-pdf-icon">📄</div>
+            <div class="mock-pdf-rect"></div>
+            <div class="mock-pdf-rect sm"></div>
+            <div class="mock-pdf-rect"></div>
+          </div>
+        </div>
+        <div class="bench-label">
+          <h4>PDFs / Academia tradicional</h4>
+          <p>O inimigo real. PDFs sem feedback, academias caras e rígidas. É o status quo que o Preprueba substitui diretamente.</p>
+          <span class="bench-verdict v-avoid">Inimigo direto</span>
+        </div>
+      </div>
+
+      <!-- Generic gamified app -->
+      <div class="bench-card">
+        <div class="bench-screen mock-generic">
+          <div class="mock-generic-inner">QUIZ!</div>
+          <div class="mock-generic-sub">10 lives left ❤️❤️❤️</div>
+        </div>
+        <div class="bench-label">
+          <h4>Apps de quiz genérico</h4>
+          <p>Interface jovem, gamificação agressiva, conteúdo raso. Não fala com o adulto de 38 anos que quer entrar na universidade.</p>
+          <span class="bench-verdict v-avoid">Não é nosso público</span>
+        </div>
+      </div>
+
+      <!-- Preprueba -->
+      <div class="bench-card" style="border-color:var(--blue); box-shadow:0 0 0 2px var(--blue-dim);">
+        <div class="bench-screen mock-us">
+          <div class="mock-us-card">
+            <div class="mock-us-q">¿Cuál es la idea principal del texto?</div>
+            <div class="mock-us-opt"><div class="mock-us-opt-dot"></div><div class="mock-us-opt-line"></div></div>
+            <div class="mock-us-opt"><div class="mock-us-opt-dot"></div><div class="mock-us-opt-line" style="width:60%;"></div></div>
+            <div class="mock-us-opt"><div class="mock-us-opt-dot"></div><div class="mock-us-opt-line" style="width:80%;"></div></div>
+          </div>
+        </div>
+        <div class="bench-label">
+          <h4>Preprueba ← Aqui</h4>
+          <p>Prática com exames reais, feedback de tutor IA, UI limpa e adulta. O único produto que combina os 5 diferenciais no mesmo lugar.</p>
+          <span class="bench-verdict v-us">Nosso território</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Positioning map -->
+    <div style="margin-top:40px; background:var(--white); border:1px solid var(--border); border-radius:20px; padding:40px;">
+      <h3 style="margin-bottom:8px;">Mapa de Posicionamento</h3>
+      <p style="font-size:14px; color:var(--text-2); margin-bottom:32px;">Onde o Preprueba existe no quadrante que ninguém ocupa ainda.</p>
+      <div style="position:relative; height:300px; border-left:2px solid var(--border); border-bottom:2px solid var(--border);">
+        <!-- Axis labels -->
+        <div style="position:absolute; left:50%; top:-28px; transform:translateX(-50%); font-size:12px; font-weight:600; color:var(--text-3); letter-spacing:0.06em; text-transform:uppercase;">↑ MAIS ADULTO</div>
+        <div style="position:absolute; left:-20px; top:50%; transform:translateY(-50%) rotate(-90deg); font-size:12px; font-weight:600; color:var(--text-3); letter-spacing:0.06em; text-transform:uppercase;">MAIS FOCO</div>
+        <div style="position:absolute; right:-20px; top:50%; transform:translateY(-50%) rotate(90deg); font-size:12px; font-weight:600; color:var(--text-3); letter-spacing:0.06em; text-transform:uppercase; white-space:nowrap;">MENOS FOCO →</div>
+        <div style="position:absolute; left:50%; bottom:-28px; transform:translateX(-50%); font-size:12px; font-weight:600; color:var(--text-3); letter-spacing:0.06em; text-transform:uppercase;">↓ MAIS JOVEM</div>
+
+        <!-- Dots -->
+        <div style="position:absolute; left:48%; top:18%; transform:translate(-50%,-50%);">
+          <div style="background:var(--blue); color:white; border-radius:100px; padding:6px 14px; font-size:12px; font-weight:700; white-space:nowrap; box-shadow:var(--shadow-md);">⭐ Preprueba</div>
+        </div>
+        <div style="position:absolute; left:72%; top:60%; transform:translate(-50%,-50%);">
+          <div style="background:var(--surface); border:1px solid var(--border); border-radius:100px; padding:4px 10px; font-size:11px; color:var(--text-2); white-space:nowrap;">Duolingo</div>
+        </div>
+        <div style="position:absolute; left:35%; top:55%; transform:translate(-50%,-50%);">
+          <div style="background:var(--surface); border:1px solid var(--border); border-radius:100px; padding:4px 10px; font-size:11px; color:var(--text-2); white-space:nowrap;">Khan Academy</div>
+        </div>
+        <div style="position:absolute; left:30%; top:30%; transform:translate(-50%,-50%);">
+          <div style="background:var(--surface); border:1px solid var(--border); border-radius:100px; padding:4px 10px; font-size:11px; color:var(--text-2); white-space:nowrap;">Academias +€300</div>
+        </div>
+        <div style="position:absolute; left:65%; top:72%; transform:translate(-50%,-50%);">
+          <div style="background:var(--surface); border:1px solid var(--border); border-radius:100px; padding:4px 10px; font-size:11px; color:var(--text-2); white-space:nowrap;">Apps de quiz</div>
+        </div>
+        <div style="position:absolute; left:60%; top:42%; transform:translate(-50%,-50%);">
+          <div style="background:var(--surface); border:1px solid var(--border); border-radius:100px; padding:4px 10px; font-size:11px; color:var(--text-2); white-space:nowrap;">PDFs / exames antigos</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- MICROCOPY -->
+<section id="microcopy">
+  <div class="container">
+    <div class="section-label">07 · Microcopy</div>
+    <h2>Biblioteca de Textos</h2>
+    <p style="color:var(--text-2); margin-top:12px; max-width:560px; font-size:16px; line-height:1.7;">
+      O texto de interface é parte do design. Cada palavra reflete os valores da marca.
+    </p>
+
+    <div class="micro-grid">
+      <div class="micro-card">
+        <div class="micro-context">Hero · Landing</div>
+        <div class="micro-copy">Prepárate para la prueba de acceso con exámenes reales, corrección inmediata y explicaciones claras. <strong>A tu ritmo. Sin academias caras.</strong></div>
+        <div class="micro-note">Não mencionar IA — focar na experiência do usuário.</div>
+      </div>
+      <div class="micro-card">
+        <div class="micro-context">Subheadline</div>
+        <div class="micro-copy">Pensado para adultos de <strong>+25, +40 y +45</strong> que quieren volver a estudiar con una herramienta directa, flexible y humana.</div>
+        <div class="micro-note">Mencionar as faixas etárias — é o sinal de que a marca fala com eles.</div>
+      </div>
+      <div class="micro-card">
+        <div class="micro-context">Onboarding</div>
+        <div class="micro-copy">Aquí no vienes a memorizar PDFs. Vienes a <strong>practicar, entender y avanzar.</strong></div>
+        <div class="micro-note">Três verbos que definem o produto inteiro. Ritmo intencional.</div>
+      </div>
+      <div class="micro-card">
+        <div class="micro-context">Estado vazio</div>
+        <div class="micro-copy">Tu progreso empieza con la primera pregunta. <strong>Vamos paso a paso.</strong></div>
+        <div class="micro-note">Reduz a pressão do primeiro clique. Não fala "zero questões respondidas".</div>
+      </div>
+      <div class="micro-card">
+        <div class="micro-context">Após erro</div>
+        <div class="micro-copy">No pasa nada. Tu respuesta tiene una buena base, pero le faltó precisión. <strong>Te lo explico rápido.</strong></div>
+        <div class="micro-note">"Rápido" promete o que o produto entrega: explicação instantânea.</div>
+      </div>
+      <div class="micro-card">
+        <div class="micro-context">Após acerto</div>
+        <div class="micro-copy">Bien hecho. <strong>Entendiste el concepto clave.</strong> Seguimos.</div>
+        <div class="micro-note">Curto, adulto. Celebração discreta. Nada de confete virtual.</div>
+      </div>
+      <div class="micro-card">
+        <div class="micro-context">Progresso semanal</div>
+        <div class="micro-copy">Esta semana ya practicaste más que la anterior. <strong>Sigue así.</strong></div>
+        <div class="micro-note">Comparativo relativo (não absoluto) — funciona para iniciantes e avançados.</div>
+      </div>
+      <div class="micro-card">
+        <div class="micro-context">Recuperação (dias sem entrar)</div>
+        <div class="micro-copy">Llevas unos días sin entrar. <strong>Volvamos con 10 minutos.</strong></div>
+        <div class="micro-note">"Volvamos" — a marca inclui a si mesma. Não culpa o usuário.</div>
+      </div>
+      <div class="micro-card">
+        <div class="micro-context">CTA principal</div>
+        <div class="micro-copy" style="font-size:18px; font-weight:600;">Empieza a practicar hoy</div>
+        <div class="micro-note">Sem "grátis", sem "já". Simples e direto. O "hoy" dá urgência suave.</div>
+      </div>
+      <div class="micro-card">
+        <div class="micro-context">Preço / pricing</div>
+        <div class="micro-copy">€9,99 al mes. <strong>Sin permanencia.</strong> Sin excusas para esperar.</div>
+        <div class="micro-note">Derruba a objeção de custo com uma frase. Conecta ao insight de "procrastinação".</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- UX PRINCIPLES -->
+<section id="ux">
+  <div class="container">
+    <div class="section-label">08 · Princípios UX</div>
+    <h2>Design da Experiência</h2>
+    <p style="color:var(--text-2); margin-top:12px; max-width:560px; font-size:16px; line-height:1.7;">
+      A identidade visual só funciona se a experiência entrega o que a marca promete.
+    </p>
+
+    <div class="ux-principles">
+      <div class="ux-card">
+        <div class="ux-number">01</div>
+        <div class="ux-title">Zero atrito de entrada</div>
+        <div class="ux-desc">O usuário deve chegar na primeira questão em menos de 3 cliques. Nenhuma tela de configuração obrigatória antes de começar a praticar.</div>
+        <div class="ux-example">"La primera pregunta te está esperando."</div>
+      </div>
+      <div class="ux-card">
+        <div class="ux-number">02</div>
+        <div class="ux-title">Uma ação principal por tela</div>
+        <div class="ux-desc">Hierarquia visual óbvia. O usuário nunca deve ficar em dúvida sobre o que fazer. Botão primário sempre visível, sempre no mesmo lugar.</div>
+        <div class="ux-example">Tela de questão: só "Confirmar resposta" em destaque.</div>
+      </div>
+      <div class="ux-card">
+        <div class="ux-number">03</div>
+        <div class="ux-title">Erro → explicação imediata</div>
+        <div class="ux-desc">Nunca mostrar "errado" sem mostrar "por quê" na mesma tela, no mesmo momento. O erro é a aula — não pode ser separado dela.</div>
+        <div class="ux-example">"No pasa nada. Te lo explico rápido."</div>
+      </div>
+      <div class="ux-card">
+        <div class="ux-number">04</div>
+        <div class="ux-title">Progresso visível, não pressão</div>
+        <div class="ux-desc">Mostrar o quanto avançou (não o quanto falta). Streaks existem, mas nunca geram culpa. Celebração pelo que foi feito.</div>
+        <div class="ux-example">"Esta semana practicaste más que la anterior."</div>
+      </div>
+      <div class="ux-card">
+        <div class="ux-number">05</div>
+        <div class="ux-title">IA invisível, tutoria presente</div>
+        <div class="ux-desc">A IA é o motor, nunca o protagonista. Interface usa linguagem de tutor humano. Nenhuma menção a "modelo", "algoritmo" ou "LLM" no produto.</div>
+        <div class="ux-example">"Ya revisé tu respuesta."</div>
+      </div>
+      <div class="ux-card">
+        <div class="ux-number">06</div>
+        <div class="ux-title">Respiro generoso</div>
+        <div class="ux-desc">Espaçamento mínimo de 24px entre blocos. Nada de tela comprimida. O usuário de 45 anos merece uma interface que não cansa os olhos.</div>
+        <div class="ux-example">Corpo 16px min · Entrelinha 1.6 · Padding 24px+</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- MANIFESTO -->
+<section id="manifesto">
+  <div class="container">
+    <div class="manifesto-inner">
+      <div class="section-label">09 · Manifesto</div>
+      <div class="manifesto-text">
+        <strong>Volver a estudiar no debería dar más miedo que ilusión.</strong><br><br>
+        No deberías depender de horarios imposibles,<br>
+        academias caras o PDFs eternos.<br><br>
+        No deberías sentirte fuera de lugar<br>
+        por llevar años sin estudiar.<br><br>
+        <em>Preprueba nace para eso:</em><br>
+        para ayudarte a practicar, entender y avanzar.<br><br>
+        Con exámenes reales, corrección inmediata<br>
+        y explicaciones claras.<br><br>
+        Sin presión. Sin vueltas. <strong>Sin sentirte solo.</strong><br><br>
+        Porque la universidad también puede empezar hoy,<br>
+        <em>desde donde estás.</em>
+      </div>
+
+      <div class="tagline-display">
+        <div class="tagline-item">
+          <div class="tagline-label">Tagline principal</div>
+          <div class="tagline-text primary"><em>Tu acceso a la universidad,<br>claro y a tu ritmo.</em></div>
+        </div>
+        <div>
+          <div class="tagline-item" style="margin-bottom:16px;">
+            <div class="tagline-label">Versão curta</div>
+            <div class="tagline-text">Practica. Entiende. Avanza.</div>
+          </div>
+          <div class="tagline-item" style="margin-bottom:16px;">
+            <div class="tagline-label">Acolhimento</div>
+            <div class="tagline-text">Vuelve a estudiar con confianza.</div>
+          </div>
+          <div class="tagline-item">
+            <div class="tagline-label">Emocional</div>
+            <div class="tagline-text">Menos dudas. Más claridad.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- SUMMARY -->
+<section id="summary">
+  <div class="container">
+    <div class="section-label">10 · Resumo Executivo</div>
+    <h2>A Marca em Uma Página</h2>
+
+    <div class="summary-grid">
+      <div class="summary-card featured">
+        <div class="summary-card-title">Posicionamento</div>
+        <p style="font-family:'Fraunces',serif; font-size:clamp(18px,2.5vw,24px); color:white; line-height:1.5; font-weight:300;">
+          O <strong>professor de bolso para adultos</strong> que querem entrar na universidade com clareza, prática e confiança — sem academias caras, sem PDFs confusos, sem horários fixos.
+        </p>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-card-title">Identidade Visual</div>
+        <ul class="summary-list">
+          <li>Logo: Fraunces + mark de livro com acento laranja</li>
+          <li>Cores: Persian Blue #0038BC + Carrot #EF8F00</li>
+          <li>Tipografia: Fraunces (display) + DM Sans (interface)</li>
+          <li>UI: cantos arredondados, espaçamento generoso, sem dark mode como identidade</li>
+        </ul>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-card-title">Personalidade</div>
+        <ul class="summary-list">
+          <li>Arquétipo: Mentor + Cuidador</li>
+          <li>Voz: clara, humana, calma, prática, confiável</li>
+          <li>Tom: explica sem diminuir, corrige sem constranger</li>
+          <li>Jamais: arrogante, hype de IA, tom adolescente</li>
+        </ul>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-card-title">Diferencial real</div>
+        <ul class="summary-list">
+          <li>Único foco em provas +25 +40 +45 na Espanha</li>
+          <li>Feedback explicativo (não só certo/errado)</li>
+          <li>€9,99/mês — derruba a objeção de entrada</li>
+          <li>UX adulta: legível, direta, sem pressão gamificada</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer>
+  <div><strong>Preprueba</strong> — Brand Identity System v1.0</div>
+  <div>Fraunces · DM Sans · #0038BC · #EF8F00</div>
+</footer>
+
+<script>
+  // Smooth scroll + progress bar animation on load
+  document.addEventListener('DOMContentLoaded', () => {
+    // Animate progress bars when visible
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.style.width = e.target.dataset.width || e.target.style.width;
+        }
+      });
+    }, { threshold: 0.3 });
+
+    document.querySelectorAll('.progress-fill').forEach(el => {
+      const w = el.style.width;
+      el.dataset.width = w;
+      el.style.width = '0%';
+      setTimeout(() => observer.observe(el), 100);
+    });
+
+    // Active nav on scroll
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('nav a');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => {
+        if (window.scrollY >= s.offsetTop - 80) current = s.id;
+      });
+      navLinks.forEach(a => {
+        a.style.background = a.getAttribute('href') === '#' + current ? 'var(--blue-soft)' : '';
+        a.style.color = a.getAttribute('href') === '#' + current ? 'var(--blue)' : '';
+      });
+    });
+  });
+</script>
+</body>
+</html>

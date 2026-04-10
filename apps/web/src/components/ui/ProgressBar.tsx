@@ -1,21 +1,25 @@
 interface ProgressBarProps {
   value: number; // 0-100
-  color?: string;
   height?: number;
+  variant?: 'blue' | 'orange' | 'success';
+  animated?: boolean;
 }
 
-export function ProgressBar({
-  value,
-  color = 'var(--color-carrot)',
-  height = 8,
-}: ProgressBarProps) {
+const gradients: Record<string, string> = {
+  blue:    'linear-gradient(90deg, var(--blue) 0%, var(--blue-mid) 100%)',
+  orange:  'linear-gradient(90deg, var(--orange) 0%, var(--orange-deep) 100%)',
+  success: 'linear-gradient(90deg, var(--success) 0%, #2dd4a7 100%)',
+};
+
+export function ProgressBar({ value, height = 8, variant = 'blue', animated = true }: ProgressBarProps) {
   const clamped = Math.min(100, Math.max(0, value));
+
   return (
     <div
       style={{
         width: '100%',
         height,
-        background: 'var(--color-platinum)',
+        background: 'var(--surface)',
         borderRadius: 'var(--radius-full)',
         overflow: 'hidden',
       }}
@@ -28,9 +32,9 @@ export function ProgressBar({
         style={{
           height: '100%',
           width: `${clamped}%`,
-          background: color,
+          background: gradients[variant],
           borderRadius: 'var(--radius-full)',
-          transition: 'width 0.4s ease',
+          transition: animated ? 'width 0.6s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
         }}
       />
     </div>

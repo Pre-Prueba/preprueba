@@ -80,6 +80,7 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
       pruebaType: user.pruebaType,
       comunidad: user.comunidad,
       onboardingDone: user.onboardingDone,
+      role: user.role,
     },
     subscription: subscription
       ? { status: subscription.status, currentPeriodEnd: subscription.currentPeriodEnd }
@@ -100,6 +101,7 @@ router.get('/me', requireAuth, async (req: Request, res: Response): Promise<void
     pruebaType: user.pruebaType,
     comunidad: user.comunidad,
     onboardingDone: user.onboardingDone,
+    role: user.role,
     subscription: subscription
       ? { status: subscription.status, currentPeriodEnd: subscription.currentPeriodEnd }
       : null,

@@ -7,7 +7,7 @@ interface AuthState {
   subscription: Subscription | null;
   loading: boolean;
   initialized: boolean;
-  login: (email: string, password: string) => Promise<User & { subscription: Subscription | null }>;
+  login: (email: string, password: string) => Promise<{ user: User; subscription: Subscription | null }>;
   register: (email: string, password: string, nombre?: string) => Promise<User>;
   logout: () => void;
   fetchMe: () => Promise<void>;
@@ -26,7 +26,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       const res = await authApi.login(email, password);
       saveToken(res.token);
       set({ user: res.user, subscription: res.subscription, loading: false });
-      return res;
+      return { user: res.user, subscription: res.subscription };
     } catch (e) {
       set({ loading: false });
       throw e;
@@ -55,7 +55,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ loading: true });
     try {
       const res = await authApi.me();
-      set({ user: res, subscription: res.subscription, loading: false, initialized: true });
+      const { subscription, ...user } = res;
+      set({ user, subscription, loading: false, initialized: true });
     } catch {
       set({ user: null, subscription: null, loading: false, initialized: true });
     }
@@ -65,5 +66,5 @@ export const useAuthStore = create<AuthState>((set) => ({
 }));
 
 if (import.meta.env.DEV) {
-  (window as Window & { __authStore: typeof useAuthStore }).__authStore = useAuthStore;
+  (window as unknown as Window & { __authStore: typeof useAuthStore }).__authStore = useAuthStore;
 }

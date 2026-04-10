@@ -29,6 +29,11 @@ enum FuentePregunta {
   GENERADA
 }
 
+enum UserRole {
+  USER
+  ADMIN
+}
+
 enum SubscriptionStatus {
   ACTIVE
   CANCELLED
@@ -44,6 +49,7 @@ model User {
   pruebaType       PruebaType?
   comunidad        String?
   onboardingDone   Boolean     @default(false)
+  role             UserRole    @default(USER)
   stripeCustomerId String?     @unique
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt

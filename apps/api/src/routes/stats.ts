@@ -1,12 +1,13 @@
 import { Router, Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 import { requireAuth } from '../middleware/auth';
+import { requireSubscription } from '../middleware/subscription';
 import { AuthRequest } from '../types';
 
 const router = Router();
 
 // GET /stats/resumen
-router.get('/resumen', requireAuth, async (req: Request, res: Response): Promise<void> => {
+router.get('/resumen', requireAuth, requireSubscription, async (req: Request, res: Response): Promise<void> => {
   const user = (req as AuthRequest).user;
 
   const [totalSesiones, totalRespuestas, respuestasAll, materias] = await Promise.all([
