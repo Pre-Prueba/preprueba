@@ -3,6 +3,7 @@ import { prisma } from '../lib/prisma';
 import { requireAuth } from '../middleware/auth';
 import { requireSubscription } from '../middleware/subscription';
 import { AuthRequest } from '../types';
+import { generarTipsEstudo } from '../services/claude';
 
 const router = Router();
 
@@ -72,6 +73,49 @@ router.get('/resumen', requireAuth, requireSubscription, async (req: Request, re
   });
 
   res.json({ totalSesiones, totalRespuestas, porcentajeAcierto, racha, porMateria });
+});
+
+// GET /stats/tips - Gerar dicas de estudo IA
+router.get('/tips', requireAuth, requireSubscription, async (req: Request, res: Response) => {
+  const user = (req as AuthRequest).user;
+
+  // 1. Pegar respostas para calcular performance por matéria
+  const [materias, respostas] = await Promise.all([
+    prisma.materia.findMany({ where: { activa: true }, select: { id: true, nombre: true } }),
+    prisma.respuestaUsuario.findMany({
+      where: { userId: user.id },
+      select: { esCorrecta: true, pregunta: { select: { materiaId: true } } },
+    }),
+  ]);
+
+  if (respostas.length === 0) {
+    res.json(["Comece sua primeira prática para receber dicas personalizadas!", "O segredo do sucesso é a constância.", "Foque em uma matéria de cada vez no início."]);
+    return;
+  }
+
+  const statsPorMateria = materias.map(m => {
+    const resp = respostas.filter(r => r.pregunta.materiaId === m.id);
+    const pct = resp.length > 0 ? Math.round((resp.filter(r => r.esCorrecta).length / resp.length) * 100) : 0;
+    return { materiaNombre: m.nombre, porcentajeAcierto: pct, tendencia: 'estable' };
+  }).filter(m => m.porcentajeAcierto > 0);
+
+  const tips = await generarTipsEstudo(statsPorMateria);
+  res.json(tips);
+});
+
+// GET /stats/ranking - Top 5 usuarios
+router.get('/ranking', requireAuth, async (req: Request, res: Response) => {
+  const topUsers = await prisma.user.findMany({
+    select: { id: true, nombre: true, respuestas: { where: { esCorrecta: true }, select: { id: true } } },
+    take: 100
+  });
+
+  const ranking = topUsers
+    .map(u => ({ id: u.id, nombre: u.nombre || 'Estudiante', aciertos: u.respuestas.length }))
+    .sort((a, b) => b.aciertos - a.aciertos)
+    .slice(0, 5);
+
+  res.json(ranking);
 });
 
 export default router;

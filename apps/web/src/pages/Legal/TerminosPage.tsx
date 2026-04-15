@@ -4,7 +4,7 @@ const sections = [
   {
     title: 'Descripción del servicio',
     paragraphs: [
-      'Preprueba es una plataforma online de preparación para las pruebas de acceso a la universidad para mayores de 25, 40 y 45 años en España.',
+      'Preprueba es una plataforma online de preparación para las pruebas de acceso a la universidad para mayores de 25 y mayores de 40 años en España.',
       'El servicio ofrece preguntas de práctica, seguimiento del progreso y corrección asistida por inteligencia artificial para ayudarte a estudiar con constancia.',
     ],
   },

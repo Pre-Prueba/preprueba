@@ -20,7 +20,17 @@
       "Bash(npx prisma:*)",
       "Bash(npm run:*)",
       "Bash(npx ts-node:*)",
-      "Bash(ls D:/preprueba/apps/web/.env*)"
+      "Bash(ls D:/preprueba/apps/web/.env*)",
+      "Bash(rtk tsc:*)",
+      "Bash(rtk npx:*)",
+      "Bash(node_modules/.bin/tsc --noEmit)",
+      "Bash(C:/Users/vivim/preprueba2/preprueba/apps/web/node_modules/.bin/tsc --noEmit --project C:/Users/vivim/preprueba2/preprueba/apps/web/tsconfig.json)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(ls C:/Users/vivim/preprueba2/preprueba/apps/web/src/pages/Landing/*.css)",
+      "Bash(ls C:/Users/vivim/preprueba2/preprueba/apps/web/src/pages/Landing/*.module.css)",
+      "Bash(curl -s http://localhost:5173)",
+      "Bash(npx playwright:*)",
+      "Bash(ls apps/web/playwright*)"
     ]
   }
 }

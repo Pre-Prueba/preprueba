@@ -5,6 +5,9 @@ import { z } from 'zod';
 import { prisma } from '../lib/prisma';
 import { requireAuth } from '../middleware/auth';
 import { AuthRequest } from '../types';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 
 const router = Router();
 
@@ -29,6 +32,34 @@ function signToken(userId: string): string {
     expiresIn: process.env.JWT_EXPIRES_IN ?? '7d',
   } as jwt.SignOptions);
 }
+
+// Multer Config
+const storage = multer.diskStorage({
+  destination: (_req, _file, cb) => {
+    const uploadDir = path.join(__dirname, '../../uploads');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: (req: any, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const fileName = `${req.user?.id || 'unknown'}-${Date.now()}${ext}`;
+    cb(null, fileName);
+  },
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB
+  fileFilter: (_req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Solo se permitem imágenes.'));
+    }
+  },
+});
 
 // POST /auth/register
 router.post('/register', async (req: Request, res: Response): Promise<void> => {
@@ -102,10 +133,54 @@ router.get('/me', requireAuth, async (req: Request, res: Response): Promise<void
     comunidad: user.comunidad,
     onboardingDone: user.onboardingDone,
     role: user.role,
+    fechaExamen: user.fechaExamen,
+    avatarUrl: user.avatarUrl,
+    phone: user.phone,
+    provincia: user.provincia,
+    bio: user.bio,
+    pais: user.pais,
     subscription: subscription
       ? { status: subscription.status, currentPeriodEnd: subscription.currentPeriodEnd }
       : null,
   });
+});
+
+// PATCH /auth/update - Atualizar dados do usuário
+router.patch('/update', requireAuth, async (req: Request, res: Response): Promise<void> => {
+  const user = (req as AuthRequest).user;
+  const { nombre, fechaExamen, phone, provincia, bio, pais } = req.body;
+
+  const updated = await prisma.user.update({
+    where: { id: user.id },
+    data: { 
+      nombre, 
+      fechaExamen: fechaExamen ? new Date(fechaExamen) : undefined,
+      phone,
+      provincia,
+      bio,
+      pais
+    },
+  });
+
+  res.json({ success: true, user: updated });
+});
+
+// POST /auth/avatar - Upload de foto de perfil
+router.post('/avatar', requireAuth, upload.single('avatar'), async (req: Request, res: Response): Promise<void> => {
+  if (!req.file) {
+    res.status(400).json({ error: 'Nenhum arquivo enviado.' });
+    return;
+  }
+
+  const user = (req as AuthRequest).user;
+  const avatarUrl = `/uploads/${req.file.filename}`;
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { avatarUrl },
+  });
+
+  res.json({ success: true, avatarUrl });
 });
 
 // PATCH /auth/onboarding

@@ -6,7 +6,7 @@ import { VIEWPORT_ONCE } from '../lib/landingAnimations';
 const FAQS = [
   {
     q: '¿Qué pruebas cubre Preprueba?',
-    a: 'Cubre las tres pruebas de acceso a la universidad para mayores en España: Mayores de 25, 40 y 45 años. Incluye todas las materias de la fase general y las más habituales de la específica.',
+    a: 'Cubre las pruebas de acceso a la universidad para mayores en España: Mayores de 25 años y Mayores de 40 años. Incluye todas las materias de la fase general y las más habituales de la específica.',
   },
   {
     q: '¿Las preguntas son reales?',

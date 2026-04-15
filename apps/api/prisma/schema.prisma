@@ -29,6 +29,24 @@ enum FuentePregunta {
   GENERADA
 }
 
+enum TipoDocumento {
+  EXAMEN_OFICIAL
+  MODELO
+  CONVOCATORIA_ANTERIOR
+  ORIENTACIONES
+  CRITERIOS_CORRECCION
+  SOLUCIONARIO
+}
+
+enum DocumentoStatus {
+  FOUND
+  DOWNLOADED
+  CATALOGUED
+  REVIEWED
+  PUBLISHED
+  INTERACTIVE_READY
+}
+
 enum UserRole {
   USER
   ADMIN
@@ -39,6 +57,12 @@ enum SubscriptionStatus {
   CANCELLED
   PAST_DUE
   TRIALING
+}
+
+enum SesionEstado {
+  INICIADA
+  PAUSADA
+  FINALIZADA
 }
 
 model User {
@@ -53,10 +77,24 @@ model User {
   stripeCustomerId String?     @unique
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
+  fechaExamen      DateTime?
+  
+  // Perfil detalhado
+  avatarUrl        String?
+  phone            String?
+  provincia        String?
+  bio              String?     @db.Text
+  pais             String      @default("España")
 
-  subscription Subscription?
-  sesiones     Sesion[]
-  respuestas   RespuestaUsuario[]
+  subscription  Subscription?
+  sesiones      Sesion[]
+  respuestas    RespuestaUsuario[]
+  tareasPlan    TareaPlan[]
+  forumPosts    ForumPost[]
+  forumComments ForumComment[]
+  forumReports  ForumReport[]
+  flashcards    Flashcard[]
+  favoritos     Favorito[]
 
   @@map("users")
 }
@@ -86,8 +124,11 @@ model Materia {
   activa      Boolean      @default(true)
   createdAt   DateTime     @default(now())
 
-  preguntas Pregunta[]
-  sesiones  Sesion[]
+  preguntas  Pregunta[]
+  sesiones   Sesion[]
+  tareasPlan TareaPlan[]
+  forumPosts ForumPost[]
+  flashcards Flashcard[]
 
   @@map("materias")
 }
@@ -99,14 +140,18 @@ model Pregunta {
   tipo       TipoPregunta   @default(TEST)
   dificultad Dificultad     @default(INTERMEDIO)
   fuente     FuentePregunta @default(OFICIAL)
+  tema       String?
   anio       Int?
   comunidad  String?
+  universidad String?
   activa     Boolean        @default(true)
   createdAt  DateTime       @default(now())
 
   materia    Materia            @relation(fields: [materiaId], references: [id])
   opciones   Opcion[]
   respuestas RespuestaUsuario[]
+  flashcards Flashcard[]
+  favoritos  Favorito[]
 
   @@map("preguntas")
 }
@@ -131,6 +176,8 @@ model Sesion {
   totalPreguntas   Int
   aciertos         Int      @default(0)
   completada       Boolean  @default(false)
+  estado           SesionEstado @default(INICIADA)
+  currentIndex     Int      @default(0)
   duracionSegundos Int?
   createdAt        DateTime @default(now())
 
@@ -151,6 +198,7 @@ model RespuestaUsuario {
   esCorrecta      Boolean
   feedbackIA      String?
   tiempoRespuesta Int?
+  revisado        Boolean  @default(false)
   createdAt       DateTime @default(now())
 
   user     User     @relation(fields: [userId], references: [id])
@@ -159,4 +207,130 @@ model RespuestaUsuario {
   opcion   Opcion?  @relation(fields: [opcionId], references: [id])
 
   @@map("respuestas_usuario")
+}
+
+model TareaPlan {
+  id        String   @id @default(cuid())
+  userId    String
+  materiaId String
+  diaSemana Int      // 0 (Lunes) a 6 (Domingo)
+  completada Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user      User     @relation(fields: [userId], references: [id])
+  materia   Materia  @relation(fields: [materiaId], references: [id])
+
+  @@map("tareas_plan")
+}
+
+model ForumPost {
+  id                String   @id @default(cuid())
+  userId            String
+  materiaId         String?
+  titulo            String
+  contenido         String   @db.Text
+  likesCount        Int      @default(0)
+  isSolved          Boolean  @default(false)
+  acceptedCommentId String?  @unique
+  quotePostId       String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user      User           @relation(fields: [userId], references: [id])
+  materia   Materia?       @relation(fields: [materiaId], references: [id])
+  quotePost ForumPost?     @relation("QuotePost", fields: [quotePostId], references: [id])
+  quotedBy  ForumPost[]    @relation("QuotePost")
+  comments  ForumComment[] @relation("PostComments")
+  reports   ForumReport[]
+
+  @@map("forum_posts")
+}
+
+model ForumComment {
+  id         String   @id @default(cuid())
+  postId     String
+  userId     String
+  contenido  String   @db.Text
+  likesCount Int      @default(0)
+  isAccepted Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  post ForumPost @relation("PostComments", fields: [postId], references: [id], onDelete: Cascade)
+  user User      @relation(fields: [userId], references: [id])
+
+  @@map("forum_comments")
+}
+
+model ForumReport {
+  id        String   @id @default(cuid())
+  postId    String
+  userId    String
+  razon     String
+  createdAt DateTime @default(now())
+
+  post ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("forum_reports")
+}
+
+model Flashcard {
+  id         String   @id @default(cuid())
+  userId     String
+  preguntaId String?
+  materiaId  String?
+  frente     String   @db.Text
+  dorso      String   @db.Text
+  estado     String   @default("pendiente")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pregunta Pregunta? @relation(fields: [preguntaId], references: [id])
+  materia  Materia?  @relation(fields: [materiaId], references: [id])
+
+  @@map("flashcards")
+}
+
+model ExamDocument {
+  id            String          @id @default(cuid())
+  title         String
+  subject       String
+  community     String
+  university    String
+  year          Int
+  call          String?         // "ordinaria" | "extraordinaria" | null
+  documentType  TipoDocumento
+  sourceUrl     String          // URL oficial de origen
+  sourceName    String          // nombre fuente oficial (ej: "UCM - Pruebas mayores 25")
+  pdfUrl        String?         // URL directa al PDF si disponible
+  isOfficial    Boolean         @default(true)
+  isInteractive Boolean         @default(false)
+  status        DocumentoStatus @default(FOUND)
+  notes         String?         @db.Text
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@index([community])
+  @@index([university])
+  @@index([subject])
+  @@index([year])
+  @@index([documentType])
+  @@index([status])
+  @@map("exam_documents")
+}
+
+model Favorito {
+  id         String   @id @default(cuid())
+  userId     String
+  preguntaId String
+  createdAt  DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pregunta Pregunta @relation(fields: [preguntaId], references: [id])
+
+  @@unique([userId, preguntaId])
+  @@map("favoritos")
 }

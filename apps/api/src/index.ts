@@ -2,6 +2,7 @@ import 'dotenv/config';
 import * as Sentry from '@sentry/node';
 import cors from 'cors';
 import express, { type NextFunction, type Request, type Response } from 'express';
+import path from 'path';
 
 import { prisma } from './lib/prisma';
 import authRoutes from './routes/auth';
@@ -10,6 +11,14 @@ import sesionesRoutes from './routes/sesiones';
 import statsRoutes from './routes/stats';
 import stripeRoutes from './routes/stripe';
 import adminRoutes from './routes/admin';
+import plannerRoutes from './routes/planner';
+import forumRoutes from './routes/forum';
+import erroresRoutes from './routes/errores';
+import favoritosRoutes from './routes/favoritos';
+import flashcardsRoutes from './routes/flashcards';
+import examenesRoutes from './routes/examenes';
+import examDocsRoutes from './routes/exam-docs';
+import simulacrosRoutes from './routes/simulacros';
 
 const sentryDsn = process.env.SENTRY_DSN;
 
@@ -28,7 +37,15 @@ const PORT = process.env.PORT ?? 3000;
 app.use('/stripe/webhook', express.raw({ type: 'application/json' }));
 
 app.use(express.json());
-app.use(cors({ origin: process.env.FRONTEND_URL ?? 'http://localhost:5173' }));
+const allowedOrigins = [
+  process.env.FRONTEND_URL ?? 'http://localhost:5174',
+  'http://localhost:5173',
+  'http://localhost:5174',
+];
+app.use(cors({ origin: allowedOrigins }));
+
+// Servir arquivos estáticos (uploads)
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.use('/auth', authRoutes);
 app.use('/materias', materiasRoutes);
@@ -36,6 +53,14 @@ app.use('/sesiones', sesionesRoutes);
 app.use('/stats', statsRoutes);
 app.use('/stripe', stripeRoutes);
 app.use('/admin', adminRoutes);
+app.use('/planner', plannerRoutes);
+app.use('/forum', forumRoutes);
+app.use('/errores', erroresRoutes);
+app.use('/favoritos', favoritosRoutes);
+app.use('/flashcards', flashcardsRoutes);
+app.use('/examenes', examenesRoutes);
+app.use('/exam-docs', examDocsRoutes);
+app.use('/simulacros', simulacrosRoutes);
 
 app.get('/health', async (_req, res) => {
   try {

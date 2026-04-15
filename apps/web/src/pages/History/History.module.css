@@ -1,0 +1,139 @@
+/* ═══════════════════════════════════════════════════════════════════
+   PREPRUEBA — History Page (Premium Clean)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.historyPage {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 28px 24px 60px;
+  font-family: var(--font);
+  animation: pp-fadein 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes pp-fadein {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Header ── */
+.header {
+  margin-bottom: 28px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.03em;
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  color: var(--text-2);
+  font-size: 14px;
+}
+
+/* ── List ── */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── Session Card ── */
+.sessionCard {
+  background: var(--card);
+  border-radius: var(--r-xl);
+  padding: 18px 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 200ms ease,
+              border-color 160ms ease;
+  gap: 16px;
+}
+
+.sessionCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-hover);
+}
+
+.sessionInfo h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+
+.sessionMeta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sessionMeta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-3);
+  font-weight: 500;
+  background: var(--bg);
+  padding: 3px 9px;
+  border-radius: var(--r-full);
+  border: 1px solid var(--border);
+}
+
+/* ── Score Badge ── */
+.scoreBadge {
+  padding: 7px 14px;
+  border-radius: var(--r-md);
+  font-weight: 700;
+  font-size: 15px;
+  font-family: var(--font-mono);
+  flex-shrink: 0;
+  letter-spacing: -0.01em;
+}
+
+.scoreHigh {
+  background: var(--success-bg);
+  color: var(--success);
+  border: 1px solid rgba(22, 163, 74, 0.15);
+}
+
+.scoreMid {
+  background: var(--warn-bg);
+  color: var(--warn);
+  border: 1px solid rgba(212, 135, 10, 0.15);
+}
+
+.scoreLow {
+  background: var(--error-bg);
+  color: var(--error);
+  border: 1px solid rgba(220, 38, 38, 0.15);
+}
+
+/* ── Empty ── */
+.empty {
+  background: var(--card);
+  border-radius: var(--r-xl);
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--text-2);
+  border: 1px dashed var(--border);
+  font-size: 14px;
+}
+
+@media (max-width: 640px) {
+  .historyPage { padding: 20px 16px 48px; }
+  .sessionCard { flex-direction: column; align-items: flex-start; }
+  .scoreBadge { align-self: flex-end; }
+}

@@ -127,3 +127,22 @@ export const heroContainer: Variants = {
     },
   },
 }
+
+/* ── Dashboard card item (entrada mais curta para cards secundários) */
+export const dashboardItem: Variants = {
+  hidden: { opacity: 0, y: 12 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: easeOut },
+  },
+}
+
+/* ── Pulse único de atenção (ex: badge, indicador) */
+export const pulseOnce: Variants = {
+  hidden: { scale: 1 },
+  show: {
+    scale: [1, 1.04, 1],
+    transition: { duration: 0.5, ease: easeOut, delay: 1.0 },
+  },
+}

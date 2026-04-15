@@ -1,0 +1,56 @@
+/* ═══════════════════════════════════════════════════════════════════
+   PREPRUEBA — Global Design Tokens
+   Fonte única da verdade para todo o sistema de design.
+   Importar ou usar via :root sempre que necessário.
+   ═══════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Cores Base ── */
+  --bg:            #F6F7FB;
+  --bg-2:          #F0F2F5;
+  --card:          #FFFFFF;
+  --text:          #111827;
+  --text-2:        #667085;
+  --text-3:        #98A2B3;
+
+  /* ── Bordas ── */
+  --border:        rgba(17, 24, 39, 0.05);
+  --border-hover:  rgba(17, 24, 39, 0.10);
+
+  /* ── Azul ── */
+  --blue:          #063399;
+  --blue-dark:     #042a7d;
+  --blue-soft:     #EAF1FF;
+  --blue-hover:    #052c85;
+  --blue-glow:     rgba(6, 51, 153, 0.12);
+
+  /* ── Semânticas ── */
+  --success:       #16A34A;
+  --success-bg:    #ECFDF5;
+  --error:         #DC2626;
+  --error-bg:      #FEF2F2;
+  --warn:          #D4870A;
+  --warn-bg:       #FFF7ED;
+
+  /* ── Sombras ── */
+  --shadow-xs:  0 1px 2px rgba(16, 24, 40, 0.04);
+  --shadow-sm:  0 1px 8px rgba(16, 24, 40, 0.05), 0 0 0 1px rgba(16, 24, 40, 0.04);
+  --shadow-md:  0 4px 16px rgba(16, 24, 40, 0.07), 0 0 0 1px rgba(16, 24, 40, 0.04);
+  --shadow-lg:  0 8px 28px rgba(16, 24, 40, 0.09), 0 0 0 1px rgba(16, 24, 40, 0.04);
+  --shadow-blue: 0 4px 14px rgba(6, 51, 153, 0.18);
+
+  /* ── Radii ── */
+  --r-sm:   8px;
+  --r-md:   12px;
+  --r-lg:   16px;
+  --r-xl:   20px;
+  --r-2xl:  24px;
+  --r-full: 9999px;
+
+  /* ── Tipografia ── */
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* ── Easing ── */
+  --ease:        cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.15);
+}

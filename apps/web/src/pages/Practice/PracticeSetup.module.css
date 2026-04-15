@@ -1,0 +1,165 @@
+/* ═══════════════════════════════════════════════════════════════════
+   PREPRUEBA — Practice Setup (Premium Clean)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.pageContainer {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 28px 24px 80px;
+  font-family: var(--font);
+  animation: pp-fadein 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes pp-fadein {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Header ── */
+.header {
+  margin-bottom: 28px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+/* ── Main Layout ── */
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--card);
+  border-radius: var(--r-2xl);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  padding: 28px;
+}
+
+.cardTitle {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: var(--text-2);
+}
+
+/* ── Form ── */
+.formGroup {
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.formGroup label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.input {
+  width: 100%;
+  padding: 11px 16px;
+  border: 1px solid var(--border-hover);
+  border-radius: var(--r-md);
+  font-family: var(--font);
+  font-size: 14px;
+  background: #fff;
+  color: var(--text);
+  outline: none;
+  transition: all 160ms ease;
+}
+
+.input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 4px var(--blue-glow);
+}
+
+/* ── Button Group (Selector) ── */
+.buttonGroup {
+  display: flex;
+  gap: 8px;
+  background: var(--bg-2);
+  padding: 4px;
+  border-radius: var(--r-lg);
+}
+
+.buttonGroup button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  border-radius: var(--r-md);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font);
+  color: var(--text-2);
+  transition: all 160ms ease;
+}
+
+.buttonGroup button.active {
+  background: var(--card);
+  color: var(--blue);
+  font-weight: 600;
+  box-shadow: var(--shadow-xs);
+}
+
+/* ── Actions ── */
+.actionArea {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+/* ── Simulado Card ── */
+.simuladoCard {
+  background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+  padding: 28px;
+  border-radius: var(--r-2xl);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  box-shadow: var(--shadow-lg);
+}
+
+.simuladoInfo h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+
+.simuladoInfo p {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 280px;
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .pageContainer {
+    padding: 20px 16px 60px;
+  }
+  .simuladoCard {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+  .simuladoInfo p {
+    margin: 0 auto;
+  }
+}

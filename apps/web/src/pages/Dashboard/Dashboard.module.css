@@ -1,526 +1,968 @@
-/* ═══════════════════════════════════════════════════════════════════
-   PREPRUEBA — Dashboard
-   Brand: Fraunces (display) + DM Sans (ui) + DM Mono (numbers)
-   Colors: --blue #0038BC · --orange #EF8F00
-   ═══════════════════════════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-/* ─── PAGE WRAPPER ──────────────────────────────────────────────── */
-.dashboardPage {
+:root {
+  /* Alinhado com tokens.css / V2 */
+  --bg-main: var(--bg, #F6F7FB);
+  --surface: #FFFFFF;
+  --surface-alt: #F9FAFB;
+  --surface-hover: #F3F4F6;
+
+  --text-1: #111827;
+  --text-2: #4B5563;
+  --text-3: #9CA3AF;
+
+  --border: var(--border-color, rgba(17, 24, 39, 0.05));
+  --border-light: rgba(17, 24, 39, 0.03);
+
+  --blue-main: var(--blue, #063399);
+  --blue-soft: var(--blue-glow, rgba(6, 51, 153, 0.05));
+  --blue-support: #5B8CFF;
+
+  --success: #10B981;
+  --warning: #F59E0B;
+
+  --radius-xl: var(--r-xl, 24px);
+  --radius-lg: var(--r-lg, 16px);
+  --radius-md: var(--r-md, 12px);
+  --radius-sm: var(--r-sm, 8px);
+
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-hover: var(--shadow-lg);
+
+  --transition: all 0.4s var(--ease);
+}
+
+/* ── Keyframes ── */
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* O1: Hero glow drifts slowly — subliminal "alive" feeling */
+@keyframes heroGlowDrift {
+  0%   { transform: translate(0, 0) scale(1);    opacity: 0.7; }
+  50%  { transform: translate(-20px, 10px) scale(1.08); opacity: 1; }
+  100% { transform: translate(0, 0) scale(1);    opacity: 0.7; }
+}
+
+/* R6: Continue card border pulse — 3 pulses then stops */
+@keyframes borderPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(10, 91, 255, 0); }
+  50%       { box-shadow: 0 0 0 3px rgba(10, 91, 255, 0.08); }
+}
+
+/* R3: Timeline dot pulse on most recent item */
+@keyframes dotPulse {
+  0%, 100% { box-shadow: 0 0 0 0 currentColor; opacity: 1; }
+  50%       { box-shadow: 0 0 0 4px transparent; opacity: 0.7; }
+}
+
+/* O2: Skeleton shimmer */
+@keyframes shimmer {
+  0%, 100% { opacity: 0.45; }
+  50%       { opacity: 0.85; }
+}
+
+/* ══════════════════════════════════════════
+   PAGE
+══════════════════════════════════════════ */
+.page {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background-color: var(--bg-main);
   min-height: 100vh;
-  background: var(--bg);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+/* O2: Skeleton box */
+.skeletonBox {
+  background: rgba(17, 24, 39, 0.07);
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+/* ══════════════════════════════════════════
+   COMPONENTS
+══════════════════════════════════════════ */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  /* No CSS animation — framer-motion handles entrance */
+}
+
+.cardHeader {
+  padding: 24px 32px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cardTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-1);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.cardBody {
+  padding: 0 32px 32px;
+}
+
+/* Buttons */
+.btnPrimary {
+  background: var(--pp-blue);
+  color: white;
+  border: none;
+  border-radius: 100px;
+  padding: 12px 24px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.btnPrimary:hover {
+  background: var(--blue-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(6, 55, 164, 0.25);
+}
+
+.btnPrimary:active {
+  transform: translateY(0);
+}
+
+.btnGhost {
+  background: transparent;
+  color: var(--text-1);
+  border: none;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btnGhost:hover {
+  color: var(--blue-main);
+}
+
+.btnLink {
+  background: none;
+  border: none;
+  color: var(--text-2);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btnLink:hover {
+  color: var(--blue-main);
+}
+
+.btnOutline {
+  background: transparent;
+  color: var(--text-1);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 10px 20px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  width: 100%;
+}
+
+.btnOutline:hover {
+  background: var(--surface-alt);
+  border-color: var(--text-3);
+}
+
+/* ══════════════════════════════════════════
+   FIRST FOLD
+══════════════════════════════════════════ */
+.firstFold {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 32px;
+  /* No CSS animation — framer-motion handles hero content */
+}
+
+/* Hero Main */
+.heroCard {
+  background: var(--surface);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  padding: 48px;
   position: relative;
-  overflow-x: hidden;
-}
-
-.dashboardPage::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: radial-gradient(circle at 1px 1px, rgba(0, 56, 188, 0.025) 1px, transparent 0);
-  background-size: 32px 32px;
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* ─── NAVBAR ────────────────────────────────────────────────────── */
-.navbar {
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 var(--space-10);
-  height: 60px;
-  background: rgba(247, 249, 252, 0.92);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
-  transition: box-shadow 0.3s var(--ease-out);
 }
 
-.navbar.scrolled {
+/* O1: Hero glow drifts slowly */
+.heroGlow {
+  position: absolute;
+  top: -100px;
+  right: -100px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(10, 91, 255, 0.05) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: heroGlowDrift 8s ease-in-out infinite;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  max-width: 420px;
+}
+
+.heroMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.heroGreeting {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+.heroName {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--text-1);
+  margin: 0 0 16px;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.heroSubtitle {
+  font-size: 16px;
+  color: var(--text-2);
+  line-height: 1.5;
+  margin: 0 0 24px;
+}
+
+.heroChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border-light);
+  padding: 6px 12px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-1);
+}
+
+.chipDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.heroActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.heroGraphic {
+  position: relative;
+  z-index: 1;
+}
+
+/* Progress Right Card — TiltCard handles motion */
+.progressCard {
+  background: var(--surface);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.progressCardHeader {
+  position: absolute;
+  top: 32px;
+  left: 32px;
+  right: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.progressCardLabel {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.progressCardBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--pp-orange);
+  background: rgba(239, 143, 0, 0.08); /* Transparent orange */
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+
+.ringWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 24px;
+  margin-bottom: 32px;
+}
+
+.ringCenter {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ringValue {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--text-1);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.ringLabel {
+  font-size: 13px;
+  color: var(--text-2);
+  margin-top: 4px;
+}
+
+.progressStats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.progressStat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 24px;
+}
+
+.progressStatValue {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.progressStatLabel {
+  font-size: 12px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+.progressStatDivider {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
+}
+
+.progressHint {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-light);
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.progressHintLabel {
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.progressHintValue {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-1);
+}
+
+/* ══════════════════════════════════════════
+   METRICS CHIPS — framer-motion handles stagger
+══════════════════════════════════════════ */
+.metricsRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.metricChip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.metricIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.metricBody {
+  display: flex;
+  flex-direction: column;
+}
+
+.metricValue {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-1);
+  line-height: 1.2;
+}
+
+.metricLabel {
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+/* ══════════════════════════════════════════
+   CONTINUE CARD — R6: border-pulse attention
+══════════════════════════════════════════ */
+.continueCard {
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: linear-gradient(var(--surface), var(--surface)) padding-box,
+              linear-gradient(135deg, rgba(10, 91, 255, 0.2) 0%, rgba(10, 91, 255, 0) 100%) border-box;
+  /* 3 pulses after load, then stops — subtle attention signal */
+  animation: borderPulse 3s ease-in-out 1.2s 3;
+}
+
+.continueCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(10, 91, 255, 0.3);
+}
+
+.continueCardInner {
+  padding: 32px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.continueLeft {
+  flex: 1;
+  max-width: 600px;
+}
+
+.continueTag {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 24px;
+  display: block;
+}
+
+.continueSubjectRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.continueBadge {
+  width: 56px;
+  height: 56px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.continueSubjectName {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-1);
+  margin: 0 0 4px;
+}
+
+.continueMeta {
+  font-size: 14px;
+  color: var(--text-2);
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.continueDot {
+  width: 4px;
+  height: 4px;
+  background: var(--text-3);
+  border-radius: 50%;
+  margin: 0 8px;
+}
+
+.continueProgressWrap {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.continueProgressBar {
+  flex: 1;
+  height: 8px;
+  background: var(--surface-alt);
+  border-radius: 100px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.continueProgressFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue-main), var(--blue-support));
+  border-radius: 100px;
+  transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.continueProgressPct {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-1);
+  width: 40px;
+  text-align: right;
+}
+
+.continueEmpty {
+  font-size: 15px;
+  color: var(--text-2);
+  margin: 0;
+}
+
+/* ══════════════════════════════════════════
+   MAIN GRID (Content + Sidebar)
+══════════════════════════════════════════ */
+.mainGrid {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 32px;
+  /* No CSS animation — framer-motion handles each card individually */
+  align-items: start;
+}
+
+.mainLeft { display: flex; flex-direction: column; gap: 32px; }
+.mainRight { display: flex; flex-direction: column; gap: 32px; }
+
+/* ══ IA RECOMMENDATION — E4: SpotlightCard handles spotlight ══ */
+.recomCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  position: relative;
+  transition: border-color 0.3s var(--transition), box-shadow 0.3s var(--transition);
+}
+
+.recomCard:hover {
+  border-color: rgba(6, 55, 164, 0.15); /* Brand blue with transparency */
   box-shadow: var(--shadow-md);
 }
 
-.navLogo {
-  font-family: var(--font-display);
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text);
-  user-select: none;
-}
+/* Removed .recomGlow — SpotlightCard replaces it */
 
-.navLogo span {
-  color: var(--blue);
-}
-
-.navLinks {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-}
-
-.navLink {
-  font-family: var(--font-ui);
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-2);
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-sm);
-  transition: color 0.18s, background 0.18s;
-  text-decoration: none;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-}
-
-.navLink:hover {
-  color: var(--blue);
-  background: var(--blue-soft);
-}
-
-/* ─── MAIN ──────────────────────────────────────────────────────── */
-.main {
+.recomInner {
+  padding: 32px;
   position: relative;
   z-index: 1;
-  max-width: 1040px;
-  margin: 0 auto;
-  padding: var(--space-10) var(--space-6) var(--space-16);
 }
 
-/* ─── HEADER ────────────────────────────────────────────────────── */
-.header {
+.recomHeader {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--space-8);
-  gap: var(--space-6);
-  flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
-.headerText h1 {
-  font-family: var(--font-display);
-  font-size: var(--text-2xl);
-  font-weight: 600;
-  color: var(--text);
-  line-height: 1.2;
-  margin-bottom: var(--space-1);
-}
-
-.headerText p {
-  color: var(--text-2);
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-/* ─── STREAK WIDGET ─────────────────────────────────────────────── */
-.streakWidget {
-  display: flex;
+.iaBadge {
+  display: inline-flex;
   align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-5);
-  background: var(--orange-soft);
-  border: 1px solid rgba(239, 143, 0, 0.2);
-  border-radius: var(--radius-md);
-  transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
-}
-
-.streakWidget:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(239, 143, 0, 0.12);
-}
-
-.streakFire {
-  font-size: 26px;
-  line-height: 1;
-  animation: flamePulse 2.5s ease-in-out infinite;
-}
-
-.streakNumber {
-  font-family: var(--font-display);
-  font-size: var(--text-xl);
+  gap: 6px;
+  font-size: 12px;
   font-weight: 600;
-  color: var(--orange-deep);
-  line-height: 1;
+  color: var(--pp-blue);
+  background: rgba(6, 55, 164, 0.08);
+  padding: 6px 12px;
+  border-radius: 100px;
 }
 
-.streakLabel {
-  font-size: 11px;
+.recomHint {
+  font-size: 13px;
   color: var(--text-3);
-  font-weight: 500;
 }
 
-/* ─── STREAK WEEK DOTS ──────────────────────────────────────────── */
-.streakWeek {
+.recomTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-1);
+  margin: 0 0 12px;
+}
+
+.recomReason {
+  font-size: 15px;
+  color: var(--text-2);
+  line-height: 1.5;
+  margin: 0 0 24px;
+  max-width: 90%;
+}
+
+/* ══ SUBJECTS PROGRESS — R4: framer-motion scaleX, no width transition ══ */
+.materiaList {
   display: flex;
-  gap: var(--space-2);
-  margin-bottom: var(--space-8);
-  align-items: center;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.weekDay {
-  width: 36px;
-  height: 36px;
+.materiaRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  transition: var(--transition);
+}
+
+.materiaRow:hover {
+  background: #F9FAFB;
+  border-color: rgba(10, 91, 255, 0.12);
+}
+
+.materiaLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.materiaInitial {
+  width: 40px;
+  height: 40px;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 600;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text-3);
-  transition: all 0.2s var(--ease-out);
-}
-
-.weekDay.done {
-  background: var(--blue);
-  color: white;
-  border-color: var(--blue);
-}
-
-.weekDay.today {
-  background: var(--orange-soft);
-  color: var(--orange-deep);
-  border-color: var(--orange);
-}
-
-.streakMotivation {
-  font-size: 13px;
   color: var(--text-2);
-  margin-left: var(--space-2);
 }
 
-.streakMotivation strong {
-  color: var(--orange-deep);
-  font-weight: 600;
-}
-
-/* ─── STATS BAR ─────────────────────────────────────────────────── */
-.statsBar {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-4);
-  margin-bottom: var(--space-8);
-}
-
-.statCard {
-  padding: var(--space-5) var(--space-6);
-  background: var(--white);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
-  transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
-}
-
-.statCard:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.statValue {
-  font-family: var(--font-display);
-  font-size: var(--text-2xl);
-  font-weight: 600;
-  color: var(--blue);
-  line-height: 1;
-  margin-bottom: var(--space-1);
-}
-
-.statLabel {
-  font-size: 11px;
-  color: var(--text-3);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-/* ─── SECTION TITLE ─────────────────────────────────────────────── */
-.sectionTitle {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-3);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: var(--space-5);
-}
-
-/* ─── MATERIA GRID ──────────────────────────────────────────────── */
-.materiaGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: var(--space-5);
-}
-
-/* ─── MATERIA CARD ──────────────────────────────────────────────── */
-.materiaCard {
-  position: relative;
-  background: var(--white);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-  border: 1px solid var(--border);
+.materiaDetails {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
-  transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out), border-color 0.25s;
-  cursor: pointer;
-  overflow: hidden;
+  gap: 8px;
 }
-
-.materiaCard:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
-  border-color: var(--blue-dim);
-}
-
-.materiaCard::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.35s var(--ease-out);
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-}
-
-.materiaCard.general::before { background: var(--blue); }
-.materiaCard.especifica::before { background: var(--orange); }
-.materiaCard:hover::before { transform: scaleX(1); }
-
-/* ─── CARD HEADER ───────────────────────────────────────────────── */
-.cardHeader {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-3);
-}
-
-.cardBadge {
-  display: inline-block;
-  border-radius: var(--radius-full);
-  padding: 3px 10px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.cardBadge.general {
-  background: var(--blue-soft);
-  color: var(--blue);
-  border: 1px solid var(--blue-dim);
-}
-
-.cardBadge.especifica {
-  background: var(--orange-soft);
-  color: var(--orange-deep);
-  border: 1px solid rgba(239, 143, 0, 0.25);
-}
-
-.cardIcon {
-  width: 40px; height: 40px;
-  border-radius: var(--radius-md);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px; flex-shrink: 0;
-  transition: transform 0.25s var(--ease-out);
-}
-
-.materiaCard:hover .cardIcon { transform: scale(1.1) rotate(-4deg); }
-.cardIcon.general { background: var(--blue-soft); }
-.cardIcon.especifica { background: var(--orange-soft); }
 
 .materiaName {
-  font-weight: 600;
   font-size: 15px;
-  line-height: 1.3;
-  color: var(--text);
+  font-weight: 600;
+  color: var(--text-1);
 }
 
-/* ─── PROGRESS SECTION ──────────────────────────────────────────── */
-.progressSection {
+.materiaBarRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.materiaTrack {
   flex: 1;
-  display: flex; flex-direction: column;
-  justify-content: flex-end;
-  gap: var(--space-2);
-}
-
-.progressMeta {
-  display: flex; justify-content: space-between; align-items: baseline;
-  font-size: 13px;
-}
-
-.progressMeta .count { color: var(--text-3); }
-.progressMeta .percent { font-weight: 600; color: var(--text); font-family: var(--font-mono); }
-
-.progressTrack {
-  width: 100%; height: 6px;
-  background: var(--surface);
-  border-radius: var(--radius-full);
+  height: 6px;
+  background: rgba(17, 24, 39, 0.04);
+  border-radius: 100px;
   overflow: hidden;
 }
 
-.progressFill {
+/* No width transition — framer-motion scaleX handles animation */
+.materiaFill {
   height: 100%;
-  border-radius: var(--radius-full);
-  background: linear-gradient(90deg, var(--blue) 0%, var(--blue-mid) 100%);
-  transition: width 0.8s var(--ease-out);
+  border-radius: 100px;
+}
+
+.materiaPct {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+  width: 32px;
+  text-align: right;
+}
+
+.trendUp { color: var(--success); }
+.trendDown { color: var(--warning); }
+.trendNeutral { color: var(--text-3); font-weight: 500; }
+
+/* ══ TIMELINE — R3: framer-motion stagger, dot pulse on first ══ */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  padding-left: 8px;
+}
+
+.timelineItem {
+  display: flex;
+  gap: 20px;
+}
+
+.timelineLine {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timelineDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-top: 6px;
   position: relative;
+  z-index: 2;
+  box-shadow: 0 0 0 3px var(--surface);
 }
 
-.progressFill::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
-  animation: shimmer 2.5s ease-in-out infinite;
-  border-radius: var(--radius-full);
+/* R3: Pulse on most recent dot (i === 0) */
+.timelineDotActive {
+  animation: dotPulse 2.6s ease-in-out infinite;
 }
 
-/* ─── ACTION BUTTON ─────────────────────────────────────────────── */
-.cardAction {
-  display: flex; align-items: center; justify-content: center; gap: var(--space-2);
-  width: 100%; padding: var(--space-3) var(--space-6);
-  background: var(--blue);
-  color: white;
-  border: none;
-  border-radius: var(--radius-md);
-  font-family: var(--font-ui);
-  font-size: 14px; font-weight: 500;
-  cursor: pointer;
-  transition: background 0.18s, transform 0.18s, box-shadow 0.18s;
-  position: relative; overflow: hidden;
+.timelineConnector {
+  width: 2px;
+  flex: 1;
+  background: var(--border);
+  margin-top: 4px;
+  margin-bottom: 4px;
 }
 
-.materiaCard.especifica .cardAction { background: var(--orange); }
-.cardAction:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: var(--shadow-sm); }
-.cardAction:active { transform: translateY(0) scale(0.98); }
+.timelineContent {
+  flex: 1;
+  padding-bottom: 24px;
+}
+.timelineItem:last-child .timelineContent { padding-bottom: 0; }
 
-.cardAction::after {
-  content: '';
-  position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-  transition: left 0.45s var(--ease-out);
+.timelineRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
 }
 
-.cardAction:hover::after { left: 100%; }
-
-.cardActionArrow {
-  display: inline-block;
-  transition: transform 0.25s var(--ease-out);
+.timelineSubject {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-1);
 }
 
-.materiaCard:hover .cardActionArrow { transform: translateX(4px); }
+.timelinePct {
+  font-size: 13px;
+  font-weight: 600;
+}
 
-/* ─── EMPTY STATE ───────────────────────────────────────────────── */
-.emptyState {
+.timelineDate {
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+/* ══ SIDEBAR CARDS ══ */
+.objectiveBody {
+  padding: 0 32px 32px;
   text-align: center;
-  padding: var(--space-16) var(--space-6);
 }
 
-.emptyIcon { font-size: 52px; margin-bottom: var(--space-4); }
-.emptyTitle { font-family: var(--font-display); font-size: 22px; font-weight: 600; color: var(--text); margin-bottom: var(--space-2); }
-.emptyText { color: var(--text-2); font-size: 14px; max-width: 400px; margin: 0 auto; line-height: 1.7; }
-
-/* ─── ERROR BANNER ──────────────────────────────────────────────── */
-.errorBanner {
-  display: flex; align-items: center; gap: var(--space-3);
-  padding: var(--space-4) var(--space-5);
-  background: var(--error-bg); border: 1px solid rgba(214,69,69,0.15);
-  border-radius: var(--radius-md); margin-bottom: var(--space-6);
-  color: var(--error); font-size: 14px; font-weight: 500;
+.objectiveDays {
+  margin-bottom: 24px;
 }
 
-/* ─── SKELETON ──────────────────────────────────────────────────── */
-.skeleton {
-  border-radius: var(--radius-lg);
-  background: linear-gradient(90deg, var(--surface) 25%, var(--border) 50%, var(--surface) 75%);
-  background-size: 200% 100%;
-  animation: skeletonPulse 1.5s ease-in-out infinite;
+.objectiveDaysNum {
+  display: block;
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--text-1);
+  line-height: 1;
+  letter-spacing: -0.03em;
 }
 
-.skeletonCard { height: 240px; border-radius: var(--radius-lg); }
-.skeletonStats { height: 88px; border-radius: var(--radius-md); }
-
-/* ─── SUBSCRIPTION BANNER ───────────────────────────────────────── */
-.subscriptionBanner {
-  display: flex; align-items: center; gap: var(--space-4);
-  padding: var(--space-5) var(--space-6);
-  background: var(--orange-soft);
-  border: 1px solid rgba(239, 143, 0, 0.25);
-  border-radius: var(--radius-lg);
-  margin-bottom: var(--space-6);
+.objectiveDaysLabel {
+  display: block;
+  font-size: 14px;
+  color: var(--text-2);
+  margin-top: 8px;
 }
 
-.subscriptionBannerIcon { font-size: 26px; flex-shrink: 0; }
-.subscriptionBannerText { flex: 1; }
-.subscriptionBannerTitle { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
-.subscriptionBannerDesc { font-size: 12px; color: var(--text-2); line-height: 1.5; }
-
-.subscriptionBannerBtn {
-  display: inline-flex; align-items: center; gap: var(--space-2);
-  padding: var(--space-2) var(--space-5);
-  background: var(--orange); color: white;
-  border: none; border-radius: var(--radius-sm);
-  font-family: var(--font-ui);
-  font-size: 13px; font-weight: 500;
-  cursor: pointer; white-space: nowrap;
-  transition: background 0.18s, transform 0.18s;
+.objectiveDivider {
+  height: 1px;
+  background: var(--border);
+  margin: 0 auto 24px;
+  width: 60%;
 }
 
-.subscriptionBannerBtn:hover { background: var(--orange-deep); transform: translateY(-1px); }
-
-/* ─── KEYFRAMES ─────────────────────────────────────────────────── */
-@keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(200%); }
+.objectiveDateRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--text-2);
+  font-size: 14px;
+  margin-bottom: 24px;
 }
 
-@keyframes flamePulse {
-  0%, 100% { transform: scale(1) rotate(0deg); }
-  30% { transform: scale(1.1) rotate(-4deg); }
-  60% { transform: scale(1.06) rotate(3deg); }
+.objectiveEmpty {
+  font-size: 14px;
+  color: var(--text-2);
+  margin-bottom: 24px;
+  line-height: 1.5;
 }
 
-@keyframes skeletonPulse {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+/* ══ RANKING — R5: framer-motion spring badge reveal ══ */
+.rankList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-6px); }
-  40% { transform: translateX(6px); }
-  60% { transform: translateX(-4px); }
-  80% { transform: translateX(4px); }
+.rankItem {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  transition: var(--transition);
 }
 
-.cardShake { animation: shake 0.42s var(--ease-out) !important; }
-
-/* ─── CARD SHAKE ────────────────────────────────────────────────── */
-.greetingEmoji {
-  display: inline-block;
+.rankItem:hover {
+  background: #F9FAFB;
+  border-color: rgba(10, 91, 255, 0.12);
 }
 
-/* ─── RESPONSIVE ────────────────────────────────────────────────── */
-@media (max-width: 640px) {
-  .navbar { padding: 0 var(--space-5); }
-  .main { padding: var(--space-6) var(--space-4) var(--space-12); }
-  .header { flex-direction: column; gap: var(--space-4); }
-  .headerText h1 { font-size: var(--text-xl); }
-  .statsBar { grid-template-columns: 1fr; gap: var(--space-3); }
-  .materiaGrid { grid-template-columns: 1fr; gap: var(--space-4); }
-  .streakWeek { gap: var(--space-1); }
-  .weekDay { width: 32px; height: 32px; font-size: 10px; }
+.rankPosition {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid;
 }
 
-@media (min-width: 641px) and (max-width: 900px) {
-  .materiaGrid { grid-template-columns: repeat(2, 1fr); }
+.rankName {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-1);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .progressFill::after,
-  .streakFire,
-  .greetingEmoji { animation: none !important; }
-  .materiaCard:hover, .statCard:hover, .streakWidget:hover { transform: none !important; }
+.rankPct {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+/* ══════════════════════════════════════════
+   MEDIA QUERIES
+══════════════════════════════════════════ */
+@media (max-width: 1100px) {
+  .firstFold {
+    grid-template-columns: 1fr;
+  }
+  .heroGraphic {
+    display: none;
+  }
+  .mainGrid {
+    grid-template-columns: 1fr;
+  }
+  .metricsRow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding: 16px;
+    gap: 24px;
+  }
+  .metricsRow {
+    grid-template-columns: 1fr;
+  }
+  .heroCard, .progressCard, .continueCardInner {
+    padding: 24px;
+  }
+  .continueLeft {
+    max-width: 100%;
+  }
+  .continueCardInner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 24px;
+  }
+  .continueAction .btnPrimary {
+    width: 100%;
+    justify-content: center;
+  }
 }

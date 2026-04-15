@@ -1,0 +1,119 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.widget {
+  background: var(--bg-hover);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  border: 1px solid rgba(0,0,0,0.02);
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-1);
+  margin: 0;
+}
+
+.tagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.trendTag {
+  font-size: 13px;
+  color: var(--blue);
+  background: var(--blue-soft);
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.trendTag:hover {
+  background: var(--blue);
+  color: var(--white);
+}
+
+.userList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--text-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.userName {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.userPoints {
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+/* Question of the Day Widget */
+.qotdWidget {
+  background: linear-gradient(135deg, rgba(6, 51, 153, 0.05) 0%, rgba(6, 51, 153, 0.01) 100%);
+  border: 1px solid rgba(6, 51, 153, 0.1);
+}
+
+.qotdTitle {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--blue);
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.qotdQuestion {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-1);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.qotdBtn {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--blue);
+  text-decoration: none;
+  margin-top: 4px;
+  display: inline-block;
+}
+
+.qotdBtn:hover {
+  text-decoration: underline;
+}

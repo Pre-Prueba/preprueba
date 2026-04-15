@@ -1,0 +1,65 @@
+.communityLayout {
+  display: flex;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-4) 100px;
+  gap: var(--space-6);
+  min-height: 100vh;
+}
+
+/* Esquerda - Nav */
+.leftSidebar {
+  flex: 0 0 240px;
+  position: sticky;
+  top: 80px;
+  height: max-content;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* Centro - Feed Principal */
+.centerFeed {
+  flex: 1;
+  min-width: 0; 
+  /* previne o feed de quebrar o grid se tiver algo largo */
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Direita - Widgets */
+.rightSidebar {
+  flex: 0 0 280px;
+  position: sticky;
+  top: 80px;
+  height: max-content;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+  .rightSidebar {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .communityLayout {
+    flex-direction: column;
+    padding: var(--space-2);
+  }
+
+  .leftSidebar {
+    position: static;
+    flex: none;
+  }
+
+  .centerFeed {
+    max-width: 100%;
+  }
+}

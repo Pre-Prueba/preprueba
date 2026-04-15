@@ -10,7 +10,12 @@ const router = Router();
 
 const iniciarSchema = z.object({
   materiaId: z.string(),
-  totalPreguntas: z.number().int().min(1).max(40).default(10),
+  totalPreguntas: z.number().int().min(1).max(50).default(10),
+  tipo: z.enum(['TEST', 'ABIERTA', 'MIXTO']).optional(),
+  codigo: z.string().optional(),
+  secundaria: z.string().optional(),
+  tema: z.string().optional(),
+  soloNoRespondidas: z.boolean().optional(),
 });
 
 const responderSchema = z.object({
@@ -29,10 +34,14 @@ router.post('/iniciar', requireAuth, requireSubscription, async (req: Request, r
   }
 
   const user = (req as AuthRequest).user;
-  const { materiaId, totalPreguntas } = parsed.data;
+  const { materiaId, totalPreguntas, tipo, codigo, tema, soloNoRespondidas } = parsed.data;
+  const todasLasMaterias = materiaId === 'all';
 
-  const materia = await prisma.materia.findUnique({ where: { id: materiaId } });
-  if (!materia) {
+  const materia = todasLasMaterias
+    ? null
+    : await prisma.materia.findUnique({ where: { id: materiaId } });
+
+  if (!todasLasMaterias && !materia) {
     res.status(404).json({ error: 'Materia no encontrada.' });
     return;
   }
@@ -40,38 +49,126 @@ router.post('/iniciar', requireAuth, requireSubscription, async (req: Request, r
   const reciente = new Date();
   reciente.setDate(reciente.getDate() - 30);
 
-  const respondidas = await prisma.respuestaUsuario.findMany({
-    where: { userId: user.id, pregunta: { materiaId }, createdAt: { gte: reciente } },
+  const preguntaBaseWhere = {
+    activa: true,
+    ...(todasLasMaterias ? {} : { materiaId }),
+    ...(tipo && tipo !== 'MIXTO' ? { tipo } : {}),
+    ...(codigo ? { codigo } : {}),
+    ...(tema ? { tema: { contains: tema, mode: 'insensitive' as const } } : {}),
+  };
+
+  const respondidasRecientes = await prisma.respuestaUsuario.findMany({
+    where: {
+      userId: user.id,
+      createdAt: { gte: reciente },
+      pregunta: todasLasMaterias ? {} : { materiaId },
+    },
     select: { preguntaId: true },
   });
-  const respondidasIds = respondidas.map((r) => r.preguntaId);
-
-  let preguntas = await prisma.pregunta.findMany({
-    where: { materiaId, activa: true, id: { notIn: respondidasIds } },
-    include: { opciones: { orderBy: { orden: 'asc' }, select: { id: true, texto: true, orden: true } } },
+  const respondidasHistoricas = await prisma.respuestaUsuario.findMany({
+    where: {
+      userId: user.id,
+      pregunta: todasLasMaterias ? {} : { materiaId },
+    },
+    select: { preguntaId: true },
+    distinct: ['preguntaId'],
   });
+  const respondidasRecientesIds = respondidasRecientes.map((r) => r.preguntaId);
+  const respondidasHistoricasIds = respondidasHistoricas.map((r) => r.preguntaId);
 
-  if (preguntas.length < totalPreguntas) {
-    const falladas = await prisma.respuestaUsuario.findMany({
-      where: { userId: user.id, pregunta: { materiaId }, esCorrecta: false },
-      select: { preguntaId: true },
-      distinct: ['preguntaId'],
-    });
-    const falladasIds = falladas
-      .map((r) => r.preguntaId)
-      .filter((id) => !preguntas.find((p) => p.id === id));
+  const includeOpciones = {
+    opciones: {
+      orderBy: { orden: 'asc' as const },
+      select: { id: true, texto: true, orden: true },
+    },
+  };
 
-    const extra = await prisma.pregunta.findMany({
-      where: { materiaId, activa: true, id: { in: falladasIds } },
-      include: { opciones: { orderBy: { orden: 'asc' }, select: { id: true, texto: true, orden: true } } },
+  const preguntasSeleccionadas = new Map<string, any>();
+
+  async function agregarPreguntas(where: Record<string, unknown>) {
+    if (preguntasSeleccionadas.size >= totalPreguntas) {
+      return;
+    }
+
+    const candidatas = await prisma.pregunta.findMany({
+      where,
+      include: includeOpciones,
     });
-    preguntas = [...preguntas, ...extra];
+
+    for (const pregunta of candidatas.sort(() => Math.random() - 0.5)) {
+      if (!preguntasSeleccionadas.has(pregunta.id)) {
+        preguntasSeleccionadas.set(pregunta.id, pregunta);
+      }
+
+      if (preguntasSeleccionadas.size >= totalPreguntas) {
+        return;
+      }
+    }
   }
 
-  const shuffled = preguntas.sort(() => Math.random() - 0.5).slice(0, totalPreguntas);
+  if (soloNoRespondidas) {
+    await agregarPreguntas({
+      ...preguntaBaseWhere,
+      id: { notIn: respondidasHistoricasIds },
+    });
+  } else {
+    await agregarPreguntas({
+      ...preguntaBaseWhere,
+      id: { notIn: respondidasRecientesIds },
+    });
+
+    if (preguntasSeleccionadas.size < totalPreguntas) {
+      const falladas = await prisma.respuestaUsuario.findMany({
+        where: {
+          userId: user.id,
+          esCorrecta: false,
+          pregunta: todasLasMaterias ? {} : { materiaId },
+        },
+        select: { preguntaId: true },
+        distinct: ['preguntaId'],
+      });
+      const falladasIds = falladas.map((r) => r.preguntaId);
+
+      if (falladasIds.length > 0) {
+        await agregarPreguntas({
+          ...preguntaBaseWhere,
+          id: { in: falladasIds },
+        });
+      }
+    }
+
+    if (preguntasSeleccionadas.size < totalPreguntas) {
+      await agregarPreguntas(preguntaBaseWhere);
+    }
+  }
+
+  const shuffled = Array.from(preguntasSeleccionadas.values())
+    .sort(() => Math.random() - 0.5)
+    .slice(0, totalPreguntas);
+
+  if (shuffled.length === 0) {
+    res.status(409).json({
+      error: soloNoRespondidas
+        ? 'No quedan preguntas sin responder para esta configuración.'
+        : 'No hay preguntas disponibles para esta configuración.',
+    });
+    return;
+  }
+
+  const materiaSesionId = todasLasMaterias ? shuffled[0]?.materiaId : materia!.id;
+  if (!materiaSesionId) {
+    res.status(409).json({ error: 'No se pudo determinar la materia de la sesión.' });
+    return;
+  }
 
   const sesion = await prisma.sesion.create({
-    data: { userId: user.id, materiaId, totalPreguntas: shuffled.length },
+    data: {
+      userId: user.id,
+      materiaId: materiaSesionId,
+      totalPreguntas: shuffled.length,
+      estado: 'INICIADA',
+      currentIndex: 0,
+    },
   });
 
   res.status(201).json({
@@ -141,7 +238,7 @@ router.post('/:sesionId/responder', requireAuth, requireSubscription, async (req
         opcionId: opcionId ?? null,
         respuestaTexto: respuestaTexto ?? null,
         esCorrecta,
-        feedbackIA: feedback.explicacion,
+        feedbackIA: JSON.stringify(feedback),
         tiempoRespuesta: tiempoRespuesta ?? null,
       },
     }),
@@ -155,7 +252,7 @@ router.post('/:sesionId/responder', requireAuth, requireSubscription, async (req
 
   res.json({
     esCorrecta,
-    feedbackIA: feedback.explicacion,
+    feedback,
     opcionCorrecta: opcionCorrecta ? { id: opcionCorrecta.id, texto: opcionCorrecta.texto } : null,
     sesionProgreso: {
       respondidas,
@@ -180,7 +277,7 @@ router.post('/:sesionId/finalizar', requireAuth, async (req: Request, res: Respo
 
   const sesionFinalizada = await prisma.sesion.update({
     where: { id: sesionId },
-    data: { completada: true, duracionSegundos },
+    data: { completada: true, estado: 'FINALIZADA', duracionSegundos },
   });
 
   res.json({
@@ -191,6 +288,80 @@ router.post('/:sesionId/finalizar', requireAuth, async (req: Request, res: Respo
     duracionSegundos,
     materiaId: sesion.materiaId,
   });
+});
+
+// GET /sesiones/historial - Lista de sesiones concluidas
+router.get('/historial', requireAuth, async (req: Request, res: Response): Promise<void> => {
+  const user = (req as AuthRequest).user;
+
+  const sesiones = await prisma.sesion.findMany({
+    where: { userId: user.id, completada: true },
+    include: { materia: { select: { nombre: true } } },
+    orderBy: { createdAt: 'desc' },
+    take: 50,
+  });
+
+  res.json(sesiones);
+});
+
+// GET /sesiones/:sesionId/detalles - Detalle de una sesión con feedbacks
+router.get('/:sesionId/detalles', requireAuth, async (req: Request, res: Response): Promise<void> => {
+  const user = (req as AuthRequest).user;
+  const sesionId = String(req.params['sesionId']);
+
+  const sesion = await prisma.sesion.findUnique({
+    where: { id: sesionId },
+    include: {
+      materia: { select: { nombre: true } },
+      respuestas: {
+        include: {
+          pregunta: {
+            include: { opciones: { select: { id: true, texto: true, esCorrecta: true } } },
+          },
+        },
+        orderBy: { createdAt: 'asc' },
+      },
+    },
+  });
+
+  if (!sesion || sesion.userId !== user.id) {
+    res.status(404).json({ error: 'Sesión no encontrada.' });
+    return;
+  }
+
+  res.json(sesion);
+});
+
+const pausarSchema = z.object({
+  currentIndex: z.number().int().min(0),
+});
+
+// POST /sesiones/:sesionId/pausar
+router.post('/:sesionId/pausar', requireAuth, async (req: Request, res: Response): Promise<void> => {
+  const parsed = pausarSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.errors[0].message });
+    return;
+  }
+
+  const user = (req as AuthRequest).user;
+  const sesionId = String(req.params['sesionId']);
+  const { currentIndex } = parsed.data;
+
+  const sesion = await prisma.sesion.findUnique({ where: { id: sesionId } });
+  if (!sesion || sesion.userId !== user.id) {
+    res.status(404).json({ error: 'Esta sesión no existe.' });
+    return;
+  }
+
+  const duracionSegundos = Math.floor((Date.now() - sesion.createdAt.getTime()) / 1000);
+
+  const sesionPausada = await prisma.sesion.update({
+    where: { id: sesionId },
+    data: { estado: 'PAUSADA', currentIndex, duracionSegundos },
+  });
+
+  res.json({ success: true, estado: sesionPausada.estado });
 });
 
 export default router;

@@ -20,12 +20,6 @@ const PRUEBA_OPTIONS = [
     sub: 'Sin materias específicas, enfocado en competencias',
     testId: 'prueba-mayores-40',
   },
-  {
-    value: 'MAYORES_45',
-    label: 'Mayores de 45',
-    sub: 'Solo entrevista personal y prueba escrita',
-    testId: 'prueba-mayores-45',
-  },
 ];
 
 const CCAA = [
@@ -100,9 +94,10 @@ export function OnboardingPage() {
       <div style={{ width: '100%', maxWidth: '540px' }}>
 
         {/* Logo */}
-        <div style={{ textAlign: 'center', marginBottom: '8px' }}>
-          <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '20px', color: 'var(--text)' }}>
-            prep<span style={{ color: 'var(--blue)' }}>prueba</span>
+        <div style={{ textAlign: 'center', marginBottom: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+          <img src="/1.svg" width={48} height={48} alt="Preprueba" style={{ borderRadius: '8px' }} />
+          <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '20px', color: 'var(--pp-blue)' }}>
+            prep<span style={{ color: 'var(--pp-orange)' }}>prueba</span>
           </span>
         </div>
 

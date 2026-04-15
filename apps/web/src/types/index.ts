@@ -6,6 +6,12 @@ export interface User {
   comunidad: string | null;
   onboardingDone: boolean;
   role: 'USER' | 'ADMIN';
+  fechaExamen?: string;
+  avatarUrl?: string;
+  phone?: string;
+  provincia?: string;
+  bio?: string;
+  pais?: string;
 }
 
 export interface Subscription {
@@ -47,7 +53,12 @@ export interface SesionIniciada {
 
 export interface RespuestaResult {
   esCorrecta: boolean;
-  feedbackIA: string;
+  feedback: {
+    correcta: boolean;
+    conceptos: string;
+    explicacion: string;
+    valoracion: string;
+  };
   opcionCorrecta: { id: string; texto: string } | null;
   sesionProgreso: {
     respondidas: number;
@@ -78,3 +89,34 @@ export interface StatsResumen {
     tendencia: 'mejorando' | 'estable' | 'bajando';
   }[];
 }
+
+export interface ForumPost {
+  id: string;
+  userId: string;
+  materiaId: string | null;
+  titulo: string;
+  contenido: string;
+  likesCount: number;
+  isSolved: boolean;
+  acceptedCommentId: string | null;
+  quotePostId: string | null;
+  createdAt: string;
+  user: { id: string; nombre: string };
+  materia: { id: string; nombre: string } | null;
+  quotePost: ForumPost | null;
+  _count?: { comments: number };
+  comments?: ForumComment[];
+}
+
+export interface ForumComment {
+  id: string;
+  postId: string;
+  userId: string;
+  contenido: string;
+  likesCount: number;
+  isAccepted: boolean;
+  createdAt: string;
+  user: { id: string; nombre: string };
+}
+
+export * from './community';

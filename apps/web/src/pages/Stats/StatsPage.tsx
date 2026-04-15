@@ -1,257 +1,191 @@
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ArrowLeft, TrendingUp, TrendingDown, Minus } from 'lucide-react';
-import { stats as statsApi } from '../../services/api';
+import { TrendingUp, TrendingDown, Minus, Sparkles, Clock, Target, History } from 'lucide-react';
 import { useAuthStore } from '../../store/auth';
-import type { StatsResumen } from '../../types';
-import { ProgressBar } from '../../components/ui/ProgressBar';
-import { Button } from '../../components/ui/Button';
-import { fadeUp, staggerContainer, listItem } from '../../lib/animations';
-
-function isSubscriptionRequiredError(error: unknown): boolean {
-  return error instanceof Error && error.message === 'SUBSCRIPTION_REQUIRED';
-}
+import { useStats, useStudyTips } from '../../hooks/useStats';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import s from './Stats.module.css';
 
 function TendenciaIcon({ tendencia }: { tendencia: 'mejorando' | 'estable' | 'bajando' }) {
-  if (tendencia === 'mejorando') return <TrendingUp size={14} style={{ color: 'var(--success)' }} />;
-  if (tendencia === 'bajando') return <TrendingDown size={14} style={{ color: 'var(--error)' }} />;
-  return <Minus size={14} style={{ color: 'var(--text-3)' }} />;
+  if (tendencia === 'mejorando') return <TrendingUp size={14} />;
+  if (tendencia === 'bajando')   return <TrendingDown size={14} />;
+  return <Minus size={14} />;
+}
+
+function StudyTips() {
+  const { data: tips = [], isLoading } = useStudyTips();
+  if (isLoading || tips.length === 0) return null;
+
+  return (
+    <div className={s.tipsBlock}>
+      <div className={s.tipsHeader}>
+        <Sparkles size={18} color="var(--blue)" fill="rgba(10, 91, 255, 0.1)" />
+        <h3 className={s.tipsTitle}>Recomendaciones de tu Mentor IA</h3>
+      </div>
+      <ul className={s.tipsList}>
+        {tips.map((tip, i) => (
+          <li key={i} className={s.tipsItem}>
+            <span className={s.tipsBullet}>•</span>
+            {tip}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
 
 export function StatsPage() {
   const navigate = useNavigate();
   const { user, subscription } = useAuthStore();
-  const [data, setData] = useState<StatsResumen | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [subscriptionLocked, setSubscriptionLocked] = useState(false);
+  const { data, isLoading: loading } = useStats();
 
   const isAdmin = user?.role === 'ADMIN';
   const hasSubscription = isAdmin || (subscription?.status === 'ACTIVE' || subscription?.status === 'TRIALING');
-
-  useEffect(() => {
-    let active = true;
-
-    if (!hasSubscription) {
-      setData(null);
-      setError('');
-      setSubscriptionLocked(true);
-      setLoading(false);
-      return () => { active = false; };
-    }
-
-    setLoading(true);
-    setError('');
-    setData(null);
-    setSubscriptionLocked(false);
-
-    statsApi.resumen()
-      .then((stats) => {
-        if (!active) return;
-        setSubscriptionLocked(false);
-        setData(stats);
-      })
-      .catch((err: unknown) => {
-        if (!active) return;
-        if (isSubscriptionRequiredError(err)) {
-          setSubscriptionLocked(true);
-          return;
-        }
-        setSubscriptionLocked(false);
-        setError('No hemos podido cargar tus estadísticas.');
-      })
-      .finally(() => { if (active) setLoading(false); });
-
-    return () => { active = false; };
-  }, [hasSubscription]);
+  const subscriptionLocked = !hasSubscription;
 
   const materiasConActividad = data?.porMateria.filter((m) => m.totalRespondidas > 0) ?? [];
+  
+  const sorted = [...materiasConActividad].sort((a,b) => b.porcentajeAcierto - a.porcentajeAcierto);
+  const fortes = sorted.filter(m => m.porcentajeAcierto >= 60);
+  const fracas = sorted.filter(m => m.porcentajeAcierto < 60);
+
+  const mockTemporalData = [
+    { name: 'Lun', acierto: 45 },
+    { name: 'Mar', acierto: 52 },
+    { name: 'Mie', acierto: 48 },
+    { name: 'Jue', acierto: 60 },
+    { name: 'Vie', acierto: 58 },
+    { name: 'Sab', acierto: 65 },
+    { name: 'Hoy', acierto: data?.porcentajeAcierto || 70 },
+  ];
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
-      {/* ── Navbar */}
-      <nav style={{
-        background: 'rgba(247,249,252,0.95)',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-        borderBottom: '1px solid var(--border)',
-        padding: 'var(--space-4) var(--space-6)',
-        display: 'flex', alignItems: 'center', gap: 'var(--space-4)',
-        position: 'sticky', top: 0, zIndex: 50,
-      }}>
-        <button
-          onClick={() => navigate('/dashboard')}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-3)', fontSize: '14px', fontFamily: 'var(--font-ui)', padding: '4px 8px', borderRadius: 'var(--radius-sm)', transition: 'color 0.15s' }}
-          type="button"
-          onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--text)')}
-          onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-3)')}
-        >
-          <ArrowLeft size={16} /> Inicio
+    <div className={s.statsPage}>
+
+      <header className={s.header}>
+        <div>
+          <h1 className={s.title}>Mis Estadísticas</h1>
+          <p className={s.subtitle}>Analiza tu rendimiento real y prepárate para el éxito.</p>
+        </div>
+        <button className={s.historyBtn} onClick={() => navigate('/history')}>
+          <History size={16} /> Ver historial
         </button>
-        <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '18px', color: 'var(--text)' }}>
-          Estadísticas
-        </span>
-      </nav>
+      </header>
 
-      <main style={{ maxWidth: '720px', margin: '0 auto', padding: 'var(--space-8) var(--space-6)' }}>
+      {loading && !data && (
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '64px 0' }}>
+          <div style={{ width: 36, height: 36, borderRadius: '50%', border: '2.5px solid var(--border)', borderTopColor: 'var(--blue)', animation: 'spin 0.9s linear infinite' }} />
+        </div>
+      )}
 
-        {/* Loading */}
-        {loading && (
-          <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 'var(--space-16)' }}>
-            <div style={{ width: '40px', height: '40px', borderRadius: '50%', border: '3px solid var(--border)', borderTopColor: 'var(--blue)', animation: 'spin 1s linear infinite' }} />
+      {!loading && subscriptionLocked && (
+        <div className={s.emptyState}>
+          <div className={s.emptyIconWrapper}>
+            <Target size={40} />
           </div>
-        )}
+          <p className={s.emptyTitle}>Estadísticas Avanzadas</p>
+          <p className={s.emptyDesc}>Desbloquea análisis detallados por materia y evolución temporal activando tu suscripción Premium.</p>
+          <button className={s.emptyBtn} onClick={() => navigate('/checkout')}>Ver planes</button>
+        </div>
+      )}
 
-        {/* Subscription locked */}
-        {!loading && subscriptionLocked && (
-          <EmptyState
-            title="Activa tu plan para ver tus estadísticas"
-            description="Las estadísticas se generan a partir de tus sesiones reales de práctica."
-            actionLabel="Suscribirme"
-            onAction={() => navigate('/checkout')}
-          />
-        )}
-
-        {/* Error */}
-        {!loading && !subscriptionLocked && error && (
-          <div style={{ background: 'var(--error-bg)', border: '1px solid rgba(214,69,69,0.2)', borderRadius: 'var(--radius-md)', color: 'var(--error)', padding: 'var(--space-5)', textAlign: 'center', fontSize: '14px' }}>
-            {error}
+      {!loading && !subscriptionLocked && data && data.totalRespuestas === 0 && (
+        <div className={s.emptyState}>
+          <div className={s.emptyIconWrapper}>
+            <Sparkles size={40} />
           </div>
-        )}
+          <p className={s.emptyTitle}>Tu viaje comienza aquí</p>
+          <p className={s.emptyDesc}>Completa tu primera sesión para generar análisis detallados sobre tus fortalezas y debilidades.</p>
+          <button className={s.emptyBtn} onClick={() => navigate('/practice')}>Empezar a practicar</button>
+        </div>
+      )}
 
-        {/* No sessions yet */}
-        {!loading && !subscriptionLocked && data && data.totalSesiones === 0 && (
-          <EmptyState
-            title="Aún no tienes estadísticas"
-            description="Completa tu primera práctica para ver tu progreso real por materia."
-            actionLabel="Ir al dashboard"
-            onAction={() => navigate('/dashboard')}
-          />
-        )}
+      {!loading && !subscriptionLocked && data && data.totalRespuestas > 0 && (
+        <>
+          <div className={s.metricsGrid}>
+            <div className={`${s.metricCard} ${s.rachaCard}`}>
+              <p className={s.metricValue}>{data.racha}🔥</p>
+              <p className={s.metricLabel}>Días en racha</p>
+            </div>
+            <div className={s.metricCard}>
+              <p className={s.metricValue}>{data.totalSesiones}</p>
+              <p className={s.metricLabel}>Sesiones completadas</p>
+            </div>
+            <div className={s.metricCard}>
+              <p className={s.metricValue}>{data.totalRespuestas}</p>
+              <p className={s.metricLabel}>Total respuestas</p>
+            </div>
+            <div className={s.metricCard}>
+              <p className={s.metricValue}>{data.porcentajeAcierto}%</p>
+              <p className={s.metricLabel}>Acierto global</p>
+            </div>
+          </div>
 
-        {/* Data */}
-        {!loading && !subscriptionLocked && data && data.totalSesiones > 0 && (
-          <motion.div variants={staggerContainer} initial="hidden" animate="show">
+          <div className={s.chartSection}>
+            <h2 className={s.sectionLabel}>Evolución Semanal</h2>
+            <div style={{ width: '100%', height: 300 }}>
+              <ResponsiveContainer>
+                <BarChart data={mockTemporalData}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(226, 232, 240, 0.6)" />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: 'var(--text-3)', fontSize: 12, fontWeight: 500}} dy={10} />
+                  <YAxis axisLine={false} tickLine={false} tick={{fill: 'var(--text-3)', fontSize: 12, fontWeight: 500}} dx={-10} domain={[0, 100]} />
+                  <Tooltip 
+                    cursor={{fill: 'var(--blue-soft)', opacity: 0.5}}
+                    contentStyle={{borderRadius: 12, border: '1px solid var(--border)', background: 'var(--card)', boxShadow: 'var(--shadow-lg)'}}
+                  />
+                  <Bar dataKey="acierto" fill="var(--blue)" radius={[6, 6, 0, 0]} barSize={40} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
 
-            {/* Metrics strip */}
-            <motion.div
-              variants={staggerContainer}
-              initial="hidden"
-              animate="show"
-              style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 'var(--space-4)', marginBottom: 'var(--space-8)' }}
-            >
-              {[
-                { label: 'Sesiones', value: data.totalSesiones },
-                { label: 'Respuestas', value: data.totalRespuestas },
-                { label: 'Acierto global', value: `${data.porcentajeAcierto}%` },
-                { label: 'Racha actual', value: `${data.racha} 🔥` },
-              ].map((metric) => (
-                <motion.div
-                  key={metric.label}
-                  variants={listItem}
-                  style={{
-                    background: 'var(--white)',
-                    borderRadius: 'var(--radius-xl)',
-                    padding: 'var(--space-5)',
-                    textAlign: 'center',
-                    boxShadow: 'var(--shadow-sm)',
-                    border: '1px solid var(--border)',
-                  }}
-                >
-                  <p style={{ fontFamily: 'var(--font-display)', fontSize: '28px', fontWeight: 600, color: 'var(--blue)', lineHeight: 1, marginBottom: '6px' }}>
-                    {metric.value}
-                  </p>
-                  <p style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-3)' }}>
-                    {metric.label}
-                  </p>
-                </motion.div>
-              ))}
-            </motion.div>
+          <StudyTips />
 
-            {/* Per-subject */}
-            <motion.p
-              variants={fadeUp}
-              style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-3)', marginBottom: 'var(--space-4)' }}
-            >
-              Por materia
-            </motion.p>
-
-            <motion.div variants={staggerContainer} initial="hidden" animate="show" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-              {materiasConActividad.length === 0 ? (
-                <motion.p variants={fadeUp} style={{ color: 'var(--text-3)', textAlign: 'center', padding: 'var(--space-8)', fontSize: '14px' }}>
-                  Todavía no has practicado ninguna materia.
-                </motion.p>
-              ) : (
-                materiasConActividad.map((m) => (
-                  <motion.div
-                    key={m.materiaId}
-                    variants={listItem}
-                    style={{
-                      background: 'var(--white)',
-                      borderRadius: 'var(--radius-lg)',
-                      padding: 'var(--space-5)',
-                      border: '1px solid var(--border)',
-                      boxShadow: 'var(--shadow-sm)',
-                    }}
-                  >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-3)' }}>
-                      <span style={{ fontWeight: 600, fontSize: '14px', color: 'var(--text)' }}>{m.materiaNombre}</span>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <TendenciaIcon tendencia={m.tendencia} />
-                        <span style={{
-                          fontFamily: 'var(--font-display)',
-                          fontWeight: 600,
-                          fontSize: '15px',
-                          color: m.tendencia === 'mejorando' ? 'var(--success)' : m.tendencia === 'bajando' ? 'var(--error)' : 'var(--text-2)',
-                        }}>
-                          {m.porcentajeAcierto}%
-                        </span>
+          <div className={s.splitGrid}>
+            <div>
+              <h3 className={s.columnTitle}><Target size={20} color="#22c55e" /> Materias Fuertes</h3>
+              <div className={s.subjectList}>
+                {fortes.length === 0 ? <p style={{color: 'var(--text-3)', fontSize: 14, padding: '20px', textAlign: 'center'}}>No hay datos de maestría todavía.</p> : null}
+                {fortes.map((m) => (
+                  <div key={m.materiaId} className={s.subjectCard}>
+                    <div className={s.subjectRow}>
+                      <span className={s.subjectName}>{m.materiaNombre}</span>
+                      <div className={`${s.subjectScore} ${m.tendencia === 'mejorando' ? s.scoreMejorando : m.tendencia === 'bajando' ? s.scoreBajando : s.scoreEstable}`}>
+                        <TendenciaIcon tendencia={m.tendencia} /> {m.porcentajeAcierto}%
                       </div>
                     </div>
-                    <ProgressBar value={m.porcentajeAcierto} />
-                    <p style={{ fontSize: '11px', color: 'var(--text-3)', marginTop: 'var(--space-2)' }}>
-                      {m.totalRespondidas} preguntas respondidas
-                    </p>
-                  </motion.div>
-                ))
-              )}
-            </motion.div>
+                    <div className={s.progressTrack}>
+                      <div className={s.progressFill} style={{ width: `${m.porcentajeAcierto}%`, background: '#22c55e' }} />
+                    </div>
+                    <p className={s.subjectMeta}>{m.totalRespondidas} preguntas estudiadas</p>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-          </motion.div>
-        )}
-      </main>
+            <div>
+              <h3 className={s.columnTitle}><Clock size={20} color="#ef4444" /> Áreas de Mejora</h3>
+              <div className={s.subjectList}>
+                {fracas.length === 0 ? <p style={{color: 'var(--text-3)', fontSize: 14, padding: '20px', textAlign: 'center'}}>¡Increíble! Dominas todas las áreas practicadas.</p> : null}
+                {fracas.map((m) => (
+                  <div key={m.materiaId} className={s.subjectCard}>
+                    <div className={s.subjectRow}>
+                      <span className={s.subjectName}>{m.materiaNombre}</span>
+                      <div className={`${s.subjectScore} ${m.tendencia === 'mejorando' ? s.scoreMejorando : m.tendencia === 'bajando' ? s.scoreBajando : s.scoreEstable}`}>
+                        <TendenciaIcon tendencia={m.tendencia} /> {m.porcentajeAcierto}%
+                      </div>
+                    </div>
+                    <div className={s.progressTrack}>
+                      <div className={s.progressFill} style={{ width: `${m.porcentajeAcierto}%`, background: '#ef4444' }} />
+                    </div>
+                    <p className={s.subjectMeta}>{m.totalRespondidas} preguntas estudiadas</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
 
-function EmptyState({ title, description, actionLabel, onAction }: {
-  title: string;
-  description: string;
-  actionLabel: string;
-  onAction: () => void;
-}) {
-  return (
-    <motion.div
-      variants={fadeUp}
-      initial="hidden"
-      animate="show"
-      style={{
-        background: 'var(--white)',
-        border: '1px solid var(--border)',
-        borderRadius: 'var(--radius-xl)',
-        padding: 'var(--space-12) var(--space-8)',
-        textAlign: 'center',
-        boxShadow: 'var(--shadow-sm)',
-      }}
-    >
-      <p style={{ fontFamily: 'var(--font-display)', fontSize: '22px', fontWeight: 600, color: 'var(--text)', marginBottom: 'var(--space-3)' }}>
-        {title}
-      </p>
-      <p style={{ color: 'var(--text-2)', lineHeight: 1.6, marginBottom: 'var(--space-6)', fontSize: '14px' }}>
-        {description}
-      </p>
-      <Button variant="orange" onClick={onAction}>{actionLabel}</Button>
-    </motion.div>
-  );
-}

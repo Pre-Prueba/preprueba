@@ -1,15 +1,40 @@
 import { useEffect, useState, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Sparkles, CheckCircle, XCircle } from 'lucide-react';
-import { sesiones as sesionesApi } from '../../services/api';
+import { X, Sparkles, CheckCircle, XCircle, Lightbulb, TrendingUp, Timer as TimerIcon, Star } from 'lucide-react';
+import { sesiones as sesionesApi, favoritos as favoritosApi } from '../../services/api';
+import { broadcastUpdate } from '../../lib/queryClient';
 import type { Pregunta, RespuestaResult, SesionFinalizada } from '../../types';
 import { Button } from '../../components/ui/Button';
 import { ProgressBar } from '../../components/ui/ProgressBar';
 import { fadeUp, staggerContainer, slideInRight } from '../../lib/animations';
-import s from './Practice.module.css';
+import s from './PracticeSession.module.css';
 
-type PracticeState = 'loading' | 'question' | 'feedback' | 'result';
+type PracticeState = 'loading' | 'question' | 'feedback' | 'milestone_feedback' | 'result';
+
+function formatDuration(seconds: number) {
+  const totalSeconds = Math.max(seconds, 0);
+  const hours = Math.floor(totalSeconds / 3600);
+  const mins = Math.floor((totalSeconds % 3600) / 60);
+  const secs = totalSeconds % 60;
+
+  if (hours > 0) {
+    return `${hours}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  }
+
+  return `${mins}:${secs.toString().padStart(2, '0')}`;
+}
+
+function Timer({ seconds, countdown }: { seconds: number; countdown: boolean }) {
+  const timerLabel = formatDuration(seconds);
+
+  return (
+    <div className={s.timer}>
+      <TimerIcon size={14} aria-hidden="true" />
+      <span>{countdown ? timerLabel : timerLabel}</span>
+    </div>
+  );
+}
 
 const LETTERS = ['A', 'B', 'C', 'D', 'E'];
 
@@ -36,6 +61,21 @@ function isSubscriptionRequiredError(error: unknown): boolean {
 export function PracticePage() {
   const { materiaId } = useParams<{ materiaId: string }>();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const search = searchParams.toString();
+  const isExamMode =
+    searchParams.get('examMode') === 'true' ||
+    searchParams.get('simulado') === 'true' ||
+    searchParams.get('simulacro') === 'true';
+  const hasTimer =
+    searchParams.get('timer') === 'true' ||
+    isExamMode ||
+    searchParams.has('duracion');
+  const durationSecondsParam = Number(searchParams.get('duracion') ?? '');
+  const durationSeconds = Number.isFinite(durationSecondsParam) && durationSecondsParam > 0
+    ? durationSecondsParam
+    : null;
+  const soloNoRespondidas = searchParams.get('soloNoRespondidas') === 'true';
 
   const [state, setState] = useState<PracticeState>('loading');
   const [sesionId, setSesionId] = useState('');
@@ -43,39 +83,129 @@ export function PracticePage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOpcion, setSelectedOpcion] = useState<string | null>(null);
   const [respuestaTexto, setRespuestaTexto] = useState('');
-  const [feedback, setFeedback] = useState<RespuestaResult | null>(null);
+  const [feedbacks, setFeedbacks] = useState<Record<number, RespuestaResult>>({});
   const [resultado, setResultado] = useState<SesionFinalizada | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [showExitModal, setShowExitModal] = useState(false);
+  const [favoritados, setFavoritados] = useState<Set<string>>(new Set());
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const startTime = useRef<number>(Date.now());
+  const sessionRequestRef = useRef<{ key: string; promise: ReturnType<typeof sesionesApi.iniciar> } | null>(null);
+  const finalizingRef = useRef(false);
+  const timerExpiredRef = useRef(false);
+
+  async function toggleFavorito(preguntaId: string) {
+    if (favoritados.has(preguntaId)) {
+      await favoritosApi.remove(preguntaId).catch(() => {});
+      setFavoritados((prev) => { const s = new Set(prev); s.delete(preguntaId); return s; });
+    } else {
+      await favoritosApi.add(preguntaId).catch(() => {});
+      setFavoritados((prev) => new Set(prev).add(preguntaId));
+    }
+  }
+
+  // Derive current feedback
+  const feedback = feedbacks[currentIndex] || null;
+
+  useEffect(() => {
+    document.title = isExamMode ? 'Sesión de examen | Preprueba' : 'Sesión de práctica | Preprueba';
+  }, [isExamMode]);
 
   useEffect(() => {
     if (!materiaId) return;
-    let cancelled = false;
+    const sessionKey = `${materiaId}|${search}`;
+    let ignore = false;
 
     async function cargar() {
       try {
-        const data = await sesionesApi.iniciar(materiaId!);
-        if (cancelled) return;
+        const currentParams = new URLSearchParams(search);
+        const tipo = currentParams.get('tipo') || undefined;
+        const codigo = currentParams.get('codigo') || undefined;
+        const paramTotal = currentParams.get('totalPreguntas') ?? currentParams.get('total');
+        const totalPreguntas = paramTotal ? parseInt(paramTotal, 10) : (isExamMode ? 25 : 10);
+
+        if (sessionRequestRef.current?.key !== sessionKey) {
+          sessionRequestRef.current = {
+            key: sessionKey,
+            promise: sesionesApi.iniciar(materiaId!, {
+              tipo,
+              codigo,
+              totalPreguntas,
+              soloNoRespondidas,
+            }),
+          };
+        }
+
+        const data = await sessionRequestRef.current.promise;
+        if (ignore) return;
+
+        if (data.preguntas.length === 0) {
+          setError('No hay preguntas disponibles para esta configuración.');
+          return;
+        }
+
         setSesionId(data.sesionId);
         setPreguntas(data.preguntas);
+        setElapsedSeconds(0);
+        timerExpiredRef.current = false;
+        startTime.current = Date.now();
         setState('question');
       } catch (err) {
-        if (cancelled) return;
+        if (ignore) return;
         if (isSubscriptionRequiredError(err)) {
           navigate('/checkout', { replace: true });
           return;
         }
-        setError('No se pudo cargar la práctica. Inténtalo de nuevo.');
+
+        setError(err instanceof Error ? err.message : 'No se pudo cargar la práctica. Inténtalo de nuevo.');
       }
     }
 
     cargar();
-    return () => { cancelled = true; };
-  }, [materiaId, navigate]);
+    return () => { ignore = true; };
+  }, [materiaId, navigate, search, isExamMode, soloNoRespondidas]);
+
+  useEffect(() => {
+    if (!hasTimer || state === 'loading' || state === 'result' || !sesionId) return;
+
+    const interval = window.setInterval(() => {
+      setElapsedSeconds((seconds) => seconds + 1);
+    }, 1000);
+
+    return () => window.clearInterval(interval);
+  }, [hasTimer, sesionId, state]);
+
+  const timerValue = durationSeconds !== null
+    ? Math.max(durationSeconds - elapsedSeconds, 0)
+    : elapsedSeconds;
+  const isCountdown = durationSeconds !== null;
 
   const currentPregunta = preguntas[currentIndex];
   const progress = preguntas.length > 0 ? (currentIndex / preguntas.length) * 100 : 0;
+
+  async function finalizarSesion() {
+    if (!sesionId || finalizingRef.current) return;
+
+    finalizingRef.current = true;
+    try {
+      const result = await sesionesApi.finalizar(sesionId);
+      setResultado(result);
+      setState('result');
+      broadcastUpdate();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al finalizar la sesión. Inténtalo de nuevo.');
+      finalizingRef.current = false;
+    }
+  }
+
+  useEffect(() => {
+    if (!isCountdown || state === 'loading' || state === 'result') return;
+    if (timerValue > 0 || timerExpiredRef.current) return;
+
+    timerExpiredRef.current = true;
+    void finalizarSesion();
+  }, [isCountdown, state, timerValue]);
 
   async function handleResponder() {
     if (!currentPregunta || submitting) return;
@@ -89,8 +219,11 @@ export function PracticePage() {
         respuestaTexto: currentPregunta.tipo === 'ABIERTA' ? respuestaTexto : undefined,
         tiempoRespuesta,
       });
-      setFeedback(result);
+      setFeedbacks(prev => ({ ...prev, [currentIndex]: result }));
       setState('feedback');
+      
+      // 2025 Standard: Broadcast update to other tabs for real-time sync (Option B)
+      broadcastUpdate();
     } catch {
       setError('Error al corregir la respuesta. Inténtalo de nuevo.');
     } finally {
@@ -100,20 +233,44 @@ export function PracticePage() {
 
   async function handleSiguiente() {
     if (currentIndex + 1 >= preguntas.length) {
-      try {
-        const result = await sesionesApi.finalizar(sesionId);
-        setResultado(result);
-        setState('result');
-      } catch {
-        setError('Error al finalizar la sesión. Inténtalo de nuevo.');
-      }
+      await finalizarSesion();
     } else {
-      setCurrentIndex((i) => i + 1);
-      setSelectedOpcion(null);
-      setRespuestaTexto('');
-      setFeedback(null);
-      startTime.current = Date.now();
-      setState('question');
+      if ((currentIndex + 1) % 5 === 0) {
+        setState('milestone_feedback');
+        return;
+      }
+      avanzarPregunta();
+    }
+  }
+
+  function avanzarPregunta() {
+    setCurrentIndex((i) => i + 1);
+    setSelectedOpcion(null);
+    setRespuestaTexto('');
+    startTime.current = Date.now();
+    setState(feedbacks[currentIndex + 1] ? 'feedback' : 'question');
+  }
+
+  function handleContinueMilestone() {
+    avanzarPregunta();
+  }
+
+  async function confirmExit() {
+    try {
+      if (sesionId && currentIndex > 0) {
+         await sesionesApi.pausar(sesionId, currentIndex);
+         broadcastUpdate();
+      }
+    } catch(err) {
+      console.error('Failed to pause', err);
+    }
+    navigate('/dashboard');
+  }
+
+  function handleAnterior() {
+    if (currentIndex > 0) {
+      setCurrentIndex((i) => i - 1);
+      setState('feedback'); // Anterior is always answered in this session
     }
   }
 
@@ -122,7 +279,7 @@ export function PracticePage() {
     return (
       <div className={s.loadingContainer}>
         <p style={{ color: 'var(--error)', marginBottom: '16px' }}>{error}</p>
-        <Button onClick={() => navigate('/dashboard')}>Volver al inicio</Button>
+        <Button onClick={() => navigate('/practice')}>Volver a practicar</Button>
       </div>
     );
   }
@@ -187,21 +344,49 @@ export function PracticePage() {
 
   if (!currentPregunta) return null;
 
+  const renderExitModal = () => {
+    if (!showExitModal) return null;
+    return (
+      <div className={s.modalOverlay}>
+        <div
+          className={s.modalContent}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="practice-exit-title"
+          aria-describedby="practice-exit-description"
+        >
+          <h2 className={s.modalTitle} id="practice-exit-title">¿Seguro que quieres salir?</h2>
+          <p className={s.modalText} id="practice-exit-description">
+             Estás a punto de abandonar la sesión. Llevas {currentIndex} preguntas respondidas.<br />
+             Se guardará tu progreso para que puedas continuar luego.
+          </p>
+          <div className={s.modalActions}>
+            <Button variant="secondary" onClick={() => setShowExitModal(false)} fullWidth>Volver a la práctica</Button>
+            <Button variant="ghost" onClick={confirmExit} fullWidth>Salir y guardar</Button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className={s.pageContainer}>
+      {renderExitModal()}
       {/* ── Header */}
       <header className={s.header}>
         <div className={s.headerContent}>
           <div className={s.headerInfo}>
-            <span className={s.headerTitle}>Práctica</span>
-            <span className={s.headerCount}>{currentIndex + 1} / {preguntas.length}</span>
+            <span className={s.headerTitle}>{isExamMode ? 'Simulado Final' : 'Práctica'}</span>
+            <span className={s.headerCount}>{currentIndex + 1} de {preguntas.length}</span>
+            {hasTimer && state !== 'result' && <Timer seconds={timerValue} countdown={isCountdown} />}
             <button
               className={s.headerExit}
-              onClick={() => navigate('/dashboard')}
+              onClick={() => setShowExitModal(true)}
               title="Salir"
               type="button"
+              aria-label="Salir de la sesión"
             >
-              <X size={18} />
+              <X size={18} aria-hidden="true" />
             </button>
           </div>
           <ProgressBar value={progress} />
@@ -343,19 +528,101 @@ export function PracticePage() {
                       <div>
                         <p className={s.feedbackBlockTitle}>Explicación</p>
                         <p className={s.feedbackBlockSubtitle}>
-                          {feedback.esCorrecta ? '¡Correcto! Te cuento el por qué.' : 'No pasa nada. Te lo explico rápido.'}
+                          {feedback.esCorrecta ? '¡Correcto! Te cuento el por qué.' : 'Verifica los detalles.'}
                         </p>
                       </div>
                     </div>
-                    <p className={s.feedbackText}>{feedback.feedbackIA}</p>
+                    <p className={s.feedbackText}>{feedback.feedback.explicacion}</p>
+                    
+                    <div className={s.feedbackGrid}>
+                      <div className={s.feedbackCard}>
+                        <div className={s.feedbackCardTitle}><Lightbulb size={14}/> Conceptos Clave</div>
+                        <p className={s.feedbackText} style={{fontSize: '13px'}}>{feedback.feedback.conceptos}</p>
+                      </div>
+                      <div className={s.feedbackCard}>
+                        <div className={s.feedbackCardTitle}><TrendingUp size={14}/> Valoración</div>
+                        <p className={s.feedbackText} style={{fontSize: '13px'}}>{feedback.feedback.valoracion}</p>
+                      </div>
+                    </div>
                   </motion.div>
 
-                  <motion.div variants={fadeUp} className={s.actionArea}>
+                  {/* Botón favoritar */}
+                  {preguntas[currentIndex] && (
+                    <motion.div variants={fadeUp} style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px' }}>
+                      <button
+                        onClick={() => toggleFavorito(preguntas[currentIndex].id)}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          padding: '6px 12px',
+                          background: 'transparent',
+                          border: '1px solid var(--border-color)',
+                          borderRadius: 'var(--radius-md)',
+                          color: favoritados.has(preguntas[currentIndex].id) ? 'var(--orange)' : 'var(--text-2)',
+                          fontSize: 'var(--text-xs)',
+                          fontWeight: 500,
+                          cursor: 'pointer',
+                          fontFamily: 'var(--font-body)',
+                          transition: 'all 0.15s',
+                        }}
+                      >
+                        <Star
+                          size={14}
+                          fill={favoritados.has(preguntas[currentIndex].id) ? 'currentColor' : 'none'}
+                        />
+                        {favoritados.has(preguntas[currentIndex].id) ? 'Guardado' : 'Guardar'}
+                      </button>
+                    </motion.div>
+                  )}
+
+                  <motion.div variants={fadeUp} className={s.actionArea} style={{display: 'flex', gap: '12px'}}>
+                    {currentIndex > 0 && (
+                      <Button variant="secondary" size="lg" onClick={handleAnterior} fullWidth>
+                        ← Anterior
+                      </Button>
+                    )}
                     <Button variant="primary" size="lg" fullWidth onClick={handleSiguiente}>
-                      {currentIndex + 1 >= preguntas.length ? 'Ver resultados' : 'Siguiente pregunta'} →
+                      {currentIndex + 1 >= preguntas.length ? 'Ver resultados' : 'Próxima'} →
                     </Button>
                   </motion.div>
                 </motion.div>
+              </motion.div>
+            )}
+
+            {/* ── Estado: milestone_feedback */}
+            {state === 'milestone_feedback' && (
+              <motion.div
+                key={`milestone-${currentIndex}`}
+                variants={fadeUp}
+                initial="hidden"
+                animate="show"
+                exit="exit"
+              >
+                <div className={s.resultCard} style={{ marginTop: '40px' }}>
+                  {(() => {
+                    const last5 = Object.values(feedbacks).slice(-5);
+                    const correctas = last5.filter(f => f.esCorrecta).length;
+                    const isGood = correctas >= 3;
+                    return (
+                      <>
+                        <div className={s.resultEmojiWrapper}>
+                          <span className={s.resultEmoji}>{isGood ? '🚀' : '⚠️'}</span>
+                        </div>
+                        <h2 className={s.resultTitle}>{isGood ? '¡Excelente racha!' : 'Alerta de rendimiento'}</h2>
+                        <p className={s.resultFraction}>{correctas} de 5 correctas en esta ronda.</p>
+                        <p className={s.resultMessage}>
+                          {isGood 
+                            ? 'Vas por muy buen camino. Sigue con este ritmo.' 
+                            : 'Cuidado, tu porcentaje está cayendo. Concéntrate más en las próximas.'}
+                        </p>
+                        <Button variant={isGood ? 'primary' : 'orange'} fullWidth onClick={handleContinueMilestone}>
+                          Continuar misión →
+                        </Button>
+                      </>
+                    );
+                  })()}
+                </div>
               </motion.div>
             )}
 

@@ -1,29 +1,14 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { useAuthStore } from '../../store/auth';
-import { Button } from '../../components/ui/Button';
-import { Input } from '../../components/ui/Input';
-import { staggerContainer, fadeUp } from '../../lib/animations';
+import styles from './Auth.module.css';
 
-function LogoMark() {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '32px' }}>
-      <div style={{ color: 'var(--blue)', marginBottom: '12px' }}>
-        <svg width="48" height="34" viewBox="0 0 44 32" fill="none">
-          <rect x="0" y="5" width="20" height="20" rx="5" fill="currentColor" opacity="0.12" />
-          <path d="M4 9Q10 7 10 17Q10 7 16 9L16 25Q10 23 10 17Q10 23 4 25Z" fill="currentColor" />
-          <circle cx="18" cy="5" r="5" fill="var(--orange)" />
-          <path d="M16 5L18 2L20 5" fill="white" />
-        </svg>
-      </div>
-      <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '22px', color: 'var(--text)' }}>
-        prep<span style={{ color: 'var(--blue)' }}>prueba</span>
-      </span>
-    </div>
-  );
-}
+const FEATURES = [
+  'Más de 4.200 preguntas de exámenes oficiales',
+  'Corrección inmediata con feedback de IA',
+  'Estadísticas de progreso por materia',
+];
 
 export function RegisterPage() {
   const navigate = useNavigate();
@@ -60,102 +45,137 @@ export function RegisterPage() {
   }
 
   return (
-    <div style={{
-      minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-      padding: '24px',
-      background: 'radial-gradient(ellipse 80% 60% at 50% -20%, var(--blue-soft) 0%, var(--bg) 70%)',
-    }}>
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        animate="show"
-        style={{ width: '100%', maxWidth: '420px' }}
-      >
-        <motion.div variants={fadeUp}>
-          <LogoMark />
-        </motion.div>
+    <div className={styles.page}>
+      {/* ── Left panel ─────────────────────────────── */}
+      <aside className={styles.panel} aria-hidden="true">
+        <div className={styles.panelLogo}>
+          <img src="/1.svg" width={36} height={36} alt="" />
+          <span className={styles.panelLogoText}>prep<em>rueba</em></span>
+        </div>
 
-        <motion.div variants={fadeUp} style={{
-          background: 'var(--white)',
-          borderRadius: 'var(--radius-2xl)',
-          border: '1px solid var(--border)',
-          boxShadow: 'var(--shadow-md)',
-          padding: '36px 32px',
-        }}>
-          <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '26px', fontWeight: 600, color: 'var(--text)', marginBottom: '6px' }}>
-            Empieza hoy.
-          </h1>
-          <p style={{ fontSize: '14px', color: 'var(--text-3)', marginBottom: '28px' }}>
-            7 días gratis · Sin tarjeta hasta que quieras seguir.
+        <div className={styles.panelBody}>
+          <h2 className={styles.panelHeadline}>
+            Aprueba la prueba de acceso.<br />
+            <em>Sin agobios.</em>
+          </h2>
+          <ul className={styles.panelFeatures}>
+            {FEATURES.map((f) => (
+              <li key={f} className={styles.panelFeature}>
+                <span className={styles.panelCheckIcon}>✓</span>
+                {f}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <blockquote className={styles.panelQuote}>
+          <p className={styles.panelQuoteText}>
+            "Llevaba dos años posponiendo el examen. Con Preprueba aprobé en la primera convocatoria."
+          </p>
+          <cite className={styles.panelQuoteName}>María José R., 41 años · Madrid</cite>
+        </blockquote>
+      </aside>
+
+      {/* ── Form side ──────────────────────────────── */}
+      <main className={styles.formSide}>
+        <div className={styles.formWrap}>
+          {/* Mobile logo */}
+          <div className={styles.mobileLogoWrap}>
+            <img src="/1.svg" width={48} height={48} alt="Preprueba" style={{ marginBottom: '8px' }} />
+            <span className={styles.mobileLogoText}>prep<em>rueba</em></span>
+          </div>
+
+          <p className={styles.topLink}>
+            ¿Ya tienes cuenta? <Link to="/login">Inicia sesión</Link>
           </p>
 
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <Input
-              label="Nombre (opcional)"
-              name="nombre"
-              type="text"
-              value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
-              autoComplete="given-name"
-              placeholder="Como quieres que te llamemos"
-            />
-            <Input
-              label="Email"
-              name="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              error={errors.email}
-              required
-              autoComplete="email"
-            />
-            <Input
-              label="Contraseña"
-              name="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              error={errors.password}
-              required
-              autoComplete="new-password"
-              hint="Mínimo 8 caracteres"
-            />
+          <h1 className={styles.formTitle}>Empieza hoy.</h1>
+          <p className={styles.formSubtitle}>7 días gratis · Sin tarjeta hasta que quieras seguir.</p>
 
-            <label style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', cursor: 'pointer' }}>
-              <input
-                type="checkbox"
-                checked={acceptedTerms}
-                onChange={(e) => setAcceptedTerms(e.target.checked)}
-                style={{ marginTop: '3px', accentColor: 'var(--blue)', width: '16px', height: '16px', flexShrink: 0 }}
-              />
-              <span style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.6 }}>
-                Acepto los{' '}
-                <Link to="/terminos" style={{ color: 'var(--blue)', fontWeight: 500 }}>términos de uso</Link>{' '}
-                y la{' '}
-                <Link to="/privacidad" style={{ color: 'var(--blue)', fontWeight: 500 }}>política de privacidad</Link>
-              </span>
-            </label>
-
-            {errors.terms && (
-              <span style={{ fontSize: '12px', color: 'var(--error)' }}>{errors.terms}</span>
-            )}
-            {errors.general && (
-              <div role="alert" style={{ background: 'var(--error-bg)', border: '1px solid rgba(214,69,69,0.2)', borderRadius: 'var(--radius-md)', padding: '10px 14px', fontSize: '13px', color: 'var(--error)' }}>
-                {errors.general}
+          <form onSubmit={handleSubmit} noValidate>
+            <div className={styles.fieldGroup}>
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="nombre">Nombre (opcional)</label>
+                <input
+                  id="nombre"
+                  className={styles.input}
+                  type="text"
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
+                  autoComplete="given-name"
+                  placeholder="Como quieres que te llamemos"
+                />
               </div>
+
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="email">Email</label>
+                <input
+                  id="email"
+                  className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  autoComplete="email"
+                  placeholder="tu@email.com"
+                />
+                {errors.email && <span className={styles.fieldError}>{errors.email}</span>}
+              </div>
+
+              <div className={styles.field}>
+                <label className={styles.label} htmlFor="password">Contraseña</label>
+                <input
+                  id="password"
+                  className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  autoComplete="new-password"
+                  placeholder="Mínimo 8 caracteres"
+                />
+                {errors.password
+                  ? <span className={styles.fieldError}>{errors.password}</span>
+                  : <span className={styles.fieldHint}>Mínimo 8 caracteres</span>
+                }
+              </div>
+
+              <label className={styles.checkRow}>
+                <span className={styles.checkboxWrap}>
+                  <input
+                    className={styles.checkboxInput}
+                    type="checkbox"
+                    checked={acceptedTerms}
+                    onChange={(e) => setAcceptedTerms(e.target.checked)}
+                  />
+                  <span className={styles.checkboxBox}>
+                    <span className={styles.checkboxTick}>✓</span>
+                  </span>
+                </span>
+                <span className={styles.checkLabel}>
+                  Acepto los{' '}
+                  <Link to="/terminos">términos de uso</Link>{' '}
+                  y la{' '}
+                  <Link to="/privacidad">política de privacidad</Link>
+                </span>
+              </label>
+              {errors.terms && <span className={styles.fieldError}>{errors.terms}</span>}
+            </div>
+
+            {errors.general && (
+              <div role="alert" className={styles.errorAlert}>{errors.general}</div>
             )}
 
-            <Button type="submit" variant="orange" fullWidth disabled={loading} style={{ marginTop: '4px' }}>
+            <button type="submit" className={styles.submitBtn} disabled={loading}>
               {loading ? 'Creando tu cuenta...' : 'Crear cuenta gratis'}
-            </Button>
+            </button>
           </form>
-        </motion.div>
 
-        <motion.p variants={fadeUp} style={{ textAlign: 'center', marginTop: '20px', fontSize: '14px', color: 'var(--text-3)' }}>
-          ¿Ya tienes cuenta?{' '}
-          <Link to="/login" style={{ color: 'var(--blue)', fontWeight: 500 }}>Inicia sesión</Link>
-        </motion.p>
-      </motion.div>
+          <p className={styles.bottomLink}>
+            ¿Ya tienes cuenta? <Link to="/login">Inicia sesión</Link>
+          </p>
+        </div>
+      </main>
     </div>
   );
 }
