@@ -552,7 +552,7 @@ export function DashboardPage() {
                   className={s.materiaList}
                   variants={staggerContainer}
                   initial="hidden"
-                  animate={subjectsInView ? 'show' : 'hidden'}
+                  animate="show"
                 >
                   {materiasPraticadas.map((m: any, i: number) => {
                     const isUp = m.tendencia === 'mejorando';
@@ -571,7 +571,7 @@ export function DashboardPage() {
                                 <motion.div
                                   className={s.materiaFill}
                                   initial={{ scaleX: 0 }}
-                                  animate={subjectsInView ? { scaleX: pct / 100 } : { scaleX: 0 }}
+                                  animate={{ scaleX: pct / 100 }}
                                   transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: i * 0.07 }}
                                   style={{ transformOrigin: 'left center', width: '100%', background: barColor + '99' }}
                                 />

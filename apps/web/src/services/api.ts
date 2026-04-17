@@ -3,6 +3,20 @@ import type { Materia, SesionIniciada, RespuestaResult, SesionFinalizada, StatsR
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 const TOKEN_KEY = 'preprueba_token';
 
+function resolveApiAssetUrl(url: string | null | undefined): string | null {
+  if (!url) return null;
+  if (/^https?:\/\//i.test(url)) return url;
+  if (url.startsWith('/')) return `${API_URL}${url}`;
+  return `${API_URL}/${url.replace(/^\/+/, '')}`;
+}
+
+function normalizeExamDoc(doc: ExamDocItem): ExamDocItem {
+  return {
+    ...doc,
+    pdfUrl: resolveApiAssetUrl(doc.pdfUrl),
+  };
+}
+
 function getToken(): string | null {
   return localStorage.getItem(TOKEN_KEY);
 }
@@ -372,12 +386,22 @@ export const examDocs = {
           .map(([k, v]) => [k, String(v)])
       )
     ).toString();
-    return request<{ docs: ExamDocItem[]; total: number; page: number; facets: ExamDocFacets }>(`/exam-docs?${qs}`);
+      return request<ExamDocListResponse>(`/exam-docs?${qs}`)
+        .then((data) => ({
+          ...data,
+          docs: data.docs.map(normalizeExamDoc),
+        }));
   },
 
-  recent: () => request<{ docs: ExamDocItem[] }>('/exam-docs/recent'),
+  recent: () =>
+    request<{ docs: ExamDocItem[] }>('/exam-docs/recent').then((data) => ({
+      docs: data.docs.map(normalizeExamDoc),
+    })),
 
-  get: (id: string) => request<{ doc: ExamDocItem }>(`/exam-docs/${id}`),
+  get: (id: string) =>
+    request<{ doc: ExamDocItem }>(`/exam-docs/${id}`).then((data) => ({
+      doc: normalizeExamDoc(data.doc),
+    })),
 };
 
 // Simulacros
@@ -482,11 +506,37 @@ export interface ExamDocItem {
   updatedAt: string;
 }
 
+export interface ExamDocFacetItem<T extends string | number = string> {
+  value: T;
+  count: number;
+}
+
 export interface ExamDocFacets {
-  communities: string[];
-  universities: string[];
-  subjects: string[];
-  years: number[];
+  communities: ExamDocFacetItem<string>[];
+  universities: ExamDocFacetItem<string>[];
+  subjects: ExamDocFacetItem<string>[];
+  years: ExamDocFacetItem<number>[];
+  calls: ExamDocFacetItem<string>[];
+  documentTypes: ExamDocFacetItem<TipoDocumento>[];
+}
+
+export interface ExamDocHighlights {
+  topCommunities: ExamDocFacetItem<string>[];
+  topUniversities: ExamDocFacetItem<string>[];
+  topSubjects: ExamDocFacetItem<string>[];
+  latestYears: ExamDocFacetItem<number>[];
+}
+
+export interface ExamDocListResponse {
+  docs: ExamDocItem[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+  facets: ExamDocFacets;
+  highlights: ExamDocHighlights;
 }
 
 export interface SimulacroModo {

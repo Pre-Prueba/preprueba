@@ -11,18 +11,22 @@
     "db:seed": "ts-node prisma/seed.ts",
     "db:seed:test-users": "ts-node prisma/seed-test-users.ts",
     "db:studio": "prisma studio",
-    "generate:questions": "ts-node prisma/generate-questions.ts"
+    "generate:questions": "ts-node prisma/generate-questions.ts",
+    "ingest:exam-docs": "ts-node src/scripts/ingestExamDocs.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
     "@sentry/node": "^10.48.0",
+    "adm-zip": "^0.5.17",
     "bcrypt": "^5.1.1",
+    "cheerio": "^1.2.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.1.1",
     "openai": "^6.34.0",
+    "pdf-parse": "^2.4.5",
     "stripe": "^17.4.0",
     "zod": "^3.23.8"
   },

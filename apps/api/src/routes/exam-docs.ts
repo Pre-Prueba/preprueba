@@ -9,6 +9,23 @@ const PUBLISHED_WHERE = {
   status: { in: ['PUBLISHED', 'INTERACTIVE_READY'] as DocumentoStatus[] },
 } satisfies Prisma.ExamDocumentWhereInput;
 
+type FacetValue = string | number;
+type FacetItem<T extends FacetValue> = { value: T; count: number };
+
+function sortFacetItems<T extends FacetValue>(items: FacetItem<T>[], mode: 'alpha' | 'count' | 'numeric-desc'): FacetItem<T>[] {
+  const copy = [...items];
+
+  if (mode === 'count') {
+    return copy.sort((a, b) => b.count - a.count || String(a.value).localeCompare(String(b.value), 'es'));
+  }
+
+  if (mode === 'numeric-desc') {
+    return copy.sort((a, b) => Number(b.value) - Number(a.value));
+  }
+
+  return copy.sort((a, b) => String(a.value).localeCompare(String(b.value), 'es'));
+}
+
 // GET /exam-docs/stats — acervo statistics
 router.get('/stats', async (_req: Request, res: Response): Promise<void> => {
   const [communities, universities, subjects, total] = await Promise.all([
@@ -68,7 +85,7 @@ router.get('/', requireAuth, async (req: Request, res: Response): Promise<void> 
   const [docs, totalCount] = await Promise.all([
     prisma.examDocument.findMany({
       where,
-      orderBy: [{ year: 'desc' }, { community: 'asc' }, { subject: 'asc' }],
+      orderBy: [{ year: 'desc' }, { createdAt: 'desc' }, { subject: 'asc' }],
       skip,
       take,
     }),
@@ -76,38 +93,91 @@ router.get('/', requireAuth, async (req: Request, res: Response): Promise<void> 
   ]);
 
   // Facets for filters
-  const [allCommunities, allUniversities, allSubjects, allYears] = await Promise.all([
+  const [allCommunities, allUniversities, allSubjects, allYears, allCalls, allDocumentTypes] = await Promise.all([
     prisma.examDocument.groupBy({
       by: ['community'],
       where: PUBLISHED_WHERE,
-      orderBy: { community: 'asc' },
+      _count: { _all: true },
     }),
     prisma.examDocument.groupBy({
       by: ['university'],
       where: PUBLISHED_WHERE,
-      orderBy: { university: 'asc' },
+      _count: { _all: true },
     }),
     prisma.examDocument.groupBy({
       by: ['subject'],
       where: PUBLISHED_WHERE,
-      orderBy: { subject: 'asc' },
+      _count: { _all: true },
     }),
     prisma.examDocument.groupBy({
       by: ['year'],
       where: PUBLISHED_WHERE,
-      orderBy: { year: 'desc' },
+      _count: { _all: true },
+    }),
+    prisma.examDocument.groupBy({
+      by: ['call'],
+      where: {
+        ...PUBLISHED_WHERE,
+        call: { not: null },
+      },
+      _count: { _all: true },
+    }),
+    prisma.examDocument.groupBy({
+      by: ['documentType'],
+      where: PUBLISHED_WHERE,
+      _count: { _all: true },
     }),
   ]);
+
+  const communities = sortFacetItems(
+    allCommunities.map((item) => ({ value: item.community, count: item._count._all })),
+    'count',
+  );
+  const universities = sortFacetItems(
+    allUniversities.map((item) => ({ value: item.university, count: item._count._all })),
+    'count',
+  );
+  const subjects = sortFacetItems(
+    allSubjects.map((item) => ({ value: item.subject, count: item._count._all })),
+    'count',
+  );
+  const years = sortFacetItems(
+    allYears.map((item) => ({ value: item.year, count: item._count._all })),
+    'numeric-desc',
+  );
+  const calls = sortFacetItems(
+    allCalls
+      .filter((item): item is typeof item & { call: string } => Boolean(item.call))
+      .map((item) => ({ value: item.call, count: item._count._all })),
+    'alpha',
+  );
+  const documentTypes = sortFacetItems(
+    allDocumentTypes.map((item) => ({ value: item.documentType, count: item._count._all })),
+    'count',
+  );
+  const totalPages = Math.max(1, Math.ceil(totalCount / take));
 
   res.json({
     docs,
     total: totalCount,
     page: parseInt(page as string),
+    limit: take,
+    totalPages,
+    hasNextPage: skip + docs.length < totalCount,
+    hasPrevPage: skip > 0,
     facets: {
-      communities: allCommunities.map((c) => c.community),
-      universities: allUniversities.map((u) => u.university),
-      subjects: allSubjects.map((s) => s.subject),
-      years: allYears.map((y) => y.year),
+      communities,
+      universities,
+      subjects,
+      years,
+      calls,
+      documentTypes,
+    },
+    highlights: {
+      topCommunities: communities.slice(0, 8),
+      topUniversities: universities.slice(0, 8),
+      topSubjects: subjects.slice(0, 10),
+      latestYears: years.slice(0, 4),
     },
   });
 });

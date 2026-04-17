@@ -1,0 +1,116 @@
+{
+  "checks": [
+    {
+      "id": "title-on-card",
+      "foreground": "#111827",
+      "background": "#FFFFFF",
+      "type": "text-normal",
+      "state": "default",
+      "notes": "Main title and section titles"
+    },
+    {
+      "id": "subtitle-on-card",
+      "foreground": "#667085",
+      "background": "#FFFFFF",
+      "type": "text-normal",
+      "state": "default",
+      "notes": "Subtitle and descriptive copy"
+    },
+    {
+      "id": "eyebrow-on-card",
+      "foreground": "#667085",
+      "background": "#FFFFFF",
+      "type": "text-normal",
+      "state": "default",
+      "notes": "Eyebrow labels"
+    },
+    {
+      "id": "hint-on-card",
+      "foreground": "#667085",
+      "background": "#FFFFFF",
+      "type": "text-normal",
+      "state": "default",
+      "notes": "Search hint and helper text"
+    },
+    {
+      "id": "input-border-default",
+      "foreground": "#7D8CA4",
+      "background": "#FFFFFF",
+      "type": "ui",
+      "state": "default",
+      "notes": "Input and select border"
+    },
+    {
+      "id": "focus-ring-on-card",
+      "foreground": "#1244B5",
+      "background": "#FFFFFF",
+      "type": "ui",
+      "state": "focus",
+      "notes": "Keyboard focus outline"
+    },
+    {
+      "id": "detail-button-text",
+      "foreground": "#1244B5",
+      "background": "#E9F0FF",
+      "type": "text-normal",
+      "state": "default",
+      "notes": "Secondary action button"
+    },
+    {
+      "id": "primary-button-text",
+      "foreground": "#FFFFFF",
+      "background": "#1244B5",
+      "type": "text-normal",
+      "state": "default",
+      "notes": "Primary resolve button"
+    },
+    {
+      "id": "primary-button-hover-text",
+      "foreground": "#FFFFFF",
+      "background": "#0B3590",
+      "type": "text-normal",
+      "state": "hover",
+      "notes": "Primary resolve button hover"
+    },
+    {
+      "id": "meta-tag-text",
+      "foreground": "#48566B",
+      "background": "#F8FAFC",
+      "type": "text-normal",
+      "state": "default",
+      "notes": "Metadata pills"
+    },
+    {
+      "id": "chip-count-text",
+      "foreground": "#34507E",
+      "background": "#EDF2FB",
+      "type": "text-normal",
+      "state": "default",
+      "notes": "Count bubble inside chips"
+    },
+    {
+      "id": "year-badge-text",
+      "foreground": "#4A5972",
+      "background": "#F6F8FB",
+      "type": "text-normal",
+      "state": "default",
+      "notes": "Year badge"
+    },
+    {
+      "id": "official-badge-text",
+      "foreground": "#1244B5",
+      "background": "#EEF4FF",
+      "type": "text-normal",
+      "state": "default",
+      "notes": "Official badge label"
+    },
+    {
+      "id": "empty-icon-foreground",
+      "foreground": "#53637D",
+      "background": "#FFFFFF",
+      "type": "graphic",
+      "state": "default",
+      "notes": "Empty state icon"
+    }
+  ]
+}

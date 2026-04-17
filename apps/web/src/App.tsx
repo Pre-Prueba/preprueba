@@ -27,6 +27,7 @@ import { TerminosPage } from './pages/Legal/TerminosPage';
 import { AppLayout } from './components/layout/AppLayout';
 import { ExamenesPage } from './pages/Examenes/ExamenesPage';
 import { ExamenDetallePage } from './pages/Examenes/ExamenDetallePage';
+import { ExamDocDetailPage } from './pages/Examenes/ExamDocDetailPage';
 import { ErroresPage } from './pages/Errores/ErroresPage';
 import { FlashcardsPage } from './pages/Flashcards/FlashcardsPage';
 import { FavoritosPage } from './pages/Favoritos/FavoritosPage';
@@ -103,6 +104,7 @@ export default function App() {
           <Route path="/forum/new" element={<CreatePostPage />} />
           <Route path="/comunidad/*" element={<CommunityPage />} />
           <Route path="/examenes" element={<ExamenesPage />} />
+          <Route path="/examenes/doc/:id" element={<ExamDocDetailPage />} />
           <Route path="/examenes/:key" element={<ExamenDetallePage />} />
           <Route path="/errores" element={<ErroresPage />} />
           <Route path="/flashcards" element={<FlashcardsPage />} />
