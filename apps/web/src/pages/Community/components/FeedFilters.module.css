@@ -31,6 +31,7 @@
 }
 
 .tabBtn.active {
-  color: var(--blue);
+  color: var(--pp-blue);
   border-bottom-color: var(--blue);
+  background: var(--blue-soft);
 }

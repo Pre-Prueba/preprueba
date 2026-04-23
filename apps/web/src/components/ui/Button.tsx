@@ -2,7 +2,7 @@ import { forwardRef, useState } from 'react';
 import type { ButtonHTMLAttributes, CSSProperties, ReactNode } from 'react';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'orange';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'orange' | 'accent';
   size?: 'sm' | 'md' | 'lg';
   fullWidth?: boolean;
   children: ReactNode;
@@ -14,49 +14,58 @@ const base: CSSProperties = {
   justifyContent: 'center',
   gap: '8px',
   borderRadius: 'var(--radius-md)',
-  fontFamily: 'var(--font-ui)',
-  fontWeight: 500,
+  fontFamily: 'var(--font-body)',
+  fontWeight: 600,
   fontSize: '14px',
   lineHeight: 1,
   border: 'none',
   cursor: 'pointer',
-  transition: 'background 0.18s, box-shadow 0.18s, transform 0.18s, opacity 0.18s',
+  transition:
+    'background 180ms var(--ease), box-shadow 220ms var(--ease), transform 180ms var(--ease), opacity 180ms var(--ease), border-color 180ms var(--ease)',
   whiteSpace: 'nowrap',
   letterSpacing: '0.01em',
+  minHeight: '44px',
 };
 
 const variants: Record<string, CSSProperties> = {
   primary: {
-    background: 'var(--blue)',
+    background: 'var(--pp-blue)',
     color: '#fff',
   },
+  /* accent = laranja energético — CTAs de alta conversão */
+  accent: {
+    background: 'var(--pp-orange)',
+    color: '#fff',
+  },
+  /* orange mantido como alias retrocompat */
   orange: {
-    background: 'var(--orange)',
+    background: 'var(--pp-orange)',
     color: '#fff',
   },
   secondary: {
-    background: 'var(--blue-soft)',
-    color: 'var(--blue)',
-    border: '1px solid var(--blue-dim)',
+    background: 'var(--card)',
+    color: 'var(--text-1)',
+    border: '1px solid var(--border)',
   },
   ghost: {
     background: 'transparent',
     color: 'var(--text-2)',
-    border: '1px solid var(--border)',
+    border: '1px solid transparent',
   },
 };
 
 const sizes: Record<string, CSSProperties> = {
-  sm: { padding: '8px 16px', fontSize: '13px', borderRadius: 'var(--radius-sm)' },
+  sm: { padding: '8px 16px', fontSize: '13px', borderRadius: 'var(--radius-sm)', minHeight: '38px' },
   md: { padding: '11px 22px', fontSize: '14px' },
-  lg: { padding: '14px 28px', fontSize: '15px', borderRadius: 'var(--radius-lg)' },
+  lg: { padding: '14px 28px', fontSize: '15px', borderRadius: 'var(--radius-lg)', minHeight: '48px' },
 };
 
 const hoverMap: Record<string, Partial<CSSProperties>> = {
-  primary: { background: 'var(--blue-mid)' },
-  orange: { background: 'var(--orange-deep)' },
-  secondary: { background: 'var(--blue-dim)' },
-  ghost: { background: 'var(--surface)' },
+  primary:   { background: 'var(--pp-blue-dark)', boxShadow: 'var(--shadow-blue)' },
+  accent:    { background: 'var(--pp-amber-dark)', boxShadow: 'var(--shadow-orange)' },
+  orange:    { background: 'var(--pp-amber-dark)', boxShadow: 'var(--shadow-orange)' },
+  secondary: { background: 'var(--surface-alt)',   borderColor: 'var(--border-hover)', boxShadow: 'none' },
+  ghost:     { background: 'var(--surface-alt)',   boxShadow: 'none' },
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -76,9 +85,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           opacity: disabled ? 0.45 : 1,
           cursor: disabled ? 'not-allowed' : 'pointer',
           transform: hovered && !disabled ? 'translateY(-1px)' : 'translateY(0)',
-          boxShadow: hovered && !disabled && (variant === 'primary' || variant === 'orange')
-            ? 'var(--shadow-md)'
-            : 'none',
           ...style,
         }}
         onMouseEnter={() => setHovered(true)}

@@ -4,7 +4,7 @@ import { staggerContainer, slideUp, VIEWPORT_ONCE } from '../lib/landingAnimatio
 import { TiltCard } from '../../../components/ui/TiltCard';
 import { SpotlightCard } from '../../../components/ui/SpotlightCard';
 
-const AVATARS_BG = ['#0D1B4B', '#F08C1A', '#1a2d6e'];
+const AVATARS_BG = ['#0D1B4B', '#FF6624', '#1a2d6e'];
 
 const TESTIMONIALS = [
   {

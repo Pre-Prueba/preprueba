@@ -30,7 +30,8 @@
       "Bash(ls C:/Users/vivim/preprueba2/preprueba/apps/web/src/pages/Landing/*.module.css)",
       "Bash(curl -s http://localhost:5173)",
       "Bash(npx playwright:*)",
-      "Bash(ls apps/web/playwright*)"
+      "Bash(ls apps/web/playwright*)",
+      "Bash(rtk read *)"
     ]
   }
 }

@@ -10,7 +10,6 @@ import {
   listItem,
   heroContainer,
   heroHeadline,
-  scaleIn,
 } from '../../lib/animations';
 import { SpotlightCard } from '../../components/ui/SpotlightCard';
 import { TiltCard } from '../../components/ui/TiltCard';
@@ -128,8 +127,8 @@ const IconTrendDown = () => (
 );
 
 /* ── Progress Ring ── */
-const ProgressRing = ({ progress, size = 140, strokeWidth = 10, color = '#063399' }: {
-  progress: number; size?: number; strokeWidth?: number; color?: string;
+const ProgressRing = ({ progress, size = 140, strokeWidth = 10 }: {
+  progress: number; size?: number; strokeWidth?: number;
 }) => {
   const [animated, setAnimated] = useState(0);
   const r = (size - strokeWidth * 2) / 2;
@@ -145,13 +144,13 @@ const ProgressRing = ({ progress, size = 140, strokeWidth = 10, color = '#063399
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ transform: 'rotate(-90deg)' }}>
       <defs>
         <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#063399" />
-          <stop offset="100%" stopColor="#052c85" />
+          <stop offset="0%" stopColor="var(--pp-blue)" />
+          <stop offset="100%" stopColor="var(--pp-blue-dark)" />
         </linearGradient>
       </defs>
       <circle
         cx={size / 2} cy={size / 2} r={r}
-        fill="none" stroke="rgba(6,51,153,0.08)" strokeWidth={strokeWidth}
+        fill="none" stroke="rgba(53,92,245,0.08)" strokeWidth={strokeWidth}
       />
       <circle
         cx={size / 2} cy={size / 2} r={r}
@@ -169,29 +168,29 @@ const ProgressRing = ({ progress, size = 140, strokeWidth = 10, color = '#063399
 const HeroGraphic = () => (
   <div className={s.heroGraphic} aria-hidden="true">
     <svg width="220" height="180" viewBox="0 0 220 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="20" y="140" width="180" height="6" rx="3" fill="rgba(6, 51, 153, 0.06)"/>
+      <rect x="20" y="140" width="180" height="6" rx="3" fill="rgba(53, 92, 245, 0.06)"/>
       <rect x="20" y="140" width="126" height="6" rx="3" fill="url(#heroBarGrad)"/>
       <rect x="20" y="24" width="100" height="8" rx="4" fill="rgba(17,24,39,0.08)"/>
       <rect x="20" y="40" width="160" height="6" rx="3" fill="rgba(17,24,39,0.05)"/>
       <rect x="20" y="54" width="130" height="6" rx="3" fill="rgba(17,24,39,0.05)"/>
-      <rect x="110" y="70" width="90" height="52" rx="10" fill="white" fillOpacity="0.7" stroke="rgba(6, 51, 153, 0.10)" strokeWidth="1"/>
-      <rect x="120" y="82" width="40" height="5" rx="2.5" fill="rgba(6, 51, 153, 0.15)"/>
+      <rect x="110" y="70" width="90" height="52" rx="10" fill="white" fillOpacity="0.7" stroke="rgba(53, 92, 245, 0.10)" strokeWidth="1"/>
+      <rect x="120" y="82" width="40" height="5" rx="2.5" fill="rgba(53, 92, 245, 0.15)"/>
       <rect x="120" y="93" width="60" height="4" rx="2" fill="rgba(17,24,39,0.08)"/>
       <rect x="120" y="103" width="48" height="4" rx="2" fill="rgba(17,24,39,0.05)"/>
-      <circle cx="185" cy="75" r="10" fill="rgba(6, 51, 153, 0.10)"/>
-      <path d="M180 75l3 3 5-5" stroke="#063399" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-      <circle cx="52" cy="92" r="26" fill="none" stroke="rgba(6, 51, 153, 0.06)" strokeWidth="6"/>
+      <circle cx="185" cy="75" r="10" fill="rgba(53, 92, 245, 0.10)"/>
+      <path d="M180 75l3 3 5-5" stroke="var(--pp-blue)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="52" cy="92" r="26" fill="none" stroke="rgba(53, 92, 245, 0.06)" strokeWidth="6"/>
       <circle cx="52" cy="92" r="26" fill="none" stroke="url(#heroRingGrad)" strokeWidth="6" strokeLinecap="round"
         strokeDasharray="163.4" strokeDashoffset="49" style={{transform:'rotate(-90deg)', transformOrigin:'52px 92px'}}/>
-      <text x="52" y="96" textAnchor="middle" fontFamily="-apple-system, sans-serif" fontSize="10" fontWeight="600" fill="#111827">70%</text>
+      <text x="52" y="96" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize="10" fontWeight="600" fill="var(--text-1)">70%</text>
       <defs>
         <linearGradient id="heroBarGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#063399"/>
-          <stop offset="100%" stopColor="#052c85"/>
+          <stop offset="0%" stopColor="var(--pp-blue)"/>
+          <stop offset="100%" stopColor="var(--pp-blue-dark)"/>
         </linearGradient>
         <linearGradient id="heroRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#063399"/>
-          <stop offset="100%" stopColor="#052c85"/>
+          <stop offset="0%" stopColor="var(--pp-blue)"/>
+          <stop offset="100%" stopColor="var(--pp-blue-dark)"/>
         </linearGradient>
       </defs>
     </svg>
@@ -201,7 +200,7 @@ const HeroGraphic = () => (
 export function DashboardPage() {
   const navigate = useNavigate();
   const { user } = useAuthStore();
-  const { data: materiasList = [], isLoading: loadingMaterias } = useMaterias();
+  const { isLoading: loadingMaterias } = useMaterias();
   const { data: statsData, isLoading: loadingStats } = useStats();
 
   /* ── useInView refs ── */
@@ -209,7 +208,6 @@ export function DashboardPage() {
   const timelineRef = useRef<HTMLDivElement>(null);
   const rankRef = useRef<HTMLDivElement>(null);
 
-  const subjectsInView = useInView(subjectsRef, { once: true, margin: '-80px' });
   const timelineInView = useInView(timelineRef, { once: true, margin: '-60px' });
   const rankInView = useInView(rankRef, { once: true, margin: '-40px' });
 
@@ -300,19 +298,19 @@ export function DashboardPage() {
             <motion.div className={s.heroChips} variants={fadeUp}>
               {racha > 0 && (
                 <div className={s.chip}>
-                  <span className={s.chipDot} style={{ background: '#f97316' }} />
+                  <span className={s.chipDot} style={{ background: 'var(--pp-orange)' }} />
                   <span>{racha} días de racha</span>
                 </div>
               )}
               {pendingQs > 0 && (
                 <div className={s.chip}>
-                  <span className={s.chipDot} style={{ background: '#063399' }} />
+                  <span className={s.chipDot} style={{ background: 'var(--pp-blue)' }} />
                   <span>{pendingQs} preguntas pendientes</span>
                 </div>
               )}
               {materiasPraticadas.length > 0 && (
                 <div className={s.chip}>
-                  <span className={s.chipDot} style={{ background: '#22c55e' }} />
+                  <span className={s.chipDot} style={{ background: 'var(--success)' }} />
                   <span>{materiasPraticadas.length} materias activas</span>
                 </div>
               )}
@@ -404,7 +402,7 @@ export function DashboardPage() {
         animate="show"
       >
         <motion.div className={s.metricChip} variants={listItem}>
-          <div className={s.metricIcon} style={{ background: 'rgba(249,115,22,0.08)', color: '#f97316' }}>
+          <div className={s.metricIcon} style={{ background: 'var(--orange-soft)', color: 'var(--pp-orange)' }}>
             <IconFlame />
           </div>
           <div className={s.metricBody}>
@@ -416,7 +414,7 @@ export function DashboardPage() {
         </motion.div>
 
         <motion.div className={s.metricChip} variants={listItem}>
-          <div className={s.metricIcon} style={{ background: 'rgba(6, 51, 153, 0.07)', color: '#063399' }}>
+          <div className={s.metricIcon} style={{ background: 'var(--blue-soft)', color: 'var(--pp-blue)' }}>
             <IconBook />
           </div>
           <div className={s.metricBody}>
@@ -428,7 +426,7 @@ export function DashboardPage() {
         </motion.div>
 
         <motion.div className={s.metricChip} variants={listItem}>
-          <div className={s.metricIcon} style={{ background: 'rgba(34,197,94,0.08)', color: '#16a34a' }}>
+          <div className={s.metricIcon} style={{ background: 'var(--success-bg)', color: 'var(--success)' }}>
             <IconTarget />
           </div>
           <div className={s.metricBody}>
@@ -440,7 +438,7 @@ export function DashboardPage() {
         </motion.div>
 
         <motion.div className={s.metricChip} variants={listItem}>
-          <div className={s.metricIcon} style={{ background: 'rgba(6, 51, 153, 0.08)', color: 'var(--pp-blue)' }}>
+          <div className={s.metricIcon} style={{ background: 'var(--surface-alt)', color: 'var(--pp-blue-dark)' }}>
             <IconLayers />
           </div>
           <div className={s.metricBody}>
@@ -519,7 +517,7 @@ export function DashboardPage() {
           {/* ══ E4: SpotlightCard on IA Recommendation ══ */}
           <SpotlightCard
             className={`${s.card} ${s.recomCard}`}
-            spotlightColor="rgba(6, 55, 164, 0.09)"
+            spotlightColor="rgba(53, 92, 245, 0.09)"
           >
             <div className={s.recomInner}>
               <div className={s.recomHeader}>
@@ -558,7 +556,7 @@ export function DashboardPage() {
                     const isUp = m.tendencia === 'mejorando';
                     const isDown = m.tendencia === 'bajando';
                     const pct = m.porcentajeAcierto;
-                    const barColor = pct >= 70 ? '#16a34a' : pct >= 50 ? '#063399' : '#f97316';
+                    const barColor = pct >= 70 ? 'var(--success)' : pct >= 50 ? 'var(--pp-blue)' : 'var(--pp-orange)';
                     return (
                       <motion.div key={m.materiaId} className={s.materiaRow} variants={listItem}>
                         <div className={s.materiaLeft}>
@@ -573,7 +571,7 @@ export function DashboardPage() {
                                   initial={{ scaleX: 0 }}
                                   animate={{ scaleX: pct / 100 }}
                                   transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: i * 0.07 }}
-                                  style={{ transformOrigin: 'left center', width: '100%', background: barColor + '99' }}
+                                  style={{ transformOrigin: 'left center', width: '100%', background: barColor }}
                                 />
                               </div>
                               <span className={s.materiaPct}>{pct}%</span>
@@ -606,7 +604,7 @@ export function DashboardPage() {
                   animate={timelineInView ? 'show' : 'hidden'}
                 >
                   {materiasPraticadas.slice(0, 4).map((m: any, i: number) => {
-                    const colors = ['#063399', '#16a34a', '#EF8F00', '#0a5bff'];
+                    const colors = ['var(--pp-blue)', 'var(--success)', 'var(--pp-orange)', 'var(--pp-blue-dark)'];
                     const labels = ['Hoy', 'Ayer', 'Hace 2 días', 'Hace 3 días'];
                     return (
                       <motion.div key={i} className={s.timelineItem} variants={listItem}>
@@ -691,12 +689,16 @@ export function DashboardPage() {
                   animate={rankInView ? 'show' : 'hidden'}
                 >
                   {best.map((m: any, i: number) => {
-                    const medals = ['#f59e0b', '#9ca3af', '#cd7c3e'];
+                    const medals = [
+                      { color: 'var(--pp-amber)', border: 'rgba(255, 155, 41, 0.25)', bg: 'var(--warn-bg)' },
+                      { color: 'var(--text-3)', border: 'rgba(154, 154, 163, 0.25)', bg: 'var(--surface-alt)' },
+                      { color: 'var(--pp-amber-dark)', border: 'rgba(229, 90, 26, 0.22)', bg: 'var(--orange-soft)' },
+                    ];
                     return (
                       <motion.div key={i} className={s.rankItem} variants={listItem}>
                         <motion.div
                           className={s.rankPosition}
-                          style={{ color: medals[i], borderColor: medals[i] + '30', background: medals[i] + '0F' }}
+                          style={{ color: medals[i].color, borderColor: medals[i].border, background: medals[i].bg }}
                           initial={{ scale: 0, opacity: 0 }}
                           animate={rankInView ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
                           transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.1 + i * 0.08 }}

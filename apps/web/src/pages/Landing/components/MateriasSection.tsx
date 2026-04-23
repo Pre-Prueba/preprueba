@@ -4,7 +4,7 @@ import React from 'react';
 import styles from '../Landing.module.css';
 
 const BLUE   = { bg: '#E8F0FF', accent: '#0038BC', text: '#0D1B4B' };
-const ORANGE = { bg: '#FFF3E0', accent: '#F08C1A', text: '#7A3A00' };
+const ORANGE = { bg: '#FFF3E0', accent: '#FF6624', text: '#7A3A00' };
 
 const MATERIAS = [
   { symbol: 'Lc', num: '01', name: 'Lengua Castellana y Literatura', cat: 'General',    count: 'Común',         ...BLUE },

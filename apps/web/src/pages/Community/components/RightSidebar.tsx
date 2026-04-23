@@ -39,13 +39,13 @@ export function RightSidebar() {
         <div className={s.userList}>
           {topContributors.map((user, index) => (
             <div key={user.id} className={s.userInfo}>
-              <div className={s.avatar} style={index === 0 ? { border: '2px solid #EF8F00', color: '#EF8F00' } : {}}>
+              <div className={s.avatar} style={index === 0 ? { border: '2px solid var(--pp-orange)', color: 'var(--pp-orange)' } : {}}>
                 {user.name.charAt(0).toUpperCase()}
               </div>
               <div>
                 <div className={s.userName} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                   {user.name}
-                  {index === 0 && <Trophy size={14} color="#EF8F00" />}
+                  {index === 0 && <Trophy size={14} color="var(--pp-orange)" />}
                 </div>
                 <div className={s.userPoints}>{user.points} puntos esta semana</div>
               </div>

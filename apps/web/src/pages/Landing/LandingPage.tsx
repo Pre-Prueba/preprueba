@@ -122,7 +122,7 @@ export function LandingPage() {
 
   useEffect(() => {
     // eslint-disable-next-line no-console
-    console.log('%c¿Curioso? Estamos contratando — hola@preprueba.es', 'color:#F08C1A;font-size:16px;font-weight:bold;');
+    console.log('%c¿Curioso? Estamos contratando — hola@preprueba.es', 'color:#FF6624;font-size:16px;font-weight:bold;');
   }, []);
 
   return (

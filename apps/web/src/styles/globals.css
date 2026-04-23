@@ -4,24 +4,27 @@
    ════════════════════════════════════════════════════════════════ */
 
 /* ── Fontes ─────────────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800;12..96,900&family=Epilogue:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600;1,700;1,800;1,900&family=DM+Sans:ital,wght@0,300..700;1,300..700&family=JetBrains+Mono:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600;1,700;1,800;1,900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
 
 /* ── Tokens ─────────────────────────────────────────────────── */
+/* Fonte primária da verdade: tokens.css. Aqui mantemos apenas extras
+   (scale tipográfica, space, transitions) e override das brand vars
+   para alinhar ao creme quente #F2E7E1 + azul/laranja oficiais. */
 :root {
-  /* Brand */
-  --brand-orange:    #F08C1A;
-  --brand-navy:      #0D1B4B;
-  --brand-cream:     #f4f4f4;
-  --brand-gold:      #FFB84D;
+  /* Brand — alinhado à nova paleta oficial */
+  --brand-orange:    #FF6624;
+  --brand-navy:      #2329A8;  /* era #0D1B4B — azul profundo oficial */
+  --brand-cream:     #F2E7E1;  /* era #f4f4f4 — creme oficial */
+  --brand-gold:      #FF9B29;
   --brand-text:      #0D0D14;
   --brand-muted:     #7A7A8C;
-  --brand-surface:   #F8F9FA;
-  --brand-border:    #E2E8F0;
+  --brand-surface:   #FBF6F2;  /* warm soft */
+  --brand-border:    rgba(72, 40, 28, 0.08);
   --brand-white:     #FFFFFF;
 
   /* Typography */
   --font-display:   'Epilogue', system-ui, sans-serif;
-  --font-body:      'DM Sans', system-ui, sans-serif;
+  --font-body:      'Inter', system-ui, sans-serif;
   --font-mono:      'JetBrains Mono', 'Courier New', monospace;
 
   /* Scale */
@@ -60,13 +63,13 @@
   --radius-2xl:  20px;
   --radius-full: 9999px;
 
-  /* Shadows */
-  --shadow-sm:  0 1px 3px rgba(13,27,75,0.05), 0 1px 2px rgba(13,27,75,0.04);
-  --shadow-md:  0 4px 16px rgba(13,27,75,0.08), 0 2px 8px rgba(13,27,75,0.06);
-  --shadow-lg:  0 10px 32px rgba(13,27,75,0.12), 0 4px 12px rgba(13,27,75,0.08);
-  --shadow-xl:  0 24px 56px rgba(13,27,75,0.16), 0 8px 24px rgba(13,27,75,0.10);
-  --shadow-glow-orange: 0 0 32px rgba(240,140,26,0.25);
-  --shadow-glow-navy:   0 0 32px rgba(13,27,75,0.3);
+  /* Shadows (warm brown tint) */
+  --shadow-sm:  0 2px 10px rgba(72, 40, 28, 0.05), 0 0 0 1px rgba(72, 40, 28, 0.04);
+  --shadow-md:  0 4px 20px rgba(72, 40, 28, 0.07), 0 0 0 1px rgba(72, 40, 28, 0.04);
+  --shadow-lg:  0 12px 36px rgba(72, 40, 28, 0.10), 0 0 0 1px rgba(72, 40, 28, 0.04);
+  --shadow-xl:  0 24px 56px rgba(72, 40, 28, 0.14), 0 8px 24px rgba(72, 40, 28, 0.10);
+  --shadow-glow-orange: 0 0 32px rgba(255, 155, 41, 0.28);
+  --shadow-glow-navy:   0 0 32px rgba(35, 41, 168, 0.28);
 
   /* Transitions */
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
@@ -74,49 +77,60 @@
   --duration-fast: 150ms;
   --duration-normal: 300ms;
   --duration-slow: 600ms;
-  /* ── NOVO SISTEMA DE DESIGN PREMIUM (alinhado ao Dashboard) ── */
-  /* Estes substituem os pp- antigos para consistência total */
-  --bg:              #F6F7FB;
-  --bg-2:            #F0F2F5;
+  /* ── PALETA OFICIAL PREPRUEBA (warm premium) ──
+     Tokens core vêm de tokens.css. Aqui repetimos para garantir
+     fallback caso tokens.css não seja carregado antes. */
+  --bg:              #F7EFEA;
+  --bg-warm:         #F2E7E1;
+  --bg-soft:         #FBF6F2;
+  --bg-2:            #EDE2DB;
   --card:            #FFFFFF;
   --white:           #FFFFFF;
   --surface:         #FFFFFF;
+  --surface-alt:     #FDF9F6;
 
   --text:            #111827;
   --text-primary:    #111827;
-  --text-2:          #667085;
-  --text-secondary:  #667085;
-  --text-3:          #98A2B3;
+  --text-1:          #111827;
+  --text-2:          #5F6470;
+  --text-secondary:  #5F6470;
+  --text-3:          #9A9AA3;
 
-  --blue:            #063399;
-  --blue-dark:       #042a7d;
-  --blue-soft:       #EAF1FF;
-  --blue-hover:      #052c85;
-  --blue-dim:        rgba(6, 51, 153, 0.10);
+  --blue:            #355CF5;
+  --blue-dark:       #2329A8;
+  --blue-soft:       #EEF2FF;
+  --blue-hover:      #2B4FE8;
+  --blue-dim:        rgba(53, 92, 245, 0.10);
 
-  --orange:          #D4870A;
-  --color-primary:   #063399;
-  --color-accent:    #D4870A;
+  --orange:          #FF6624;
+  --orange-warm:     #FF9B29;
+  --orange-soft:     #FFE8DC;
+  --amber-soft:      #FFF3E8;
+  --neutral-warm:    #F2E7E1;
+  --color-primary:   #355CF5;
+  --color-accent:    #FF6624;
 
-  --border:          rgba(17, 24, 39, 0.06);
-  --border-color:    rgba(17, 24, 39, 0.06);
+  --border:          rgba(72, 40, 28, 0.07);
+  --border-color:    rgba(72, 40, 28, 0.07);
+  --border-hover:    rgba(72, 40, 28, 0.12);
 
   --success:         #16A34A;
   --success-bg:      #ECFDF5;
   --error:           #DC2626;
   --error-bg:        #FEF2F2;
-  --warn:            #D4870A;
-  --warn-bg:         #FFF7ED;
+  --warn:            #FF9B29;
+  --warn-bg:         #FFF3E8;
 
-  /* Sombras premium */
-  --shadow-xs:   0 1px 2px rgba(16, 24, 40, 0.05);
-  --shadow-sm:   0 2px 10px rgba(16, 24, 40, 0.06), 0 0 0 1px rgba(16, 24, 40, 0.04);
-  --shadow-md:   0 4px 20px rgba(16, 24, 40, 0.08), 0 0 0 1px rgba(16, 24, 40, 0.04);
-  --shadow-lg:   0 12px 40px rgba(16, 24, 40, 0.12), 0 0 0 1px rgba(16, 24, 40, 0.04);
-  --shadow-blue: 0 4px 14px rgba(6, 51, 153, 0.18);
-  --shadow-app-sm: 0 2px 10px rgba(16, 24, 40, 0.06), 0 0 0 1px rgba(16, 24, 40, 0.04);
-  --shadow-app-md: 0 4px 20px rgba(16, 24, 40, 0.08), 0 0 0 1px rgba(16, 24, 40, 0.04);
-  --shadow-app-lg: 0 12px 40px rgba(16, 24, 40, 0.12), 0 0 0 1px rgba(16, 24, 40, 0.04);
+  /* Sombras (warm brown tint) */
+  --shadow-xs:     0 1px 2px rgba(72, 40, 28, 0.04);
+  --shadow-sm:     0 2px 10px rgba(72, 40, 28, 0.05), 0 0 0 1px rgba(72, 40, 28, 0.04);
+  --shadow-md:     0 4px 20px rgba(72, 40, 28, 0.07), 0 0 0 1px rgba(72, 40, 28, 0.04);
+  --shadow-lg:     0 12px 36px rgba(72, 40, 28, 0.10), 0 0 0 1px rgba(72, 40, 28, 0.04);
+  --shadow-blue:   0 6px 20px rgba(53, 92, 245, 0.20);
+  --shadow-orange: 0 8px 24px rgba(255, 102, 36, 0.22);
+  --shadow-app-sm: var(--shadow-sm);
+  --shadow-app-md: var(--shadow-md);
+  --shadow-app-lg: var(--shadow-lg);
 
   /* Radii */
   --r-sm:   8px;
@@ -133,34 +147,36 @@
   --radius-full: 9999px;
 
   /* Tipografia */
-  --font:         'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-ui:      'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-body:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font:         'Inter', system-ui, -apple-system, sans-serif;
+  --font-ui:      'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Epilogue', system-ui, sans-serif;
+  --font-body:    'Inter', system-ui, -apple-system, sans-serif;
   --font-mono:    'JetBrains Mono', 'Courier New', monospace;
-  --pp-font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --pp-font-body:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --pp-font-heading: 'Epilogue', system-ui, sans-serif;
+  --pp-font-body:    'Inter', system-ui, -apple-system, sans-serif;
 
-  /* Aliases legados (compatibilidade com código antigo) */
-  --pp-blue:       #063399;
-  --pp-blue-light: #EAF1FF;
-  --pp-orange:     #EF8F00;
-  --pp-amber:      #D4870A;
-  --pp-amber-dark: #A8610A;
-  --pp-base:       #F6F7FB;
-  --pp-raised:     #F0F2F5;
+  /* Aliases legados (compat) */
+  --pp-blue:       #355CF5;
+  --pp-blue-dark:  #2329A8;
+  --pp-blue-light: #EEF2FF;
+  --pp-orange:     #FF6624;
+  --pp-amber:      #FF9B29;
+  --pp-amber-dark: #E55A1A;
+  --pp-cream:      #F2E7E1;
+  --pp-base:       #F7EFEA;
+  --pp-raised:     #EDE2DB;
   --pp-card:       #FFFFFF;
   --pp-text-1:     #111827;
-  --pp-text-2:     #667085;
-  --pp-text-3:     #98A2B3;
-  --pp-border:     rgba(17, 24, 39, 0.06);
+  --pp-text-2:     #5F6470;
+  --pp-text-3:     #9A9AA3;
+  --pp-border:     rgba(72, 40, 28, 0.07);
   --pp-success:    #16A34A;
   --pp-error:      #DC2626;
   --pp-success-bg: #ECFDF5;
   --pp-error-bg:   #FEF2F2;
   --pp-ink:        #111827;
-  --pp-ink-2:      #667085;
-  --pp-ink-3:      #98A2B3;
+  --pp-ink-2:      #5F6470;
+  --pp-ink-3:      #9A9AA3;
   --pp-surface:    #FFFFFF;
 
   /* Space aliases */
@@ -187,12 +203,13 @@ html {
 }
 
 body {
-  font-family: var(--font);
-  color: var(--text);
-  background-color: var(--bg); /* Padronizado */
+  font-family: var(--font-body);
+  color: var(--text-1);
+  background-color: var(--bg);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 /* ── Scroll Progress Bar ─────────────────────────────────────── */
@@ -202,7 +219,7 @@ body {
   left: 0;
   height: 3px;
   background: linear-gradient(90deg, var(--brand-orange), var(--brand-gold));
-  z-index: 9999;
+  z-index: 900;
   transform-origin: left center;
   transform: scaleX(0);
   will-change: transform;
@@ -210,29 +227,56 @@ body {
 
 /* ── Custom Cursor ───────────────────────────────────────────── */
 #custom-cursor {
-  position: fixed;
-  width: 12px;
-  height: 12px;
-  background: var(--brand-navy);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9998;
-  transform: translate(-50%, -50%);
-  transition: width 200ms var(--ease-out-quart), height 200ms var(--ease-out-quart), background 200ms, border 200ms, opacity 200ms;
-  mix-blend-mode: multiply;
+  display: none;
 }
 
 #custom-cursor.cursor-hovering {
-  width: 36px;
-  height: 36px;
-  background: transparent;
-  border: 1.5px solid var(--brand-navy);
-  opacity: 0.45;
-  mix-blend-mode: normal;
+  display: none;
 }
 
 @media (hover: none) {
   #custom-cursor { display: none; }
+}
+
+/* ── Global Motion (refinement layer) ─────────────────────────── */
+button, .btn, [role="button"] {
+  transition:
+    background-color 180ms var(--ease),
+    color 180ms var(--ease),
+    border-color 180ms var(--ease),
+    box-shadow 220ms var(--ease),
+    transform 180ms var(--ease);
+}
+button:active, .btn:active, [role="button"]:active {
+  transform: scale(0.98);
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--pp-blue);
+  outline-offset: 3px;
+}
+
+[class*="card"], [class*="Card"] {
+  transition:
+    transform 220ms var(--ease),
+    box-shadow 220ms var(--ease),
+    border-color 220ms var(--ease);
+}
+
+[class*="badge"], [class*="Badge"], [class*="chip"], [class*="Chip"] {
+  transition:
+    background-color 180ms var(--ease),
+    color 180ms var(--ease),
+    border-color 180ms var(--ease);
+}
+
+progress, [class*="progress"], [class*="Progress"] {
+  transition: width 600ms var(--ease-out-quart);
 }
 
 /* ── Reduced Motion ──────────────────────────────────────────── */
@@ -241,6 +285,10 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  button:active, .btn:active, [role="button"]:active {
+    transform: none !important;
   }
   #custom-cursor { display: none; }
   #scroll-progress { display: none; }

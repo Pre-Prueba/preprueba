@@ -3,6 +3,7 @@
   max-width: 1024px;
   margin: 0 auto;
   min-height: calc(100vh - 64px); /* assuming 64px top nav */
+  background: var(--bg-soft);
 }
 
 .header {
@@ -29,7 +30,7 @@
 }
 
 .totalBadge {
-  background: var(--bg-surface);
+  background: var(--surface-alt);
   border: 1px solid var(--border);
   padding: 4px 10px;
   border-radius: 99px;
@@ -46,7 +47,7 @@
 }
 
 .filtroSelect {
-  background: var(--bg-surface);
+  background: var(--card);
   border: 1px solid var(--border);
   color: var(--text);
   padding: 10px 16px;
@@ -58,12 +59,12 @@
 }
 
 .filtroSelect:focus {
-  border-color: var(--brand);
+  border-color: var(--pp-blue);
 }
 
 .filtroTabs {
   display: flex;
-  background: var(--bg-surface);
+  background: var(--surface-alt);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 4px;
@@ -82,8 +83,8 @@
 }
 
 .filtroTabActive {
-  background: var(--bg-3);
-  color: var(--text);
+  background: var(--blue-soft);
+  color: var(--pp-blue);
 }
 
 .studyingOverlay {
@@ -92,7 +93,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--bg);
+  background: var(--bg-warm);
   z-index: 100;
   display: flex;
   flex-direction: column;
@@ -104,7 +105,7 @@
   align-items: center;
   padding: 24px 32px;
   border-bottom: 1px solid var(--border);
-  background: #FFFFFF;
+  background: var(--card);
 }
 
 .studyTitle {
@@ -114,7 +115,7 @@
 }
 
 .closeStudyBtn {
-  background: var(--bg-3);
+  background: var(--surface-alt);
   border: none;
   border-radius: 50%;
   width: 40px;
@@ -128,7 +129,7 @@
 }
 
 .closeStudyBtn:hover {
-  background: var(--bg-ui);
+  background: var(--bg-2);
   color: var(--text);
 }
 
@@ -168,7 +169,7 @@
   height: 100%;
   backface-visibility: hidden;
   border-radius: 24px;
-  background: #FFFFFF;
+  background: var(--card);
   border: 1px solid var(--border);
   padding: 48px;
   display: flex;
@@ -181,7 +182,7 @@
 
 .cardFaceBack {
   transform: rotateY(180deg);
-  background: #FFFFFF; /* Gilded to white for V2 contrast */
+  background: var(--card);
 }
 
 .cardContent {
@@ -231,9 +232,9 @@
   transform: translateY(0);
 }
 
-.btnFacil { background: #16a34a; color: white; }
-.btnDificil { background: #dc2626; color: white; }
-.btnPendiente { background: #f59e0b; color: white; }
+.btnFacil { background: var(--success); color: white; }
+.btnDificil { background: var(--error); color: white; }
+.btnPendiente { background: var(--pp-amber); color: var(--text); }
 
 /* ── Enhanced Study Mode Styles ── */
 .studyHeaderLeft {
@@ -341,8 +342,8 @@
   border-radius: 4px;
 }
 
-.status-facil { background: rgba(22, 163, 74, 0.1); color: #16a34a; }
-.status-dificil { background: rgba(220, 38, 38, 0.1); color: #dc2626; }
+.status-facil { background: var(--success-bg); color: var(--success); }
+.status-dificil { background: var(--error-bg); color: var(--error); }
 
 .flipHint {
   margin-top: 40px;
@@ -408,7 +409,7 @@
 }
 
 .card {
-  background: #FFFFFF;
+  background: var(--card);
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 24px;
@@ -446,9 +447,9 @@
   font-weight: 600;
 }
 
-.estado-facil { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
-.estado-dificil { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
-.estado-pendiente { background: var(--bg-3); color: var(--text-2); }
+.estado-facil { background: var(--success-bg); color: var(--success); }
+.estado-dificil { background: var(--error-bg); color: var(--error); }
+.estado-pendiente { background: var(--warn-bg); color: var(--pp-amber-dark); }
 
 .emptyState {
   display: flex;
@@ -457,7 +458,7 @@
   justify-content: center;
   padding: 64px 24px;
   text-align: center;
-  background: #FFFFFF;
+  background: var(--card);
   border: 1px dashed var(--border);
   border-radius: 24px;
   margin-top: 24px;
@@ -513,7 +514,7 @@
 }
 
 .estudiarBtn {
-  background: var(--brand, #ea580c);
+  background: var(--pp-blue);
   color: white;
   padding: 12px 24px;
   border-radius: 99px;
@@ -527,6 +528,6 @@
 }
 
 .estudiarBtn:hover {
-  opacity: 0.9;
+  background: var(--pp-blue-dark);
   transform: translateY(-2px);
 }

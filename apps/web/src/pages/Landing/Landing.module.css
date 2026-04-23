@@ -988,7 +988,7 @@
   transition: width 1.1s var(--ease-out-quart);
 }
 .barFillGray { background: rgba(255,255,255,0.25); }
-.barFillOrange { background: linear-gradient(90deg, var(--brand-orange), #FFB84D); }
+.barFillOrange { background: linear-gradient(90deg, var(--brand-orange), #FF9B29); }
 .barFillBlue { background: linear-gradient(90deg, #3B6BFF, #7CA3FF); }
 
 .comparisonFootnote {

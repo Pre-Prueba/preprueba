@@ -4,7 +4,7 @@
 
 .pageContainer {
   min-height: 100vh;
-  background: var(--bg);
+  background: var(--bg-soft);
   display: flex;
   flex-direction: column;
   color: var(--text);
@@ -12,7 +12,7 @@
 }
 
 .header {
-  background: rgba(247, 249, 252, 0.95);
+  background: rgba(251, 246, 242, 0.95);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
@@ -247,7 +247,7 @@
 
 .feedbackCard {
   background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(6, 51, 153, 0.08);
+  border: 1px solid rgba(53, 92, 245, 0.08);
   border-radius: var(--radius-lg);
   padding: var(--space-4);
 }
@@ -285,7 +285,7 @@
 
 .textarea:focus {
   border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(6, 51, 153, 0.10);
+  box-shadow: 0 0 0 3px rgba(53, 92, 245, 0.10);
 }
 
 .textareaCount {
@@ -345,7 +345,7 @@
   justify-content: center;
   align-items: center;
   margin: 0 auto var(--space-6);
-  box-shadow: 0 0 0 8px rgba(6, 51, 153, 0.08);
+  box-shadow: 0 0 0 8px rgba(53, 92, 245, 0.08);
 }
 
 .scorePct {

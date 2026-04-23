@@ -97,11 +97,11 @@
 }
 
 .actionBtn.liked {
-  color: #ef4444;
+  color: var(--pp-orange);
 }
 
 .actionBtn.liked:hover {
-  background: #fef2f2;
+  background: var(--orange-soft);
 }
 
 /* Replies Section */

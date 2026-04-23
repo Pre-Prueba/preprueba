@@ -63,7 +63,7 @@ export function PostCard({ post }: Props) {
           <div>
             <div className={s.authorName} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
               {post.author.name}
-              {isTopContributor && <Star size={14} color="#EF8F00" fill="#EF8F00" title="Top Contribuidor" />}
+              {isTopContributor && <Star size={14} color="var(--pp-orange)" fill="var(--pp-orange)" title="Top Contribuidor" />}
             </div>
             <div className={s.metaInfo}>
               <span>{timeAgo(post.createdAt)}</span>

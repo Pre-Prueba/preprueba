@@ -6,9 +6,9 @@ interface ProgressBarProps {
 }
 
 const gradients: Record<string, string> = {
-  blue:    'linear-gradient(90deg, var(--blue) 0%, var(--blue-mid) 100%)',
-  orange:  'linear-gradient(90deg, var(--orange) 0%, var(--orange-deep) 100%)',
-  success: 'linear-gradient(90deg, var(--success) 0%, #2dd4a7 100%)',
+  blue:    'linear-gradient(90deg, var(--pp-blue) 0%, var(--pp-blue-dark) 100%)',
+  orange:  'linear-gradient(90deg, var(--pp-orange) 0%, var(--pp-amber-dark) 100%)',
+  success: 'linear-gradient(90deg, var(--success) 0%, #16A34A 100%)',
 };
 
 export function ProgressBar({ value, height = 8, variant = 'blue', animated = true }: ProgressBarProps) {
@@ -19,7 +19,7 @@ export function ProgressBar({ value, height = 8, variant = 'blue', animated = tr
       style={{
         width: '100%',
         height,
-        background: 'var(--surface)',
+        background: 'var(--bg-2)',
         borderRadius: 'var(--radius-full)',
         overflow: 'hidden',
       }}
@@ -27,6 +27,7 @@ export function ProgressBar({ value, height = 8, variant = 'blue', animated = tr
       aria-valuenow={clamped}
       aria-valuemin={0}
       aria-valuemax={100}
+      aria-label="Progreso"
     >
       <div
         style={{

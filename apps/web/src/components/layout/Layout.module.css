@@ -2,26 +2,26 @@
    PREPRUEBA — TopNav Layout (Ferretto Style)
    ═══════════════════════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&display=swap');
-
-:root {
-  --pp-blue: #063399;
-  --pp-orange: #EF8F00;
-  --pp-ink: #0D1525;
-  --pp-ink-2: #475569;
-  --pp-ink-3: #9CA3AF;
+/* Tokens locais — tokens.css e globals.css já definem estes. Mantidos
+   só como fallback defensivo caso este CSS carregue antes. */
+.layoutScope {
+  --pp-blue: #355CF5;
+  --pp-orange: #FF6624;
+  --pp-ink: #111827;
+  --pp-ink-2: #5F6470;
+  --pp-ink-3: #9A9AA3;
   --pp-surface: #FFFFFF;
   --pp-base: var(--bg);
-  --pp-border: #EBEBEB;
+  --pp-border: rgba(72, 40, 28, 0.07);
 }
 
 /* ── APP ROOT ── */
 .appRoot {
-  min-height: 100vh;
+  min-height: 100dvh;
   background: var(--bg);
   display: flex;
   flex-direction: column;
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: var(--font-body);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -35,7 +35,7 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px rgba(72, 40, 28, 0.05);
 }
 
 .topNavContent {
@@ -68,11 +68,11 @@
   color: white;
   font-weight: 800;
   font-size: 16px;
-  font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+  font-family: var(--font-display);
 }
 
 .logoText {
-  font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+  font-family: var(--font-display);
   font-size: 16px;
   font-weight: 800;
   letter-spacing: -0.02em;
@@ -94,20 +94,21 @@
 }
 
 .navLink {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  padding: 8px 0;
-  border-radius: 8px;
+  padding: 8px 14px;
+  border-radius: 10px;
   border: none;
   background: transparent;
   color: var(--pp-ink-2);
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.12s ease;
+  transition: background-color 160ms var(--ease, ease), color 160ms var(--ease, ease);
   text-decoration: none;
   white-space: nowrap;
 }
@@ -126,11 +127,24 @@
 
 .navLink:hover {
   color: var(--pp-blue);
+  background: var(--surface-alt, #FDF9F6);
 }
 
 .navLink.navLinkActive {
   color: var(--pp-blue);
   font-weight: 600;
+  background: var(--blue-soft, #EEF2FF);
+}
+
+.navLink.navLinkActive::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 9px;
+  bottom: 9px;
+  width: 3px;
+  border-radius: 3px;
+  background: var(--pp-blue);
 }
 
 /* Right Section */
@@ -189,7 +203,7 @@
   background: var(--pp-surface);
   border: 1px solid var(--pp-border);
   border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 20px rgba(72, 40, 28, 0.10);
   min-width: 280px;
   z-index: 101;
   margin-top: 8px;
@@ -201,7 +215,7 @@
 }
 
 .profileName {
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   font-weight: 600;
   color: var(--pp-ink);
@@ -209,7 +223,7 @@
 }
 
 .profileEmail {
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: var(--font-body);
   font-size: 12px;
   color: var(--pp-ink-3);
   margin: 0;
@@ -229,7 +243,7 @@
   border: none;
   background: transparent;
   color: var(--pp-ink-2);
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -247,7 +261,7 @@
 }
 
 .profileMenuItem:hover {
-  background: var(--pp-base);
+  background: var(--surface-alt);
   color: var(--pp-ink);
 }
 
@@ -270,7 +284,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(35, 41, 168, 0.35);
   z-index: 99;
   display: none;
 }
@@ -298,7 +312,7 @@
   border: none;
   background: transparent;
   color: var(--pp-ink-2);
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -318,9 +332,10 @@
 }
 
 .mobileNavLink.mobileNavLinkActive {
-  background: #EEF2FF;
+  background: var(--blue-soft);
   color: var(--pp-blue);
   font-weight: 600;
+  box-shadow: inset 3px 0 0 var(--pp-blue);
 }
 
 .mobileMenuDivider {
@@ -367,7 +382,7 @@
     gap: 16px;
   }
 
-  .navLinks {
+  .navLinksCenter {
     display: none;
   }
 

@@ -1,43 +1,88 @@
 /* ═══════════════════════════════════════════════════════════════════
    PREPRUEBA — Global Design Tokens
-   Fonte única da verdade para todo o sistema de design.
-   Importar ou usar via :root sempre que necessário.
+   Paleta oficial: laranja #FF6624/#FF9B29, creme #F2E7E1, azul #355CF5/#2329A8
+   Distribuição-alvo: ~60% neutro quente / 25% azul / 10% laranja / 5% azul profundo
    ═══════════════════════════════════════════════════════════════════ */
 
 :root {
-  /* ── Cores Base ── */
-  --bg:            #F6F7FB;
-  --bg-2:          #F0F2F5;
-  --card:          #FFFFFF;
-  --text:          #111827;
-  --text-2:        #667085;
-  --text-3:        #98A2B3;
+  /* ── Brand core (paleta oficial) ── */
+  --pp-blue:        #355CF5;
+  --pp-blue-dark:   #2329A8;
+  --pp-blue-light:  #EEF2FF;
+  --pp-orange:      #FF6624;
+  --pp-amber:       #FF9B29;
+  --pp-amber-dark:  #E55A1A;
+  --pp-cream:       #F2E7E1;
 
-  /* ── Bordas ── */
-  --border:        rgba(17, 24, 39, 0.05);
-  --border-hover:  rgba(17, 24, 39, 0.10);
+  /* ── Backgrounds (warm neutral base — era cinza frio) ── */
+  --bg:            #F7EFEA;
+  --bg-warm:       #F2E7E1;
+  --bg-soft:       #FBF6F2;
+  --bg-2:          #EDE2DB;
+  --card:          #FFFFFF;
+  --surface:       #FFFFFF;
+  --surface-alt:   #FDF9F6;
+
+  /* ── Text ── */
+  --text:          #111827;
+  --text-1:        #111827;
+  --text-2:        #5F6470;
+  --text-3:        #9A9AA3;
+  --text-primary:   var(--text-1);
+  --text-secondary: var(--text-2);
+
+  /* ── Borders (warm brown tint) ── */
+  --border:        rgba(72, 40, 28, 0.07);
+  --border-hover:  rgba(72, 40, 28, 0.12);
+  --border-light:  rgba(72, 40, 28, 0.04);
 
   /* ── Azul ── */
-  --blue:          #063399;
-  --blue-dark:     #042a7d;
-  --blue-soft:     #EAF1FF;
-  --blue-hover:    #052c85;
-  --blue-glow:     rgba(6, 51, 153, 0.12);
+  --blue:          var(--pp-blue);
+  --blue-dark:     var(--pp-blue-dark);
+  --blue-soft:     #EEF2FF;
+  --blue-hover:    #2B4FE8;
+  --blue-support:  #5B8CFF;
+  --blue-glow:     rgba(53, 92, 245, 0.12);
+  --blue-dim:      rgba(53, 92, 245, 0.10);
+
+  /* ── Laranja / âmbar ── */
+  --orange:        var(--pp-orange);
+  --orange-warm:   var(--pp-amber);
+  --orange-soft:   #FFE8DC;
+  --amber-soft:    #FFF3E8;
+
+  /* ── Neutro Quente ── */
+  --neutral-warm:  var(--pp-cream);
+  --brand-cream:   var(--pp-cream);
+
+  /* ── Aliases legados (retrocompat — mapeiam para paleta oficial) ── */
+  --color-primary: var(--pp-blue);
+  --color-accent:  var(--pp-orange);
+  --brand-blue:    var(--pp-blue);
+  --brand-orange:  var(--pp-orange);
+  --brand-navy:    var(--pp-blue-dark);
+  --brand-white:   #FFFFFF;
+  --brand-text:    var(--text-1);
+  --brand-muted:   var(--text-2);
+  --brand-border:  var(--border);
+  --brand-gold:    var(--pp-amber);
 
   /* ── Semânticas ── */
   --success:       #16A34A;
   --success-bg:    #ECFDF5;
   --error:         #DC2626;
   --error-bg:      #FEF2F2;
-  --warn:          #D4870A;
-  --warn-bg:       #FFF7ED;
+  --warn:          var(--pp-amber);
+  --warn-bg:       #FFF3E8;
 
-  /* ── Sombras ── */
-  --shadow-xs:  0 1px 2px rgba(16, 24, 40, 0.04);
-  --shadow-sm:  0 1px 8px rgba(16, 24, 40, 0.05), 0 0 0 1px rgba(16, 24, 40, 0.04);
-  --shadow-md:  0 4px 16px rgba(16, 24, 40, 0.07), 0 0 0 1px rgba(16, 24, 40, 0.04);
-  --shadow-lg:  0 8px 28px rgba(16, 24, 40, 0.09), 0 0 0 1px rgba(16, 24, 40, 0.04);
-  --shadow-blue: 0 4px 14px rgba(6, 51, 153, 0.18);
+  /* ── Sombras (warm brown tint — era preto azulado) ── */
+  --shadow-xs:  0 1px 2px rgba(72, 40, 28, 0.04);
+  --shadow-sm:  0 2px 10px rgba(72, 40, 28, 0.05), 0 0 0 1px rgba(72, 40, 28, 0.04);
+  --shadow-md:  0 4px 20px rgba(72, 40, 28, 0.07), 0 0 0 1px rgba(72, 40, 28, 0.04);
+  --shadow-lg:  0 12px 36px rgba(72, 40, 28, 0.10), 0 0 0 1px rgba(72, 40, 28, 0.04);
+  --shadow-blue:       0 6px 20px rgba(53, 92, 245, 0.20);
+  --shadow-orange:     0 8px 24px rgba(255, 102, 36, 0.22);
+  --shadow-glow-orange: 0 0 32px rgba(255, 155, 41, 0.25);
 
   /* ── Radii ── */
   --r-sm:   8px;
@@ -46,11 +91,22 @@
   --r-xl:   20px;
   --r-2xl:  24px;
   --r-full: 9999px;
+  --radius-sm:   var(--r-sm);
+  --radius-md:   var(--r-md);
+  --radius-lg:   var(--r-lg);
+  --radius-xl:   var(--r-xl);
+  --radius-2xl:  var(--r-2xl);
+  --radius-full: var(--r-full);
 
   /* ── Tipografia ── */
-  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font:         'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body:    var(--font);
+  --font-display: 'Epilogue', 'Bricolage Grotesque', var(--font);
+  --font-mono:    'JetBrains Mono', ui-monospace, monospace;
 
   /* ── Easing ── */
-  --ease:        cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.15);
+  --ease:            cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring:     cubic-bezier(0.175, 0.885, 0.32, 1.15);
+  --ease-out-quart:  cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out:     cubic-bezier(0.4, 0, 0.2, 1);
 }

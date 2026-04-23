@@ -1,9 +1,9 @@
 .card {
-  background: var(--white);
+  background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   padding: var(--space-4);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
@@ -13,7 +13,7 @@
 
 .card:hover {
   border-color: var(--border-hover);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  box-shadow: var(--shadow-md);
 }
 
 .header {
@@ -68,11 +68,11 @@
   letter-spacing: 0.05em;
 }
 
-.typeDuda { background: rgba(239, 143, 0, 0.1); color: var(--orange); }
-.typeLogro { background: rgba(34, 197, 94, 0.1); color: rgb(21, 128, 61); }
-.typeConsejo { background: rgba(59, 130, 246, 0.1); color: rgb(29, 78, 216); }
-.typeFoto { background: rgba(168, 85, 247, 0.1); color: rgb(126, 34, 206); }
-.typeDebate { background: var(--bg-hover); color: var(--text-2); }
+.typeDuda { background: var(--orange-soft); color: var(--pp-amber-dark); }
+.typeLogro { background: var(--success-bg); color: var(--success); }
+.typeConsejo { background: var(--blue-soft); color: var(--pp-blue-dark); }
+.typeFoto { background: #F2EDFF; color: #6D28D9; }
+.typeDebate { background: var(--surface-alt); color: var(--text-2); }
 
 .content {
   display: flex;
@@ -120,7 +120,7 @@
 
 .regularTag {
   color: var(--text-2);
-  background: var(--bg-hover);
+  background: var(--surface-alt);
 }
 
 .actions {
@@ -151,10 +151,10 @@
 }
 
 .actionBtn.liked {
-  color: #E11D48;
+  color: var(--pp-orange);
 }
 .actionBtn.liked:hover {
-  color: #BE123C;
+  color: var(--pp-amber-dark);
 }
 
 .actionBtn.saved {

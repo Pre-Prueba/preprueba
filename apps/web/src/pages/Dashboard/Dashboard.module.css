@@ -1,25 +1,23 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
 :root {
   /* Alinhado com tokens.css / V2 */
-  --bg-main: var(--bg, #F6F7FB);
+  --bg-main: var(--bg, #F7EFEA);
   --surface: #FFFFFF;
-  --surface-alt: #F9FAFB;
-  --surface-hover: #F3F4F6;
+  --surface-alt: #FDF9F6;
+  --surface-hover: var(--bg-soft);
 
   --text-1: #111827;
-  --text-2: #4B5563;
-  --text-3: #9CA3AF;
+  --text-2: #5F6470;
+  --text-3: #9A9AA3;
 
-  --border: var(--border-color, rgba(17, 24, 39, 0.05));
-  --border-light: rgba(17, 24, 39, 0.03);
+  --border: var(--border-color, rgba(72, 40, 28, 0.07));
+  --border-light: rgba(72, 40, 28, 0.04);
 
-  --blue-main: var(--blue, #063399);
-  --blue-soft: var(--blue-glow, rgba(6, 51, 153, 0.05));
-  --blue-support: #5B8CFF;
+  --blue-main: var(--blue, #355CF5);
+  --blue-soft: #EEF2FF;
+  --blue-support: var(--pp-blue-dark);
 
-  --success: #10B981;
-  --warning: #F59E0B;
+  --success: #16A34A;
+  --warning: var(--pp-amber);
 
   --radius-xl: var(--r-xl, 24px);
   --radius-lg: var(--r-lg, 16px);
@@ -48,8 +46,8 @@
 
 /* R6: Continue card border pulse — 3 pulses then stops */
 @keyframes borderPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(10, 91, 255, 0); }
-  50%       { box-shadow: 0 0 0 3px rgba(10, 91, 255, 0.08); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(53, 92, 245, 0); }
+  50%       { box-shadow: 0 0 0 3px rgba(53, 92, 245, 0.08); }
 }
 
 /* R3: Timeline dot pulse on most recent item */
@@ -68,7 +66,7 @@
    PAGE
 ══════════════════════════════════════════ */
 .page {
-  font-family: 'Inter', -apple-system, sans-serif;
+  font-family: var(--font-body);
   background-color: var(--bg-main);
   min-height: 100vh;
   padding: 40px;
@@ -136,7 +134,7 @@
 .btnPrimary:hover {
   background: var(--blue-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(6, 55, 164, 0.25);
+  box-shadow: 0 4px 14px rgba(53, 92, 245, 0.25);
 }
 
 .btnPrimary:active {
@@ -204,7 +202,7 @@
 
 /* Hero Main */
 .heroCard {
-  background: var(--surface);
+  background: linear-gradient(135deg, var(--pp-blue-dark), var(--pp-blue));
   border-radius: var(--radius-xl);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
@@ -216,6 +214,16 @@
   justify-content: space-between;
 }
 
+.heroCard .heroGreeting,
+.heroCard .heroName,
+.heroCard .heroSubtitle {
+  color: #fff;
+}
+
+.heroCard .heroSubtitle {
+  opacity: 0.86;
+}
+
 /* O1: Hero glow drifts slowly */
 .heroGlow {
   position: absolute;
@@ -223,10 +231,27 @@
   right: -100px;
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(10, 91, 255, 0.05) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 102, 36, 0.16) 0%, transparent 70%);
   border-radius: 50%;
   pointer-events: none;
   animation: heroGlowDrift 8s ease-in-out infinite;
+}
+
+.heroActions .btnPrimary {
+  background: var(--pp-orange);
+  box-shadow: var(--shadow-orange);
+}
+
+.heroActions .btnPrimary:hover {
+  background: var(--pp-amber-dark);
+}
+
+.heroActions .btnGhost {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.heroActions .btnGhost:hover {
+  color: #fff;
 }
 
 .heroContent {
@@ -275,13 +300,13 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: var(--surface-alt);
-  border: 1px solid var(--border-light);
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   padding: 6px 12px;
   border-radius: 100px;
   font-size: 12px;
   font-weight: 500;
-  color: var(--text-1);
+  color: #fff;
 }
 
 .chipDot {
@@ -338,7 +363,7 @@
   font-size: 12px;
   font-weight: 600;
   color: var(--pp-orange);
-  background: rgba(239, 143, 0, 0.08); /* Transparent orange */
+  background: var(--orange-soft);
   padding: 4px 10px;
   border-radius: 100px;
 }
@@ -479,7 +504,7 @@
   cursor: pointer;
   border: 1px solid transparent;
   background: linear-gradient(var(--surface), var(--surface)) padding-box,
-              linear-gradient(135deg, rgba(10, 91, 255, 0.2) 0%, rgba(10, 91, 255, 0) 100%) border-box;
+              linear-gradient(135deg, rgba(53, 92, 245, 0.2) 0%, rgba(53, 92, 245, 0) 100%) border-box;
   /* 3 pulses after load, then stops — subtle attention signal */
   animation: borderPulse 3s ease-in-out 1.2s 3;
 }
@@ -487,7 +512,7 @@
 .continueCard:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
-  border-color: rgba(10, 91, 255, 0.3);
+  border-color: rgba(53, 92, 245, 0.3);
 }
 
 .continueCardInner {
@@ -616,7 +641,7 @@
 }
 
 .recomCard:hover {
-  border-color: rgba(6, 55, 164, 0.15); /* Brand blue with transparency */
+  border-color: rgba(53, 92, 245, 0.15);
   box-shadow: var(--shadow-md);
 }
 
@@ -642,7 +667,7 @@
   font-size: 12px;
   font-weight: 600;
   color: var(--pp-blue);
-  background: rgba(6, 55, 164, 0.08);
+  background: rgba(53, 92, 245, 0.08);
   padding: 6px 12px;
   border-radius: 100px;
 }
@@ -686,8 +711,8 @@
 }
 
 .materiaRow:hover {
-  background: #F9FAFB;
-  border-color: rgba(10, 91, 255, 0.12);
+  background: var(--surface-alt);
+  border-color: rgba(53, 92, 245, 0.12);
 }
 
 .materiaLeft {
@@ -895,8 +920,8 @@
 }
 
 .rankItem:hover {
-  background: #F9FAFB;
-  border-color: rgba(10, 91, 255, 0.12);
+  background: var(--surface-alt);
+  border-color: rgba(53, 92, 245, 0.12);
 }
 
 .rankPosition {

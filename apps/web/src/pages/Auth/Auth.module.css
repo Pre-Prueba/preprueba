@@ -108,7 +108,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: rgba(240,140,26,0.18);
+  background: rgba(255,102,36,0.18);
   border: 1.5px solid var(--brand-orange);
   display: flex;
   align-items: center;
@@ -121,7 +121,7 @@
 }
 
 .panelQuote {
-  border-left: 2px solid rgba(240,140,26,0.5);
+  border-left: 2px solid rgba(255,102,36,0.5);
   padding-left: 16px;
   position: relative;
   z-index: 1;
@@ -192,7 +192,7 @@
 }
 
 .topLink a {
-  color: var(--brand-navy);
+  color: var(--pp-orange);
   font-weight: 600;
   text-decoration: none;
   border-bottom: 1.5px solid transparent;
@@ -200,7 +200,7 @@
 }
 
 .topLink a:hover {
-  border-color: var(--brand-navy);
+  border-color: var(--pp-orange);
 }
 
 /* ── Form header ─────────────────────────────── */
@@ -257,12 +257,12 @@
 }
 
 .input::placeholder {
-  color: rgba(13,27,75,0.3);
+  color: rgba(35, 41, 168, 0.34);
 }
 
 .input:focus {
-  border-color: var(--brand-orange);
-  box-shadow: 0 0 0 3px rgba(240,140,26,0.12);
+  border-color: var(--pp-blue);
+  box-shadow: 0 0 0 3px rgba(53, 92, 245, 0.14);
 }
 
 .inputError {
@@ -347,15 +347,15 @@
 }
 
 .checkLabel a {
-  color: var(--brand-navy);
+  color: var(--pp-orange);
   font-weight: 600;
   text-decoration: none;
-  border-bottom: 1px solid rgba(13,27,75,0.25);
+  border-bottom: 1px solid rgba(255,102,36,0.28);
   transition: border-color 0.15s;
 }
 
 .checkLabel a:hover {
-  border-color: var(--brand-navy);
+  border-color: var(--pp-orange);
 }
 
 /* ── Error alert ─────────────────────────────── */
@@ -375,7 +375,7 @@
   height: 52px;
   border-radius: var(--radius-md);
   border: none;
-  background: var(--brand-orange);
+  background: var(--pp-blue);
   color: #fff;
   font-family: var(--font-display);
   font-size: 1rem;
@@ -387,8 +387,8 @@
 }
 
 .submitBtn:hover:not(:disabled) {
-  background: #d97a0e;
-  box-shadow: 0 4px 16px rgba(240,140,26,0.35);
+  background: var(--pp-blue-dark);
+  box-shadow: var(--shadow-blue);
   transform: translateY(-1px);
 }
 
@@ -410,7 +410,7 @@
 }
 
 .bottomLink a {
-  color: var(--brand-navy);
+  color: var(--pp-orange);
   font-weight: 600;
   text-decoration: none;
   border-bottom: 1.5px solid transparent;
@@ -418,7 +418,7 @@
 }
 
 .bottomLink a:hover {
-  border-color: var(--brand-navy);
+  border-color: var(--pp-orange);
 }
 
 /* ── Divider ─────────────────────────────────── */

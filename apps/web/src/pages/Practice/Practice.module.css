@@ -6,7 +6,7 @@
   max-width: 960px;
   margin: 0 auto;
   padding: 28px 24px 80px;
-  font-family: var(--font);
+  font-family: var(--font-body);
   animation: pp-fadein 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
@@ -121,12 +121,35 @@
   overflow: hidden;
   box-shadow: var(--shadow-xs);
   transition: border-color 150ms ease,
-              box-shadow   150ms ease;
+              box-shadow   150ms ease,
+              transform    150ms ease;
+  border-top-width: 3px;
 }
 
 .modeCard:hover {
-  border-color: rgba(6, 51, 153, 0.25);
+  border-color: rgba(53, 92, 245, 0.25);
   box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
+}
+
+.modeCard:nth-child(1) {
+  background: linear-gradient(180deg, var(--orange-soft), var(--card) 62%);
+  border-top-color: var(--pp-orange);
+}
+
+.modeCard:nth-child(2) {
+  background: linear-gradient(180deg, var(--warn-bg), var(--card) 62%);
+  border-top-color: var(--pp-amber);
+}
+
+.modeCard:nth-child(3) {
+  background: linear-gradient(180deg, var(--blue-soft), var(--card) 62%);
+  border-top-color: var(--pp-blue);
+}
+
+.modeCard:nth-child(4) {
+  background: linear-gradient(180deg, var(--blue-soft), var(--card) 62%);
+  border-top-color: var(--pp-blue-dark);
 }
 
 .modeCard:focus-visible {
@@ -137,7 +160,7 @@
 .modeCardActive {
   border-color: var(--blue);
   background: var(--blue-soft);
-  box-shadow: 0 0 0 3px rgba(6, 51, 153, 0.08);
+  box-shadow: 0 0 0 3px rgba(53, 92, 245, 0.08);
 }
 
 /* Blue top bar that appears on active mode */
@@ -275,7 +298,7 @@
 
 .configSelect:focus {
   border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(6, 51, 153, 0.08);
+  box-shadow: 0 0 0 3px rgba(53, 92, 245, 0.08);
 }
 
 /* Segmented control (tipo / modo) */
@@ -598,7 +621,7 @@
 }
 
 .materiaCard:hover {
-  border-color: rgba(6, 51, 153, 0.25);
+  border-color: rgba(53, 92, 245, 0.25);
   box-shadow: var(--shadow-sm);
 }
 
@@ -638,8 +661,8 @@
 }
 
 .badgeEspecifica {
-  background: #FFF4E0;
-  color: #B45309;
+  background: var(--orange-soft);
+  color: var(--pp-amber-dark);
 }
 
 .materiaName {
@@ -693,7 +716,7 @@
    ══════════════════════════════ */
 
 .examenesBlock {
-  background: linear-gradient(135deg, #0D1B4B 0%, #063399 100%);
+  background: linear-gradient(135deg, var(--pp-blue-dark) 0%, var(--pp-blue) 100%);
   border-radius: var(--r-xl);
   padding: 28px 32px;
   display: flex;

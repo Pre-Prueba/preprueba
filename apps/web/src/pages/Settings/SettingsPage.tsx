@@ -126,7 +126,7 @@ export function SettingsPage() {
           {success && <div className={`${s.alert} ${s.alertSuccess}`}>{success}</div>}
 
           {/* ── Identidad */}
-          <section className={s.section}>
+          <section className={`${s.section} ${s.subscriptionSection}`}>
             <header className={s.sectionHeader}>
               <div className={s.sectionIcon}><User size={16} /></div>
               <h2 className={s.sectionTitle}>Identidad</h2>
@@ -207,7 +207,7 @@ export function SettingsPage() {
           </section>
 
           {/* ── Residencia */}
-          <section className={s.section}>
+          <section className={`${s.section} ${s.subscriptionSection}`}>
             <header className={s.sectionHeader}>
               <div className={s.sectionIcon}><MapPin size={16} /></div>
               <h2 className={s.sectionTitle}>Ubicación</h2>

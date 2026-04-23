@@ -28,7 +28,7 @@
   margin: 0;
   font-size: 11px;
   font-weight: 700;
-  color: #667085;
+  color: var(--text-3);
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -98,7 +98,7 @@
 .statLabel {
   font-size: 12px;
   font-weight: 600;
-  color: #667085;
+  color: var(--text-2);
 }
 
 .toolBar,
@@ -170,9 +170,9 @@
 }
 
 .viewToggleBtnActive {
-  background: #e9f0ff;
-  border-color: #b8cdfb;
-  color: #1244b5;
+  background: var(--blue-soft);
+  border-color: rgba(53, 92, 245, 0.22);
+  color: var(--pp-blue-dark);
 }
 
 .searchField {
@@ -187,7 +187,7 @@
   margin: 0;
   font-size: 11px;
   font-weight: 700;
-  color: #667085;
+  color: var(--text-3);
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -216,8 +216,8 @@
   min-height: 54px;
   padding: 14px 44px 14px 46px;
   border-radius: 16px;
-  border: 1px solid #7d8ca4;
-  background: #fff;
+  border: 1px solid var(--border-hover);
+  background: var(--card);
   color: var(--text);
   font-size: 14px;
   outline: none;
@@ -230,7 +230,7 @@
   margin-top: 8px;
   font-size: 12px;
   line-height: 1.5;
-  color: #667085;
+  color: var(--text-2);
 }
 
 .searchClear {
@@ -243,8 +243,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  border: 1px solid #7d8ca4;
-  background: #fff;
+  border: 1px solid var(--border-hover);
+  background: var(--card);
   color: var(--text-3);
   cursor: pointer;
 }
@@ -258,8 +258,8 @@
   min-height: 48px;
   padding: 0 16px;
   border-radius: 14px;
-  border: 1px solid #7d8ca4;
-  background: #fff;
+  border: 1px solid var(--border-hover);
+  background: var(--card);
   color: var(--text-2);
   font-size: 13px;
   font-weight: 600;
@@ -270,16 +270,17 @@
 }
 
 .filtersToggleActive {
-  background: #e9f0ff;
-  border-color: #2c5fd2;
-  color: #1244b5;
+  background: var(--pp-blue);
+  border-color: var(--pp-blue);
+  color: #fff;
+  box-shadow: var(--shadow-blue);
 }
 
 .filtersBubble {
   width: 8px;
   height: 8px;
   border-radius: 999px;
-  background: #1244b5;
+  background: var(--pp-orange);
 }
 
 .filtersPanel {
@@ -311,8 +312,8 @@
   min-height: 46px;
   padding: 10px 14px;
   border-radius: 12px;
-  border: 1px solid #7d8ca4;
-  background: #fff;
+  border: 1px solid var(--border-hover);
+  background: var(--card);
   color: var(--text);
   font-size: 13px;
   font-weight: 500;
@@ -337,8 +338,8 @@
   min-height: 38px;
   padding: 0 14px;
   border-radius: 999px;
-  border: 1px solid #7d8ca4;
-  background: #fff;
+  border: 1px solid var(--border-hover);
+  background: var(--card);
   color: var(--text-2);
   font-size: 12px;
   font-weight: 600;
@@ -348,9 +349,9 @@
 
 .toggleChipOn,
 .chip:hover {
-  background: #eef4ff;
-  border-color: #2c5fd2;
-  color: #1244b5;
+  background: var(--pp-blue);
+  border-color: var(--pp-blue);
+  color: #fff;
 }
 
 .chipCount {
@@ -361,8 +362,8 @@
   height: 24px;
   padding: 0 7px;
   border-radius: 999px;
-  background: #edf2fb;
-  color: #34507e;
+  background: var(--surface-alt);
+  color: var(--text-2);
   font-size: 11px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
@@ -431,8 +432,8 @@
   min-height: 74px;
   padding: 12px 14px;
   border-radius: 16px;
-  border: 1px solid #7d8ca4;
-  background: #fff;
+  border: 1px solid var(--border-hover);
+  background: var(--card);
   color: var(--text);
   cursor: pointer;
   text-align: left;
@@ -458,7 +459,7 @@
 .resultsCount {
   margin: 0;
   font-size: 13px;
-  color: #667085;
+  color: var(--text-2);
   line-height: 1.5;
 }
 
@@ -479,7 +480,7 @@
 .card,
 .listItem,
 .skeletonCard {
-  background: #fff;
+  background: var(--card);
   border: 1px solid var(--border);
   border-radius: 20px;
   box-shadow: var(--shadow-xs);
@@ -498,7 +499,7 @@
 .recentItem:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
-  border-color: #b8cdfb;
+  border-color: var(--border-hover);
 }
 
 .listItem {
@@ -576,8 +577,8 @@
   padding: 0 9px;
   border-radius: 999px;
   border: 1px solid var(--border);
-  background: #f8fafc;
-  color: #48566b;
+  background: var(--surface-alt);
+  color: var(--text-2);
   font-size: 11px;
   font-weight: 600;
 }
@@ -600,57 +601,57 @@
 }
 
 .tipoOficial {
-  background: #eaf1ff;
-  color: #1244b5;
-  border-color: #b8cdfb;
+  background: var(--blue-soft);
+  color: var(--pp-blue-dark);
+  border-color: rgba(53, 92, 245, 0.18);
 }
 
 .tipoModelo {
-  background: #ebf9ef;
-  color: #17643b;
-  border-color: #9fd5b3;
+  background: var(--success-bg);
+  color: var(--success);
+  border-color: rgba(22, 163, 74, 0.22);
 }
 
 .tipoConv {
-  background: #fff4e6;
-  color: #9a4c02;
-  border-color: #f3c792;
+  background: var(--orange-soft);
+  color: var(--pp-amber-dark);
+  border-color: rgba(255, 102, 36, 0.18);
 }
 
 .tipoOrient {
-  background: #f2edff;
-  color: #6441c3;
-  border-color: #cbb9ff;
+  background: var(--blue-soft);
+  color: var(--pp-blue-dark);
+  border-color: rgba(35, 41, 168, 0.18);
 }
 
 .tipoCriterios {
-  background: #fff6d4;
-  color: #7e5700;
-  border-color: #eacb78;
+  background: var(--warn-bg);
+  color: var(--pp-amber-dark);
+  border-color: rgba(255, 155, 41, 0.22);
 }
 
 .tipoSolucionario {
-  background: #ecf7ff;
-  color: #0c5c8f;
-  border-color: #a9d6f5;
+  background: var(--blue-soft);
+  color: var(--pp-blue);
+  border-color: rgba(53, 92, 245, 0.18);
 }
 
 .officialBadge {
-  background: #eef4ff;
-  color: #1244b5;
-  border-color: #b8cdfb;
+  background: var(--orange-soft);
+  color: var(--pp-amber-dark);
+  border-color: rgba(255, 102, 36, 0.18);
 }
 
 .interactiveBadge {
-  background: #ebfbf3;
-  color: #0d7a45;
-  border-color: #9bddb7;
+  background: var(--success-bg);
+  color: var(--success);
+  border-color: rgba(22, 163, 74, 0.22);
 }
 
 .yearBadge {
-  background: #f6f8fb;
-  color: #4a5972;
-  border-color: #c8d2e0;
+  background: var(--surface-alt);
+  color: var(--text-2);
+  border-color: var(--border);
   font-variant-numeric: tabular-nums;
 }
 
@@ -676,20 +677,20 @@
 }
 
 .btnPdf {
-  background: #fff;
-  border-color: #7d8ca4;
+  background: var(--card);
+  border-color: var(--border-hover);
   color: var(--text-2);
 }
 
 .btnDetail {
-  background: #e9f0ff;
-  border-color: #b8cdfb;
-  color: #1244b5;
+  background: var(--blue-soft);
+  border-color: rgba(53, 92, 245, 0.18);
+  color: var(--pp-blue-dark);
 }
 
 .btnResolve {
-  background: #1244b5;
-  border-color: #1244b5;
+  background: var(--pp-blue);
+  border-color: var(--pp-blue);
   color: #fff;
 }
 
@@ -718,7 +719,7 @@
 
 .skeletonLine,
 .skeletonBtn {
-  background: #eef3f8;
+  background: var(--bg-2);
   border-radius: 8px;
   animation: shimmer 1.35s ease infinite;
 }
@@ -749,8 +750,8 @@
   padding: 56px 24px;
   text-align: center;
   border-radius: 22px;
-  border: 1px dashed #c2cede;
-  background: #f9fbfe;
+  border: 1px dashed var(--border-hover);
+  background: var(--bg-soft);
 }
 
 .emptyIcon {
@@ -760,9 +761,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #c2cede;
-  background: #fff;
-  color: #53637d;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text-2);
 }
 
 .emptyTitle {
@@ -804,7 +805,7 @@
 .clearBtn:focus-visible,
 .backBtn:focus-visible,
 .detailLinkCard:focus-visible {
-  outline: 3px solid #1244b5;
+  outline: 3px solid var(--pp-blue);
   outline-offset: 2px;
 }
 
@@ -814,25 +815,25 @@
 .toggleChip:hover,
 .paginationBtn:hover,
 .clearBtn:hover {
-  border-color: #2c5fd2;
-  color: #1244b5;
+  border-color: var(--pp-blue);
+  color: var(--pp-blue);
 }
 
 .btnPdf:hover {
-  border-color: #2c5fd2;
-  color: #1244b5;
-  background: #eef4ff;
+  border-color: var(--pp-blue);
+  color: var(--pp-blue);
+  background: var(--blue-soft);
 }
 
 .btnDetail:hover {
-  background: #1244b5;
+  background: var(--pp-blue-dark);
   color: #fff;
-  border-color: #1244b5;
+  border-color: var(--pp-blue-dark);
 }
 
 .btnResolve:hover {
-  background: #0b3590;
-  border-color: #0b3590;
+  background: var(--pp-blue-dark);
+  border-color: var(--pp-blue-dark);
 }
 
 @media (max-width: 1024px) {
@@ -971,9 +972,9 @@
   align-items: center;
   padding: 6px 12px;
   border-radius: 999px;
-  background: #e9f0ff;
-  color: #1244b5;
-  border: 1px solid #b8cdfb;
+  background: var(--blue-soft);
+  color: var(--pp-blue-dark);
+  border: 1px solid rgba(53, 92, 245, 0.18);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -1074,7 +1075,7 @@
 }
 
 .detailLinkCard:hover {
-  border-color: #2c5fd2;
+  border-color: var(--pp-blue);
   transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
 }
