@@ -3,11 +3,10 @@
    ═══════════════════════════════════════════════════════════════ */
 
 .statsPage {
-  padding: 32px 24px 80px;
+  padding: 0 0 80px;
   max-width: 1100px;
   margin: 0 auto;
-  min-height: calc(100vh - 64px);
-  animation: fadeUp 0.5s var(--ease) both;
+  animation: fadeUp 0.4s var(--ease) both;
 }
 
 @keyframes fadeUp {

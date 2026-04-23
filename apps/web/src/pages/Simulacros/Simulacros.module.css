@@ -1,84 +1,91 @@
+/* ═══════════════════════════════════════════════════════════════════
+   PREPRUEBA — Simulacros v3
+   ═══════════════════════════════════════════════════════════════════ */
+
 .page {
-  padding: 32px 24px 60px;
   max-width: 1000px;
   margin: 0 auto;
-  min-height: calc(100vh - 64px);
-  animation: fadeUp 0.4s var(--ease) both;
+  font-family: var(--font-body);
+  animation: pp-fadein 0.3s var(--ease) both;
 }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes pp-fadein {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
+/* ── HEADER ── */
 .header {
-  margin-bottom: 48px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid var(--border);
+  margin-bottom: 32px;
 }
 
 .title {
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--text);
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text-1);
   letter-spacing: -0.03em;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
+  line-height: 1.15;
 }
 
 .subtitle {
-  font-size: 15px;
-  color: var(--text-2);
+  font-size: 14px;
+  color: var(--text-3);
+  font-weight: 400;
 }
 
+/* ── GRID ── */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 24px;
+  gap: 20px;
 }
 
+/* ── CARD ── */
 .card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 24px;
-  padding: 32px;
+  border-radius: var(--r-xl);
+  padding: 28px;
   display: flex;
   flex-direction: column;
   box-shadow: var(--shadow-sm);
-  transition: all 0.3s var(--ease);
+  transition: transform 150ms var(--ease), box-shadow 150ms var(--ease), border-color 150ms var(--ease);
   position: relative;
   overflow: hidden;
 }
 
 .card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
   box-shadow: var(--shadow-md);
-  border-color: var(--blue-soft);
+  border-color: var(--border-blue);
 }
 
 .cardIcon {
-  width: 56px;
-  height: 56px;
-  border-radius: 16px;
-  background: var(--bg);
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-md);
+  background: var(--blue-soft);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 24px;
-  border: 1px solid var(--border);
+  margin-bottom: 20px;
+  color: var(--pp-blue);
 }
 
 .cardTitle {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
-  color: var(--text);
-  margin-bottom: 12px;
+  color: var(--text-1);
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
 }
 
 .cardDesc {
   color: var(--text-2);
-  font-size: var(--text-sm);
-  line-height: 1.5;
-  margin-bottom: 24px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  margin-bottom: 20px;
   flex: 1;
 }
 
@@ -86,47 +93,50 @@
   display: flex;
   justify-content: space-between;
   border-top: 1px solid var(--border);
-  padding-top: 20px;
-  margin-bottom: 24px;
+  padding-top: 16px;
+  margin-bottom: 20px;
 }
 
 .metaItem {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   color: var(--text-3);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
 }
 
 .cardAction {
-  background: var(--card);
-  color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 14px;
+  background: var(--pp-blue);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-md);
+  padding: 12px;
   font-weight: 700;
   font-size: 14px;
   cursor: pointer;
+  font-family: var(--font-body);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: all 0.2s ease;
-  box-shadow: var(--shadow-xs);
+  transition: background 150ms var(--ease), transform 150ms var(--ease), box-shadow 150ms var(--ease);
+  box-shadow: var(--shadow-blue);
 }
 
 .cardAction:hover:not(:disabled) {
-  background: var(--bg-2);
-  border-color: var(--text-3);
-  transform: translateY(-2px);
+  background: var(--blue-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(53, 92, 245, 0.30);
 }
 
 .cardAction:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
+/* ── SETUP OVERLAY ── */
 .setupOverlay {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -135,37 +145,40 @@
   padding: 24px;
   display: flex;
   flex-direction: column;
-  animation: slideUp 0.3s var(--ease) both;
+  border-radius: var(--r-xl);
+  animation: slideUp 0.28s var(--ease) both;
 }
 
 @keyframes slideUp {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
 }
 
 .setupHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .selectMateria {
   width: 100%;
-  padding: 12px 16px;
+  padding: 11px 14px;
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--r-md);
   font-size: 14px;
   background: var(--bg);
-  color: var(--text);
+  color: var(--text-1);
   outline: none;
   margin-bottom: auto;
-  font-family: inherit;
-  font-weight: 600;
+  font-family: var(--font-body);
+  font-weight: 500;
+  transition: border-color 150ms var(--ease);
 }
 
 .selectMateria:focus {
-  border-color: var(--blue);
+  border-color: var(--pp-blue);
+  box-shadow: 0 0 0 3px var(--blue-dim);
 }
 
 .customSetupRow {
@@ -177,21 +190,22 @@
 
 .setupLabel {
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--text-3);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.09em;
   display: flex;
   justify-content: space-between;
 }
 
 .setupLabel span {
-  color: var(--blue);
+  color: var(--pp-blue);
+  font-weight: 700;
 }
 
 .rangeInput {
   width: 100%;
-  accent-color: var(--blue);
+  accent-color: var(--pp-blue);
   cursor: pointer;
   height: 6px;
 }
@@ -204,18 +218,25 @@
 .btnOption {
   flex: 1;
   padding: 10px;
-  border-radius: 10px;
+  border-radius: var(--r-md);
   border: 1px solid var(--border);
   background: var(--bg);
   color: var(--text-2);
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  font-family: var(--font-body);
+  transition: all 150ms var(--ease);
+}
+
+.btnOption:hover {
+  border-color: var(--pp-blue);
+  color: var(--pp-blue);
 }
 
 .btnOptionActive {
-  background: var(--blue);
+  background: var(--pp-blue);
   color: white;
-  border-color: var(--blue);
+  border-color: var(--pp-blue);
+  box-shadow: var(--shadow-blue);
 }

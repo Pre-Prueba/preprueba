@@ -165,37 +165,6 @@ const ProgressRing = ({ progress, size = 140, strokeWidth = 10 }: {
 };
 
 /* ── Hero Graphic ── */
-const HeroGraphic = () => (
-  <div className={s.heroGraphic} aria-hidden="true">
-    <svg width="220" height="180" viewBox="0 0 220 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="20" y="140" width="180" height="6" rx="3" fill="rgba(53, 92, 245, 0.06)"/>
-      <rect x="20" y="140" width="126" height="6" rx="3" fill="url(#heroBarGrad)"/>
-      <rect x="20" y="24" width="100" height="8" rx="4" fill="rgba(17,24,39,0.08)"/>
-      <rect x="20" y="40" width="160" height="6" rx="3" fill="rgba(17,24,39,0.05)"/>
-      <rect x="20" y="54" width="130" height="6" rx="3" fill="rgba(17,24,39,0.05)"/>
-      <rect x="110" y="70" width="90" height="52" rx="10" fill="white" fillOpacity="0.7" stroke="rgba(53, 92, 245, 0.10)" strokeWidth="1"/>
-      <rect x="120" y="82" width="40" height="5" rx="2.5" fill="rgba(53, 92, 245, 0.15)"/>
-      <rect x="120" y="93" width="60" height="4" rx="2" fill="rgba(17,24,39,0.08)"/>
-      <rect x="120" y="103" width="48" height="4" rx="2" fill="rgba(17,24,39,0.05)"/>
-      <circle cx="185" cy="75" r="10" fill="rgba(53, 92, 245, 0.10)"/>
-      <path d="M180 75l3 3 5-5" stroke="var(--pp-blue)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-      <circle cx="52" cy="92" r="26" fill="none" stroke="rgba(53, 92, 245, 0.06)" strokeWidth="6"/>
-      <circle cx="52" cy="92" r="26" fill="none" stroke="url(#heroRingGrad)" strokeWidth="6" strokeLinecap="round"
-        strokeDasharray="163.4" strokeDashoffset="49" style={{transform:'rotate(-90deg)', transformOrigin:'52px 92px'}}/>
-      <text x="52" y="96" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize="10" fontWeight="600" fill="var(--text-1)">70%</text>
-      <defs>
-        <linearGradient id="heroBarGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="var(--pp-blue)"/>
-          <stop offset="100%" stopColor="var(--pp-blue-dark)"/>
-        </linearGradient>
-        <linearGradient id="heroRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="var(--pp-blue)"/>
-          <stop offset="100%" stopColor="var(--pp-blue-dark)"/>
-        </linearGradient>
-      </defs>
-    </svg>
-  </div>
-);
 
 export function DashboardPage() {
   const navigate = useNavigate();
@@ -328,14 +297,6 @@ export function DashboardPage() {
             </motion.div>
           </motion.div>
 
-          {/* HeroGraphic slides in from right */}
-          <motion.div
-            initial={{ opacity: 0, x: 24 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], delay: 0.35 }}
-          >
-            <HeroGraphic />
-          </motion.div>
         </div>
 
         {/* R1: TiltCard on Progress Card */}

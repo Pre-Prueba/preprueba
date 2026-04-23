@@ -1,7 +1,8 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, BookOpen, CalendarDays, BarChart3,
-  FileText, Sparkles, Users, Layers, Settings, LogOut, ChevronRight
+  FileText, Sparkles, Users, Layers, Settings, LogOut,
+  Zap, Heart, AlertCircle
 } from 'lucide-react';
 import { useAuthStore } from '../../store/auth';
 import s from './Layout.module.css';
@@ -19,16 +20,18 @@ interface NavItem {
 }
 
 const PRIMARY_NAV: NavItem[] = [
-  { to: '/dashboard',  label: 'Inicio',      Icon: LayoutDashboard, group: 'ESTUDIAR' },
-  { to: '/practice',   label: 'Practicar',   Icon: BookOpen,        group: 'ESTUDIAR' },
-  { to: '/flashcards', label: 'Flashcards',  Icon: Layers,          group: 'ESTUDIAR' },
-  { to: '/simulacros', label: 'Simulacros',  Icon: Sparkles,        group: 'ESTUDIAR' },
+  { to: '/dashboard',  label: 'Inicio',       Icon: LayoutDashboard, group: 'ESTUDIAR' },
+  { to: '/practice',   label: 'Practicar',    Icon: Zap,             group: 'ESTUDIAR' },
+  { to: '/flashcards', label: 'Flashcards',   Icon: Layers,          group: 'ESTUDIAR' },
+  { to: '/simulacros', label: 'Simulacros',   Icon: Sparkles,        group: 'ESTUDIAR' },
 
-  { to: '/planner',    label: 'Planificador', Icon: CalendarDays,   group: 'ORGANIZAR' },
-  { to: '/stats',      label: 'Desempeño',    Icon: BarChart3,      group: 'ORGANIZAR' },
-  { to: '/examenes',   label: 'Exámenes',     Icon: FileText,       group: 'ORGANIZAR' },
+  { to: '/planner',    label: 'Planificador', Icon: CalendarDays,    group: 'ORGANIZAR' },
+  { to: '/stats',      label: 'Desempeño',    Icon: BarChart3,       group: 'ORGANIZAR' },
+  { to: '/examenes',   label: 'Exámenes',     Icon: FileText,        group: 'ORGANIZAR' },
+  { to: '/errores',    label: 'Mis errores',  Icon: AlertCircle,     group: 'ORGANIZAR' },
+  { to: '/favoritos',  label: 'Favoritos',    Icon: Heart,           group: 'ORGANIZAR' },
 
-  { to: '/comunidad',  label: 'Comunidad',    Icon: Users,          group: 'RED' },
+  { to: '/comunidad',  label: 'Comunidad',    Icon: Users,           group: 'RED' },
 ];
 
 function groupItems(items: NavItem[]) {
@@ -49,6 +52,9 @@ export function AppSidebar({ mobileOpen, onClose }: AppSidebarProps) {
     ? user.nombre.split(' ').map((w: string) => w[0]).slice(0, 2).join('').toUpperCase()
     : 'PP';
 
+  const firstName = user?.nombre?.split(' ')[0] ?? 'Estudiante';
+  const isPremium = user?.subscription?.status === 'active';
+
   const handleLogout = () => {
     logout();
     navigate('/login');
@@ -61,10 +67,10 @@ export function AppSidebar({ mobileOpen, onClose }: AppSidebarProps) {
       <div className={s.brandBlock}>
         <div
           className={s.brand}
-          onClick={() => navigate('/dashboard')}
+          onClick={() => { navigate('/dashboard'); onClose(); }}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => { if (e.key === 'Enter') navigate('/dashboard'); }}
+          onKeyDown={(e) => { if (e.key === 'Enter') { navigate('/dashboard'); onClose(); } }}
         >
           <div className={s.brandMark}>P</div>
           <div className={s.brandWord}>prep<em>rueba</em></div>
@@ -85,12 +91,12 @@ export function AppSidebar({ mobileOpen, onClose }: AppSidebarProps) {
                       `${s.navItem} ${isActive ? s.navItemActive : ''}`
                     }
                     onClick={onClose}
+                    end={to === '/dashboard'}
                   >
-                    <span className={s.navItemIcon} aria-hidden>
-                      <Icon size={18} strokeWidth={1.8} />
+                    <span className={s.navItemIcon} aria-hidden="true">
+                      <Icon size={16} strokeWidth={1.8} />
                     </span>
                     <span className={s.navItemLabel}>{label}</span>
-                    <ChevronRight size={14} className={s.navItemChevron} aria-hidden />
                   </NavLink>
                 </li>
               ))}
@@ -99,41 +105,50 @@ export function AppSidebar({ mobileOpen, onClose }: AppSidebarProps) {
         ))}
       </nav>
 
+      {/* User card */}
+      <div
+        className={s.userCard}
+        onClick={() => { navigate('/settings'); onClose(); }}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === 'Enter') { navigate('/settings'); onClose(); } }}
+        aria-label="Ir a configuración"
+      >
+        <div className={s.userAvatar} aria-hidden="true">{initials}</div>
+        <div className={s.userInfo}>
+          <div className={s.userName}>{firstName}</div>
+          <div className={`${s.userPlan} ${isPremium ? s.userPlanPremium : ''}`}>
+            {isPremium ? '✦ Premium' : 'Plan gratuito'}
+          </div>
+        </div>
+      </div>
+
       {/* Footer */}
       <div className={s.sidebarFooter}>
         <NavLink
           to="/settings"
           className={({ isActive }) =>
-            `${s.navItem} ${s.navItemDense} ${isActive ? s.navItemActive : ''}`
+            `${s.navItemFooter} ${isActive ? s.navItemActive : ''}`
           }
           onClick={onClose}
         >
-          <span className={s.navItemIcon} aria-hidden><Settings size={18} strokeWidth={1.8} /></span>
-          <span className={s.navItemLabel}>Configuración</span>
+          <span className={s.navItemIcon} aria-hidden="true">
+            <Settings size={16} strokeWidth={1.8} />
+          </span>
+          <span>Configuración</span>
         </NavLink>
 
         <button
-          className={`${s.navItem} ${s.navItemDense} ${s.navItemButton}`}
+          className={s.navItemFooter}
           onClick={handleLogout}
           type="button"
+          aria-label="Cerrar sesión"
         >
-          <span className={s.navItemIcon} aria-hidden><LogOut size={18} strokeWidth={1.8} /></span>
-          <span className={s.navItemLabel}>Salir</span>
+          <span className={s.navItemIcon} aria-hidden="true">
+            <LogOut size={16} strokeWidth={1.8} />
+          </span>
+          <span>Cerrar sesión</span>
         </button>
-
-        <div
-          className={s.userCard}
-          onClick={() => navigate('/settings')}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => { if (e.key === 'Enter') navigate('/settings'); }}
-        >
-          <div className={s.userAvatar}>{initials}</div>
-          <div className={s.userInfo}>
-            <div className={s.userName}>{user?.nombre ?? 'Usuario'}</div>
-            <div className={s.userPlan}>Plan gratuito</div>
-          </div>
-        </div>
       </div>
     </aside>
   );

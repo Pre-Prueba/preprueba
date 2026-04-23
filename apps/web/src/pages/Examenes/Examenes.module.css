@@ -35,7 +35,7 @@
 
 .title {
   margin: 0;
-  font-family: var(--font-display, 'Epilogue', sans-serif);
+  font-family: var(--font-display);
   font-size: 30px;
   font-weight: 700;
   letter-spacing: -0.04em;

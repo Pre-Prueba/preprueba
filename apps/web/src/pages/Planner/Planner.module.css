@@ -5,9 +5,8 @@
 .plannerPage {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 28px 24px 72px;
-  font-family: var(--font);
-  animation: pp-fadein 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  font-family: var(--font-body);
+  animation: pp-fadein 0.3s var(--ease) both;
 }
 
 @keyframes pp-fadein {

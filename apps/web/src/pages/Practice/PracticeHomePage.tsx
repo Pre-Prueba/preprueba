@@ -18,22 +18,47 @@ import { useMaterias } from '../../hooks/useMaterias';
 import { useStats } from '../../hooks/useStats';
 import s from './Practice.module.css';
 
-/* ── Subject emoji map ── */
-const SUBJECT_ICONS: Record<string, string> = {
-  'Lengua Castellana y Literatura': '📖',
-  'Historia de España': '🏰',
-  'Inglés': '🇬🇧',
-  'Biología': '🧬',
-  'Química': '⚗️',
-  'Matemáticas Aplicadas a las CCSS': '📊',
-  'Geografía': '🌍',
-  'Historia de la Filosofía': '🏛️',
-  'Historia del Arte': '🎨',
-  'Matemáticas': '📐',
-  'Física': '⚡',
+/* ── Subject element map — tabela periódica ── */
+interface SubjectElement {
+  symbol: string;
+  number: number;
+  color: string;       // cor de fundo do card
+  textColor: string;   // cor do texto/símbolo
+}
+
+const SUBJECT_ELEMENTS: Record<string, SubjectElement> = {
+  'Lengua Castellana y Literatura': { symbol: 'Lc',  number: 1,  color: '#EEF2FF', textColor: '#355CF5' },
+  'Historia de España':             { symbol: 'HE',  number: 2,  color: '#FFF7ED', textColor: '#C2410C' },
+  'Inglés':                         { symbol: 'En',  number: 3,  color: '#F0FDF4', textColor: '#15803D' },
+  'Biología':                       { symbol: 'Bi',  number: 4,  color: '#F0FDF4', textColor: '#16A34A' },
+  'Química':                        { symbol: 'Qm',  number: 5,  color: '#FFF0E8', textColor: '#EA580C' },
+  'Matemáticas Aplicadas a las CCSS': { symbol: 'Ma', number: 6, color: '#EEF2FF', textColor: '#4338CA' },
+  'Geografía':                      { symbol: 'Ge',  number: 7,  color: '#ECFDF5', textColor: '#059669' },
+  'Historia de la Filosofía':       { symbol: 'Hf',  number: 8,  color: '#FDF4FF', textColor: '#9333EA' },
+  'Historia del Arte':              { symbol: 'HA',  number: 9,  color: '#FFF1F2', textColor: '#E11D48' },
+  'Matemáticas':                    { symbol: 'Mt',  number: 10, color: '#EEF2FF', textColor: '#2329A8' },
+  'Física':                         { symbol: 'Fs',  number: 11, color: '#F0F9FF', textColor: '#0284C7' },
+  'Lengua Extranjera':              { symbol: 'LE',  number: 12, color: '#F0FDF4', textColor: '#15803D' },
+  'Comentario de Texto':            { symbol: 'Ct',  number: 13, color: '#EEF2FF', textColor: '#355CF5' },
 };
-function getSubjectIcon(nombre: string) {
-  return SUBJECT_ICONS[nombre] ?? '📚';
+
+function getElement(nombre: string): SubjectElement {
+  if (SUBJECT_ELEMENTS[nombre]) return SUBJECT_ELEMENTS[nombre];
+  // fallback: gera símbolo das 2 primeiras letras
+  const words = nombre.trim().split(' ');
+  const symbol = words.length >= 2
+    ? (words[0][0] + words[1][0]).toUpperCase()
+    : nombre.slice(0, 2);
+  const hash = nombre.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+  const colors = [
+    { color: '#EEF2FF', textColor: '#355CF5' },
+    { color: '#FFF7ED', textColor: '#C2410C' },
+    { color: '#F0FDF4', textColor: '#15803D' },
+    { color: '#FDF4FF', textColor: '#9333EA' },
+    { color: '#F0F9FF', textColor: '#0284C7' },
+  ];
+  const c = colors[hash % colors.length];
+  return { symbol, number: (hash % 118) + 1, ...c };
 }
 
 /* ── Types ── */
@@ -420,6 +445,7 @@ export function PracticeHomePage() {
               const acierto    = getAcierto(materia.id);
               const isSelected = config.materiaId === materia.id;
               const isGeneral  = materia.fase === 'GENERAL';
+              const element    = getElement(materia.nombre);
 
               return (
                 <motion.button
@@ -434,13 +460,14 @@ export function PracticeHomePage() {
                   onClick={() => handleMateriaSelect(materia.id)}
                   aria-pressed={isSelected}
                   aria-label={`${materia.nombre}, ${acierto !== null ? `${acierto}% de acierto` : 'sin datos'}`}
+                  style={isSelected ? undefined : { '--el-color': element.color, '--el-text': element.textColor } as React.CSSProperties}
                 >
-                  <div className={s.materiaTop}>
-                    <span className={s.materiaEmoji} aria-hidden="true">
-                      {getSubjectIcon(materia.nombre)}
-                    </span>
+                  {/* Elemento estilo tabela periódica */}
+                  <div className={s.elementBlock}>
+                    <span className={s.elementNumber}>{element.number}</span>
+                    <span className={s.elementSymbol}>{element.symbol}</span>
                     <span className={`${s.materiaBadge} ${isGeneral ? s.badgeGeneral : s.badgeEspecifica}`}>
-                      {isGeneral ? 'General' : 'Específica'}
+                      {isGeneral ? 'Gral' : 'Esp'}
                     </span>
                   </div>
 

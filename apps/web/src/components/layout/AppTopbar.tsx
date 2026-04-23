@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate, NavLink } from 'react-router-dom';
-import { Menu, Search, Bell, ChevronDown, BookOpen, Layers, Flame, Settings, LogOut } from 'lucide-react';
+import { Menu, Search, Bell, ChevronDown, Settings, LogOut, AlertCircle, Heart, User } from 'lucide-react';
 import { useAuthStore } from '../../store/auth';
 import s from './Layout.module.css';
 
@@ -17,7 +17,10 @@ const PAGE_TITLES: Record<string, { title: string; subtitle?: string }> = {
   '/stats':       { title: 'Desempeño',     subtitle: 'Métricas y progreso' },
   '/examenes':    { title: 'Exámenes',      subtitle: 'Biblioteca oficial' },
   '/comunidad':   { title: 'Comunidad',     subtitle: 'Foro y debates' },
-  '/settings':    { title: 'Configuración' },
+  '/errores':     { title: 'Mis errores',   subtitle: 'Preguntas falladas' },
+  '/favoritos':   { title: 'Favoritos',     subtitle: 'Preguntas guardadas' },
+  '/settings':    { title: 'Configuración', subtitle: 'Cuenta y preferencias' },
+  '/history':     { title: 'Historial',     subtitle: 'Sesiones anteriores' },
 };
 
 function resolvePage(path: string) {
@@ -47,6 +50,15 @@ export function AppTopbar({ onMobileMenu }: AppTopbarProps) {
     ? user.nombre.split(' ').map((w: string) => w[0]).slice(0, 2).join('').toUpperCase()
     : '?';
 
+  const firstName = user?.nombre?.split(' ')[0] ?? '';
+  const racha = (user as any)?.racha ?? 0;
+
+  const handleLogout = () => {
+    setMenuOpen(false);
+    logout();
+    navigate('/login');
+  };
+
   return (
     <header className={s.topbar}>
       <div className={s.topbarLeft}>
@@ -56,8 +68,9 @@ export function AppTopbar({ onMobileMenu }: AppTopbarProps) {
           type="button"
           aria-label="Abrir menú"
         >
-          <Menu size={20} />
+          <Menu size={20} strokeWidth={1.8} />
         </button>
+
         <div className={s.topbarTitle}>
           <h1 className={s.pageTitle}>{page.title}</h1>
           {page.subtitle && <span className={s.pageSubtitle}>{page.subtitle}</span>}
@@ -65,64 +78,111 @@ export function AppTopbar({ onMobileMenu }: AppTopbarProps) {
       </div>
 
       <div className={s.topbarRight}>
-        <div className={s.search}>
-          <Search size={16} strokeWidth={1.8} />
+        {/* Search */}
+        <div className={s.search} role="search">
+          <Search size={14} strokeWidth={2} aria-hidden="true" />
           <input
             type="search"
-            placeholder="Buscar materias, preguntas..."
+            placeholder="Buscar..."
             className={s.searchInput}
+            aria-label="Buscar materias, preguntas"
           />
-          <span className={s.searchKbd}>⌘K</span>
+          <span className={s.searchKbd} aria-hidden="true">⌘K</span>
         </div>
 
+        {/* Streak */}
+        {racha > 0 && (
+          <div className={s.streakChip} aria-label={`${racha} días de racha`}>
+            <span aria-hidden="true">🔥</span>
+            <span>{racha}</span>
+          </div>
+        )}
+
+        {/* Notifications */}
         <button className={s.iconBtn} type="button" aria-label="Notificaciones">
-          <Bell size={18} strokeWidth={1.8} />
-          <span className={s.iconBtnBadge} />
+          <Bell size={17} strokeWidth={1.8} />
+          <span className={s.iconBtnBadge} aria-hidden="true" />
         </button>
 
-        <div className={s.streakChip} title="Racha actual">
-          <Flame size={14} strokeWidth={2} />
-          <span>5</span>
-        </div>
-
-        <div className={s.profileWrap} ref={menuRef}>
+        {/* Profile dropdown */}
+        <div className={s.dropdownWrap} ref={menuRef}>
           <button
             className={s.profileBtn}
             onClick={() => setMenuOpen((v) => !v)}
             type="button"
             aria-expanded={menuOpen}
+            aria-haspopup="menu"
+            aria-label="Menú de usuario"
           >
-            <div className={s.profileAvatar}>{initials}</div>
-            <ChevronDown size={14} strokeWidth={2} className={`${s.profileChevron} ${menuOpen ? s.profileChevronOpen : ''}`} />
+            <div className={s.profileAvatar} aria-hidden="true">{initials}</div>
+            <span className={s.profileName}>{firstName}</span>
+            <ChevronDown
+              size={14}
+              strokeWidth={2}
+              className={`${s.profileChevron} ${menuOpen ? s.profileChevronOpen : ''}`}
+              aria-hidden="true"
+            />
           </button>
 
           {menuOpen && (
-            <div className={s.profileMenu} role="menu">
-              <div className={s.profileHead}>
-                <div className={s.profileAvatarLg}>{initials}</div>
-                <div>
-                  <div className={s.profileName}>{user?.nombre ?? 'Usuario'}</div>
-                  <div className={s.profileEmail}>{user?.email ?? ''}</div>
-                </div>
+            <div className={s.dropdown} role="menu" aria-label="Opciones de usuario">
+              <div className={s.dropdownHeader}>
+                <div className={s.dropdownUserName}>{user?.nombre ?? 'Usuario'}</div>
+                <div className={s.dropdownUserEmail}>{user?.email ?? ''}</div>
               </div>
-              <div className={s.profileDivider} />
-              <NavLink to="/errores" className={s.menuItem} onClick={() => setMenuOpen(false)}>
-                <BookOpen size={16} strokeWidth={1.8} /><span>Cuaderno de errores</span>
-              </NavLink>
-              <NavLink to="/flashcards" className={s.menuItem} onClick={() => setMenuOpen(false)}>
-                <Layers size={16} strokeWidth={1.8} /><span>Flashcards</span>
-              </NavLink>
-              <NavLink to="/settings" className={s.menuItem} onClick={() => setMenuOpen(false)}>
-                <Settings size={16} strokeWidth={1.8} /><span>Configuración</span>
-              </NavLink>
-              <div className={s.profileDivider} />
-              <button
-                className={`${s.menuItem} ${s.menuItemDanger}`}
-                onClick={() => { logout(); navigate('/login'); }}
-                type="button"
-              >
-                <LogOut size={16} strokeWidth={1.8} /><span>Salir</span>
-              </button>
+
+              <div className={s.dropdownSection}>
+                <NavLink
+                  to="/settings"
+                  className={s.dropdownItem}
+                  onClick={() => setMenuOpen(false)}
+                  role="menuitem"
+                >
+                  <User size={15} strokeWidth={1.8} aria-hidden="true" />
+                  Mi perfil
+                </NavLink>
+                <NavLink
+                  to="/errores"
+                  className={s.dropdownItem}
+                  onClick={() => setMenuOpen(false)}
+                  role="menuitem"
+                >
+                  <AlertCircle size={15} strokeWidth={1.8} aria-hidden="true" />
+                  Mis errores
+                </NavLink>
+                <NavLink
+                  to="/favoritos"
+                  className={s.dropdownItem}
+                  onClick={() => setMenuOpen(false)}
+                  role="menuitem"
+                >
+                  <Heart size={15} strokeWidth={1.8} aria-hidden="true" />
+                  Favoritos
+                </NavLink>
+                <NavLink
+                  to="/settings"
+                  className={s.dropdownItem}
+                  onClick={() => setMenuOpen(false)}
+                  role="menuitem"
+                >
+                  <Settings size={15} strokeWidth={1.8} aria-hidden="true" />
+                  Configuración
+                </NavLink>
+              </div>
+
+              <div className={s.dropdownDivider} role="separator" />
+
+              <div className={s.dropdownSection}>
+                <button
+                  className={`${s.dropdownItem} ${s.dropdownItemDanger}`}
+                  onClick={handleLogout}
+                  type="button"
+                  role="menuitem"
+                >
+                  <LogOut size={15} strokeWidth={1.8} aria-hidden="true" />
+                  Cerrar sesión
+                </button>
+              </div>
             </div>
           )}
         </div>

@@ -1,96 +1,164 @@
 /* ═══════════════════════════════════════════════════════════════════
-   PREPRUEBA — Global Design Tokens
+   PREPRUEBA — Design Tokens v3
    Paleta oficial: laranja #FF6624/#FF9B29, creme #F2E7E1, azul #355CF5/#2329A8
-   Distribuição-alvo: ~60% neutro quente / 25% azul / 10% laranja / 5% azul profundo
+   Redesign: fundo branco-frio, sidebar escura, DM Sans, dashboard premium
    ═══════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400;1,9..40,500&display=swap');
 
 :root {
   /* ── Brand core (paleta oficial) ── */
   --pp-blue:        #355CF5;
   --pp-blue-dark:   #2329A8;
   --pp-blue-light:  #EEF2FF;
+  --pp-blue-mid:    #4B6EF6;
   --pp-orange:      #FF6624;
   --pp-amber:       #FF9B29;
   --pp-amber-dark:  #E55A1A;
   --pp-cream:       #F2E7E1;
 
-  /* ── Backgrounds (quase-branco com toque quente — option A) ── */
-  --bg:            #F9F8F7;
-  --bg-warm:       #F5F1EE;
-  --bg-soft:       #FAFAF9;
-  --bg-2:          #F2F0EE;
-  --card:          #FFFFFF;
-  --surface:       #FFFFFF;
-  --surface-alt:   #F8F7F6;
+  /* ── Backgrounds — fundo branco-frio, não bege ── */
+  --bg:          #F4F6FB;   /* fundo principal — branco frio levemente azulado */
+  --bg-warm:     #F2E7E1;   /* cream puro — seções de destaque */
+  --bg-soft:     #F8F9FC;   /* ultra-claro — zonas extensas */
+  --bg-2:        #ECEEF5;   /* raised / alt — levemente mais frio */
+  --card:        #FFFFFF;   /* cards brancos puros */
+  --surface:     #FFFFFF;
+  --surface-alt: #F8F9FC;   /* hover de card */
+
+  /* ── Sidebar escura ── */
+  --sidebar-bg:        #232AAA;
+  --sidebar-border:    rgba(255, 255, 255, 0.10);
+  --sidebar-text:      rgba(255, 255, 255, 0.88);
+  --sidebar-text-hover: #FFFFFF;
+  --sidebar-active-bg: rgba(255, 255, 255, 0.18);
+  --sidebar-active-text: #FFFFFF;
+  --sidebar-active-border: #FFFFFF;
+  --sidebar-group-label: rgba(255, 255, 255, 0.50);
+  --sidebar-icon:      rgba(255, 255, 255, 0.80);
+  --sidebar-icon-hover: #FFFFFF;
+  --sidebar-icon-active: #FFFFFF;
+  --sidebar-hover-bg:  rgba(255, 255, 255, 0.10);
 
   /* ── Text ── */
-  --text:          #111827;
-  --text-1:        #111827;
-  --text-2:        #5F6470;
-  --text-3:        #9A9AA3;
-  --text-primary:   var(--text-1);
-  --text-secondary: var(--text-2);
+  --text:   #0D0F14;
+  --text-1: #0D0F14;
+  --text-2: #5A6070;
+  --text-3: #9299A8;
 
-  /* ── Borders (warm brown tint) ── */
-  --border:        rgba(72, 40, 28, 0.07);
-  --border-hover:  rgba(72, 40, 28, 0.12);
-  --border-light:  rgba(72, 40, 28, 0.04);
+  /* ── Borders ── */
+  --border:       rgba(15, 23, 42, 0.08);
+  --border-hover: rgba(15, 23, 42, 0.14);
+  --border-light: rgba(15, 23, 42, 0.04);
+  --border-blue:  rgba(53, 92, 245, 0.20);
 
   /* ── Azul ── */
-  --blue:          var(--pp-blue);
-  --blue-dark:     var(--pp-blue-dark);
-  --blue-soft:     #EEF2FF;
-  --blue-hover:    #2B4FE8;
-  --blue-support:  #5B8CFF;
-  --blue-glow:     rgba(53, 92, 245, 0.12);
-  --blue-dim:      rgba(53, 92, 245, 0.10);
+  --blue:       #355CF5;
+  --blue-soft:  #EEF2FF;
+  --blue-hover: #2B4FE8;
+  --blue-dim:   rgba(53, 92, 245, 0.08);
 
   /* ── Laranja / âmbar ── */
-  --orange:        var(--pp-orange);
-  --orange-warm:   var(--pp-amber);
-  --orange-soft:   #FFE8DC;
-  --amber-soft:    #FFF3E8;
+  --orange:      #FF6624;
+  --orange-soft: #FFF0E8;
+  --orange-dim:  rgba(255, 102, 36, 0.10);
 
-  /* ── Neutro Quente ── */
-  --neutral-warm:  var(--pp-cream);
-  --brand-cream:   var(--pp-cream);
-
-  /* ── Aliases legados (retrocompat — mapeiam para paleta oficial) ── */
-  --color-primary: var(--pp-blue);
-  --color-accent:  var(--pp-orange);
-  --brand-blue:    var(--pp-blue);
-  --brand-orange:  var(--pp-orange);
-  --brand-navy:    var(--pp-blue-dark);
+  /* ── Aliases legados (retrocompat) ── */
+  --brand-blue:    #355CF5;
+  --brand-orange:  #FF6624;
+  --brand-navy:    #2329A8;
+  --brand-cream:   #F2E7E1;
+  --brand-gold:    #FF9B29;
+  --brand-text:    #0D0F14;
+  --brand-muted:   #7A7A8C;
+  --brand-surface: #F8F9FC;
+  --brand-border:  rgba(15, 23, 42, 0.08);
   --brand-white:   #FFFFFF;
-  --brand-text:    var(--text-1);
-  --brand-muted:   var(--text-2);
-  --brand-border:  var(--border);
-  --brand-gold:    var(--pp-amber);
 
   /* ── Semânticas ── */
-  --success:       #16A34A;
-  --success-bg:    #ECFDF5;
-  --error:         #DC2626;
-  --error-bg:      #FEF2F2;
-  --warn:          var(--pp-amber);
-  --warn-bg:       #FFF3E8;
+  --success:    #16A34A;
+  --success-bg: #ECFDF5;
+  --success-dim: rgba(22, 163, 74, 0.10);
+  --error:      #DC2626;
+  --error-bg:   #FEF2F2;
+  --warn:       #FF9B29;
+  --warn-bg:    #FFF7ED;
 
-  /* ── Sombras (warm brown tint — era preto azulado) ── */
-  --shadow-xs:  0 1px 2px rgba(72, 40, 28, 0.04);
-  --shadow-sm:  0 2px 10px rgba(72, 40, 28, 0.05), 0 0 0 1px rgba(72, 40, 28, 0.04);
-  --shadow-md:  0 4px 20px rgba(72, 40, 28, 0.07), 0 0 0 1px rgba(72, 40, 28, 0.04);
-  --shadow-lg:  0 12px 36px rgba(72, 40, 28, 0.10), 0 0 0 1px rgba(72, 40, 28, 0.04);
-  --shadow-blue:       0 6px 20px rgba(53, 92, 245, 0.20);
-  --shadow-orange:     0 8px 24px rgba(255, 102, 36, 0.22);
+  /* ── Sombras ── */
+  --shadow-xs:     0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-sm:     0 2px 8px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md:     0 4px 16px rgba(15, 23, 42, 0.08), 0 2px 4px rgba(15, 23, 42, 0.04);
+  --shadow-lg:     0 12px 32px rgba(15, 23, 42, 0.10), 0 4px 8px rgba(15, 23, 42, 0.06);
+  --shadow-xl:     0 24px 56px rgba(15, 23, 42, 0.12), 0 8px 16px rgba(15, 23, 42, 0.08);
+  --shadow-blue:   0 4px 16px rgba(53, 92, 245, 0.24), 0 1px 4px rgba(53, 92, 245, 0.12);
+  --shadow-orange: 0 4px 16px rgba(255, 102, 36, 0.24), 0 1px 4px rgba(255, 102, 36, 0.12);
   --shadow-glow-orange: 0 0 32px rgba(255, 155, 41, 0.25);
+  --shadow-glow-blue:   0 0 32px rgba(53, 92, 245, 0.20);
 
   /* ── Radii ── */
+  --r-xs:   4px;
   --r-sm:   8px;
   --r-md:   12px;
   --r-lg:   16px;
   --r-xl:   20px;
   --r-2xl:  24px;
+  --r-3xl:  32px;
   --r-full: 9999px;
+
+  /* ── Tipografia — DM Sans ── */
+  --font:            'DM Sans', system-ui, -apple-system, sans-serif;
+  --font-body:       'DM Sans', system-ui, -apple-system, sans-serif;
+  --font-display:    'DM Sans', system-ui, -apple-system, sans-serif;
+  --font-ui:         'DM Sans', system-ui, -apple-system, sans-serif;
+  --font-mono:       'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Aliases legados */
+  --pp-font-heading: 'DM Sans', system-ui, sans-serif;
+  --pp-font-body:    'DM Sans', system-ui, -apple-system, sans-serif;
+
+  /* ── Motion ── */
+  --ease:           cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring:    cubic-bezier(0.175, 0.885, 0.32, 1.15);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out:    cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-snappy:    cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ── Aliases extras ── */
+  --white:           #FFFFFF;
+  --border-color:    rgba(15, 23, 42, 0.08);
+  --text-primary:    #0D0F14;
+  --text-secondary:  #5A6070;
+  --color-primary:   #355CF5;
+  --color-accent:    #FF6624;
+  --blue-dark:       #2329A8;
+  --orange-warm:     #FF9B29;
+  --neutral-warm:    #F2E7E1;
+  --amber-soft:      #FFF7ED;
+  --blue-support:    #4B6EF6;
+  --blue-glow:       rgba(53, 92, 245, 0.12);
+
+  /* pp-* aliases extras */
+  --pp-base:       #F4F6FB;
+  --pp-raised:     #ECEEF5;
+  --pp-card:       #FFFFFF;
+  --pp-text-1:     #0D0F14;
+  --pp-text-2:     #5A6070;
+  --pp-text-3:     #9299A8;
+  --pp-border:     rgba(15, 23, 42, 0.08);
+  --pp-success:    #16A34A;
+  --pp-error:      #DC2626;
+  --pp-success-bg: #ECFDF5;
+  --pp-error-bg:   #FEF2F2;
+
+  /* ── Sidebar width ── */
+  --sidebar-width: 248px;
+  --topbar-height: 64px;
+}
+
+/* ── Aliases de compatibilidade (páginas legadas) ── */
+:root {
+  /* radius aliases legados */
+  --radius-xs:   var(--r-xs);
   --radius-sm:   var(--r-sm);
   --radius-md:   var(--r-md);
   --radius-lg:   var(--r-lg);
@@ -98,15 +166,26 @@
   --radius-2xl:  var(--r-2xl);
   --radius-full: var(--r-full);
 
-  /* ── Tipografia ── */
-  --font:         'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-body:    var(--font);
-  --font-display: 'Epilogue', 'Bricolage Grotesque', var(--font);
-  --font-mono:    'JetBrains Mono', ui-monospace, monospace;
+  /* border-color alias legado */
+  --border-color: var(--border);
 
-  /* ── Easing ── */
-  --ease:            cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-spring:     cubic-bezier(0.175, 0.885, 0.32, 1.15);
-  --ease-out-quart:  cubic-bezier(0.25, 1, 0.5, 1);
-  --ease-in-out:     cubic-bezier(0.4, 0, 0.2, 1);
+  /* text alias legado */
+  --text: var(--text-1);
+
+  /* text-md alias legado */
+  --text-md: 1rem;
+
+  /* blue alias legado */
+  --blue-hover: #2B4FE8;
+
+  /* warn alias legado */
+  --warn: var(--pp-amber);
+}
+
+/* ── Aliases Admin (páginas legadas) ── */
+:root {
+  --color-text:       var(--text-1);
+  --color-text-muted: var(--text-3);
+  --color-border:     var(--border);
+  --color-white:      #FFFFFF;
 }

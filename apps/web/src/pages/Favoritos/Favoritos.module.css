@@ -1,9 +1,20 @@
+/* ═══════════════════════════════════════════════════════════════════
+   PREPRUEBA — Favoritos v3
+   ═══════════════════════════════════════════════════════════════════ */
+
 .page {
-  padding: 40px 24px;
   max-width: 900px;
   margin: 0 auto;
+  font-family: var(--font-body);
+  animation: pp-fadein 0.3s var(--ease) both;
 }
 
+@keyframes pp-fadein {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── HEADER ── */
 .header {
   display: flex;
   align-items: flex-start;
@@ -13,53 +24,59 @@
 }
 
 .title {
-  font-family: var(--font-display);
-  font-size: var(--text-2xl);
-  font-weight: 700;
-  color: var(--text);
-  margin: 0 0 6px;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text-1);
+  margin: 0 0 4px;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
 }
 
 .subtitle {
-  font-size: var(--text-sm);
-  color: var(--text-2);
+  font-size: 14px;
+  color: var(--text-3);
   margin: 0;
   display: flex;
   align-items: center;
   gap: 8px;
+  font-weight: 400;
 }
 
 .totalBadge {
   background: var(--blue-soft);
-  color: var(--blue);
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
+  color: var(--pp-blue);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: var(--r-full);
 }
 
 .practicarBtn {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 18px;
-  background: var(--blue);
+  padding: 11px 20px;
+  background: var(--pp-blue);
   color: #fff;
   border: none;
-  border-radius: var(--radius-md);
-  font-size: var(--text-sm);
-  font-weight: 600;
+  border-radius: var(--r-full);
+  font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
   font-family: var(--font-body);
-  transition: background 0.15s;
+  transition: background 150ms var(--ease), transform 150ms var(--ease), box-shadow 150ms var(--ease);
   flex-shrink: 0;
+  box-shadow: var(--shadow-blue);
 }
 
 .practicarBtn:hover {
   background: var(--blue-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(53, 92, 245, 0.30);
 }
 
+/* ── FILTROS ── */
 .filtros {
   margin-bottom: 24px;
 }
@@ -67,22 +84,23 @@
 .filtroSelect {
   height: 38px;
   padding: 0 12px;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
   background: var(--card);
-  color: var(--text);
-  font-size: var(--text-sm);
+  color: var(--text-1);
+  font-size: 13px;
   font-family: var(--font-body);
   outline: none;
-  transition: border-color 0.15s;
+  transition: border-color 150ms var(--ease), box-shadow 150ms var(--ease);
   min-width: 200px;
 }
 
 .filtroSelect:focus {
-  border-color: var(--blue);
+  border-color: var(--pp-blue);
+  box-shadow: 0 0 0 3px var(--blue-dim);
 }
 
-/* Skeleton */
+/* ── SKELETON ── */
 .skeletonList {
   display: flex;
   flex-direction: column;
@@ -91,17 +109,17 @@
 
 .skeletonCard {
   height: 140px;
-  border-radius: var(--radius-lg);
+  border-radius: var(--r-lg);
   background: var(--bg-2);
   animation: pulse 1.5s ease-in-out infinite;
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 0.85; }
 }
 
-/* Empty */
+/* ── EMPTY ── */
 .emptyState {
   display: flex;
   flex-direction: column;
@@ -109,59 +127,68 @@
   gap: 12px;
   padding: 64px 24px;
   text-align: center;
+  background: var(--card);
+  border: 1px dashed var(--border-hover);
+  border-radius: var(--r-xl);
 }
 
 .emptyTitle {
-  font-size: var(--text-lg);
-  font-weight: 600;
-  color: var(--text);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-1);
   margin: 0;
+  letter-spacing: -0.02em;
 }
 
 .emptyDesc {
-  font-size: var(--text-sm);
+  font-size: 14px;
   color: var(--text-2);
   margin: 0;
   max-width: 380px;
+  line-height: 1.6;
 }
 
 .emptyBtn {
   margin-top: 8px;
-  padding: 10px 20px;
-  background: var(--blue);
+  padding: 11px 22px;
+  background: var(--pp-blue);
   color: #fff;
   border: none;
-  border-radius: var(--radius-md);
-  font-size: var(--text-sm);
-  font-weight: 600;
+  border-radius: var(--r-full);
+  font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
   font-family: var(--font-body);
-  transition: background 0.15s;
+  transition: background 150ms var(--ease), transform 150ms var(--ease);
+  box-shadow: var(--shadow-blue);
 }
 
 .emptyBtn:hover {
   background: var(--blue-hover);
+  transform: translateY(-1px);
 }
 
-/* Grid */
+/* ── GRID ── */
 .grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 12px;
 }
 
-/* Card */
+/* ── CARD ── */
 .card {
   background: var(--card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
   padding: 20px;
-  transition: box-shadow 0.15s, transform 0.15s;
+  transition: box-shadow 150ms var(--ease), transform 150ms var(--ease), border-color 150ms var(--ease);
+  box-shadow: var(--shadow-xs);
 }
 
 .card:hover {
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
+  border-color: var(--border-hover);
 }
 
 .cardHeader {
@@ -174,11 +201,11 @@
 .desfavoritarBtn {
   background: none;
   border: none;
-  color: var(--orange);
+  color: var(--pp-orange);
   cursor: pointer;
   padding: 4px;
-  border-radius: var(--radius-sm);
-  transition: opacity 0.15s;
+  border-radius: var(--r-sm);
+  transition: opacity 150ms var(--ease);
   display: flex;
   align-items: center;
 }
@@ -188,8 +215,8 @@
 }
 
 .enunciado {
-  font-size: var(--text-sm);
-  color: var(--text);
+  font-size: 14px;
+  color: var(--text-1);
   margin: 0 0 12px;
   line-height: 1.6;
 }
@@ -197,7 +224,7 @@
 .respuesta {
   background: var(--success-bg);
   border: 1px solid rgba(22, 163, 74, 0.15);
-  border-radius: var(--radius-md);
+  border-radius: var(--r-md);
   padding: 10px 12px;
   margin-bottom: 12px;
   display: flex;
@@ -206,28 +233,29 @@
 }
 
 .respuestaLabel {
-  font-size: 0.7rem;
+  font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.07em;
   color: var(--text-3);
 }
 
 .respuestaTexto {
-  font-size: var(--text-sm);
-  color: var(--text);
+  font-size: 13px;
+  color: var(--text-1);
+  line-height: 1.4;
 }
 
 .practicarMateriaBtn {
   background: none;
   border: none;
-  color: var(--blue);
-  font-size: var(--text-xs);
+  color: var(--pp-blue);
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   padding: 0;
   font-family: var(--font-body);
-  transition: opacity 0.15s;
+  transition: opacity 150ms var(--ease);
 }
 
 .practicarMateriaBtn:hover {
@@ -235,14 +263,9 @@
 }
 
 @media (max-width: 600px) {
-  .page {
-    padding: 24px 16px;
-  }
-
   .header {
     flex-direction: column;
   }
-
   .practicarBtn {
     width: 100%;
     justify-content: center;

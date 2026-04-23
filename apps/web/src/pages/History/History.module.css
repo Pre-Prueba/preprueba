@@ -1,13 +1,12 @@
 /* ═══════════════════════════════════════════════════════════════════
-   PREPRUEBA — History Page (Premium Clean)
+   PREPRUEBA — History Page v3
    ═══════════════════════════════════════════════════════════════════ */
 
 .historyPage {
   max-width: 760px;
   margin: 0 auto;
-  padding: 28px 24px 60px;
-  font-family: var(--font);
-  animation: pp-fadein 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  font-family: var(--font-body);
+  animation: pp-fadein 0.3s var(--ease) both;
 }
 
 @keyframes pp-fadein {
@@ -15,34 +14,36 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Header ── */
+/* ── HEADER ── */
 .header {
   margin-bottom: 28px;
-  padding-bottom: 24px;
+  padding-bottom: 20px;
   border-bottom: 1px solid var(--border);
 }
 
 .title {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--text);
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text-1);
   letter-spacing: -0.03em;
   margin-bottom: 4px;
+  line-height: 1.15;
 }
 
 .subtitle {
-  color: var(--text-2);
+  color: var(--text-3);
   font-size: 14px;
+  font-weight: 400;
 }
 
-/* ── List ── */
+/* ── LIST ── */
 .list {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-/* ── Session Card ── */
+/* ── SESSION CARD ── */
 .sessionCard {
   background: var(--card);
   border-radius: var(--r-xl);
@@ -51,31 +52,32 @@
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-xs);
   border: 1px solid var(--border);
-  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 200ms ease,
-              border-color 160ms ease;
+  transition:
+    transform 150ms var(--ease),
+    box-shadow 150ms var(--ease),
+    border-color 150ms var(--ease);
   gap: 16px;
 }
 
 .sessionCard:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
-  border-color: var(--border-hover);
+  border-color: var(--border-blue);
 }
 
 .sessionInfo h3 {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text);
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--text-1);
   margin-bottom: 6px;
   letter-spacing: -0.01em;
 }
 
 .sessionMeta {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
@@ -83,7 +85,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--text-3);
   font-weight: 500;
   background: var(--bg);
@@ -92,15 +94,16 @@
   border: 1px solid var(--border);
 }
 
-/* ── Score Badge ── */
+/* ── SCORE BADGE ── */
 .scoreBadge {
-  padding: 7px 14px;
+  padding: 6px 14px;
   border-radius: var(--r-md);
-  font-weight: 700;
-  font-size: 15px;
+  font-weight: 800;
+  font-size: 14px;
   font-family: var(--font-mono);
   flex-shrink: 0;
   letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
 }
 
 .scoreHigh {
@@ -111,8 +114,8 @@
 
 .scoreMid {
   background: var(--warn-bg);
-  color: var(--warn);
-  border: 1px solid rgba(212, 135, 10, 0.15);
+  color: var(--pp-amber-dark);
+  border: 1px solid rgba(255, 155, 41, 0.20);
 }
 
 .scoreLow {
@@ -121,19 +124,24 @@
   border: 1px solid rgba(220, 38, 38, 0.15);
 }
 
-/* ── Empty ── */
+/* ── EMPTY ── */
 .empty {
   background: var(--card);
   border-radius: var(--r-xl);
-  padding: 48px 24px;
+  padding: 56px 24px;
   text-align: center;
   color: var(--text-2);
-  border: 1px dashed var(--border);
+  border: 1px dashed var(--border-hover);
   font-size: 14px;
+  line-height: 1.6;
 }
 
 @media (max-width: 640px) {
-  .historyPage { padding: 20px 16px 48px; }
-  .sessionCard { flex-direction: column; align-items: flex-start; }
-  .scoreBadge { align-self: flex-end; }
+  .sessionCard {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .scoreBadge {
+    align-self: flex-end;
+  }
 }

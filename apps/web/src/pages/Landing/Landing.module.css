@@ -1,6 +1,6 @@
 /* ════════════════════════════════════════════════════════════════
    PREPRUEBA — Landing.module.css
-   Editorial Cálido · Fraunces + DM Sans + JetBrains Mono
+   Warm premium · Inter + Epilogue · tokens via tokens.css
    All tokens via CSS custom properties from globals.css
    ════════════════════════════════════════════════════════════════ */
 
@@ -8,7 +8,7 @@
 .simpleLanding {
   min-height: 100vh;
   background: var(--bg);
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: var(--font-body);
   color: var(--text-1);
 }
 

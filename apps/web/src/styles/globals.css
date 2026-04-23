@@ -1,33 +1,17 @@
 /* ════════════════════════════════════════════════════════════════
-   PREPRUEBA — Design Tokens + Global Styles
-   Editorial Cálido: Fraunces + DM Sans + JetBrains Mono
+   PREPRUEBA — Global Styles v3
+   DM Sans · fundo branco-frio · dashboard premium
    ════════════════════════════════════════════════════════════════ */
 
-/* ── Fontes ─────────────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600;1,700;1,800;1,900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+/* ── Tokens (fonte única da verdade) ────────────────────────── */
+@import './tokens.css';
 
-/* ── Tokens ─────────────────────────────────────────────────── */
-/* Fonte primária da verdade: tokens.css. Aqui mantemos apenas extras
-   (scale tipográfica, space, transitions) e override das brand vars
-   para alinhar ao creme quente #F2E7E1 + azul/laranja oficiais. */
+/* ── Mono font ──────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap');
+
+/* ── Extras não cobertos por tokens.css ─────────────────────── */
 :root {
-  /* Brand — alinhado à nova paleta oficial */
-  --brand-orange:    #FF6624;
-  --brand-navy:      #2329A8;  /* era #0D1B4B — azul profundo oficial */
-  --brand-cream:     #F2E7E1;  /* era #f4f4f4 — creme oficial */
-  --brand-gold:      #FF9B29;
-  --brand-text:      #0D0D14;
-  --brand-muted:     #7A7A8C;
-  --brand-surface:   #F9F8F7;  /* quase-branco quente */
-  --brand-border:    rgba(72, 40, 28, 0.08);
-  --brand-white:     #FFFFFF;
-
-  /* Typography */
-  --font-display:   'Epilogue', system-ui, sans-serif;
-  --font-body:      'Inter', system-ui, sans-serif;
-  --font-mono:      'JetBrains Mono', 'Courier New', monospace;
-
-  /* Scale */
+  /* Scale tipográfica */
   --text-xs:   0.75rem;
   --text-sm:   0.875rem;
   --text-base: 1rem;
@@ -40,7 +24,7 @@
   --text-6xl:  5rem;
   --text-7xl:  6.5rem;
 
-  /* Space */
+  /* Espaçamento */
   --sp-1: 0.25rem;
   --sp-2: 0.5rem;
   --sp-3: 0.75rem;
@@ -55,131 +39,6 @@
   --sp-24: 6rem;
   --sp-32: 8rem;
 
-  /* Radii */
-  --radius-sm:   4px;
-  --radius-md:   8px;
-  --radius-lg:   12px;
-  --radius-xl:   16px;
-  --radius-2xl:  20px;
-  --radius-full: 9999px;
-
-  /* Shadows (warm brown tint) */
-  --shadow-sm:  0 2px 10px rgba(72, 40, 28, 0.05), 0 0 0 1px rgba(72, 40, 28, 0.04);
-  --shadow-md:  0 4px 20px rgba(72, 40, 28, 0.07), 0 0 0 1px rgba(72, 40, 28, 0.04);
-  --shadow-lg:  0 12px 36px rgba(72, 40, 28, 0.10), 0 0 0 1px rgba(72, 40, 28, 0.04);
-  --shadow-xl:  0 24px 56px rgba(72, 40, 28, 0.14), 0 8px 24px rgba(72, 40, 28, 0.10);
-  --shadow-glow-orange: 0 0 32px rgba(255, 155, 41, 0.28);
-  --shadow-glow-navy:   0 0 32px rgba(35, 41, 168, 0.28);
-
-  /* Transitions */
-  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
-  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
-  --duration-fast: 150ms;
-  --duration-normal: 300ms;
-  --duration-slow: 600ms;
-  /* ── PALETA OFICIAL PREPRUEBA (warm premium) ──
-     Tokens core vêm de tokens.css. Aqui repetimos para garantir
-     fallback caso tokens.css não seja carregado antes. */
-  --bg:              #F9F8F7;
-  --bg-warm:         #F5F1EE;
-  --bg-soft:         #FAFAF9;
-  --bg-2:            #F2F0EE;
-  --card:            #FFFFFF;
-  --white:           #FFFFFF;
-  --surface:         #FFFFFF;
-  --surface-alt:     #F8F7F6;
-
-  --text:            #111827;
-  --text-primary:    #111827;
-  --text-1:          #111827;
-  --text-2:          #5F6470;
-  --text-secondary:  #5F6470;
-  --text-3:          #9A9AA3;
-
-  --blue:            #355CF5;
-  --blue-dark:       #2329A8;
-  --blue-soft:       #EEF2FF;
-  --blue-hover:      #2B4FE8;
-  --blue-dim:        rgba(53, 92, 245, 0.10);
-
-  --orange:          #FF6624;
-  --orange-warm:     #FF9B29;
-  --orange-soft:     #FFE8DC;
-  --amber-soft:      #FFF3E8;
-  --neutral-warm:    #F2E7E1;
-  --color-primary:   #355CF5;
-  --color-accent:    #FF6624;
-
-  --border:          rgba(72, 40, 28, 0.07);
-  --border-color:    rgba(72, 40, 28, 0.07);
-  --border-hover:    rgba(72, 40, 28, 0.12);
-
-  --success:         #16A34A;
-  --success-bg:      #ECFDF5;
-  --error:           #DC2626;
-  --error-bg:        #FEF2F2;
-  --warn:            #FF9B29;
-  --warn-bg:         #FFF3E8;
-
-  /* Sombras (warm brown tint) */
-  --shadow-xs:     0 1px 2px rgba(72, 40, 28, 0.04);
-  --shadow-sm:     0 2px 10px rgba(72, 40, 28, 0.05), 0 0 0 1px rgba(72, 40, 28, 0.04);
-  --shadow-md:     0 4px 20px rgba(72, 40, 28, 0.07), 0 0 0 1px rgba(72, 40, 28, 0.04);
-  --shadow-lg:     0 12px 36px rgba(72, 40, 28, 0.10), 0 0 0 1px rgba(72, 40, 28, 0.04);
-  --shadow-blue:   0 6px 20px rgba(53, 92, 245, 0.20);
-  --shadow-orange: 0 8px 24px rgba(255, 102, 36, 0.22);
-  --shadow-app-sm: var(--shadow-sm);
-  --shadow-app-md: var(--shadow-md);
-  --shadow-app-lg: var(--shadow-lg);
-
-  /* Radii */
-  --r-sm:   8px;
-  --r-md:   12px;
-  --r-lg:   16px;
-  --r-xl:   20px;
-  --r-2xl:  24px;
-  --r-full: 9999px;
-  --radius-sm:   8px;
-  --radius-md:   12px;
-  --radius-lg:   16px;
-  --radius-xl:   20px;
-  --radius-2xl:  24px;
-  --radius-full: 9999px;
-
-  /* Tipografia */
-  --font:         'Inter', system-ui, -apple-system, sans-serif;
-  --font-ui:      'Inter', system-ui, -apple-system, sans-serif;
-  --font-display: 'Epilogue', system-ui, sans-serif;
-  --font-body:    'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono:    'JetBrains Mono', 'Courier New', monospace;
-  --pp-font-heading: 'Epilogue', system-ui, sans-serif;
-  --pp-font-body:    'Inter', system-ui, -apple-system, sans-serif;
-
-  /* Aliases legados (compat) */
-  --pp-blue:       #355CF5;
-  --pp-blue-dark:  #2329A8;
-  --pp-blue-light: #EEF2FF;
-  --pp-orange:     #FF6624;
-  --pp-amber:      #FF9B29;
-  --pp-amber-dark: #E55A1A;
-  --pp-cream:      #F2E7E1;
-  --pp-base:       #F9F8F7;
-  --pp-raised:     #F2F0EE;
-  --pp-card:       #FFFFFF;
-  --pp-text-1:     #111827;
-  --pp-text-2:     #5F6470;
-  --pp-text-3:     #9A9AA3;
-  --pp-border:     rgba(72, 40, 28, 0.07);
-  --pp-success:    #16A34A;
-  --pp-error:      #DC2626;
-  --pp-success-bg: #ECFDF5;
-  --pp-error-bg:   #FEF2F2;
-  --pp-ink:        #111827;
-  --pp-ink-2:      #5F6470;
-  --pp-ink-3:      #9A9AA3;
-  --pp-surface:    #FFFFFF;
-
-  /* Space aliases */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -190,96 +49,139 @@
   --space-10: 2.5rem;
   --space-12: 3rem;
   --space-16: 4rem;
+
+  /* Durations */
+  --duration-fast:   150ms;
+  --duration-normal: 250ms;
+  --duration-slow:   500ms;
+
+  /* Aliases extras */
+  --shadow-xl:            0 24px 56px rgba(15, 23, 42, 0.12), 0 8px 16px rgba(15, 23, 42, 0.08);
+  --shadow-app-sm:        var(--shadow-sm);
+  --shadow-app-md:        var(--shadow-md);
+  --shadow-app-lg:        var(--shadow-lg);
+
+  /* Aliases de cor extras */
+  --blue-soft:       #EEF2FF;
+  --orange-soft:     #FFF0E8;
+  --warn-bg:         #FFF7ED;
 }
 
-/* ── Reset + Base ────────────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ── Reset ──────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 html {
   scroll-behavior: smooth;
-  font-size: 16px;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
   font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
   color: var(--text-1);
-  background-color: var(--bg);
-  overflow-x: hidden;
+  background: var(--bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
+  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
 }
 
-/* ── Scroll Progress Bar ─────────────────────────────────────── */
-#scroll-progress {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--brand-orange), var(--brand-gold));
-  z-index: 900;
-  transform-origin: left center;
-  transform: scaleX(0);
-  will-change: transform;
+/* ── Tipografia base ─────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--text-1);
 }
 
-/* ── Custom Cursor ───────────────────────────────────────────── */
-#custom-cursor {
-  display: none;
+p {
+  line-height: 1.6;
+  color: var(--text-2);
 }
 
-#custom-cursor.cursor-hovering {
-  display: none;
+a {
+  color: var(--pp-blue);
+  text-decoration: none;
 }
 
-@media (hover: none) {
-  #custom-cursor { display: none; }
+a:hover {
+  text-decoration: underline;
 }
 
-/* ── Global Motion (refinement layer) ─────────────────────────── */
-button, .btn, [role="button"] {
-  transition:
-    background-color 180ms var(--ease),
-    color 180ms var(--ease),
-    border-color 180ms var(--ease),
-    box-shadow 220ms var(--ease),
-    transform 180ms var(--ease);
-}
-button:active, .btn:active, [role="button"]:active {
-  transform: scale(0.98);
+/* ── Focus states ────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--pp-blue);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible,
-[tabindex]:focus-visible {
-  outline: 3px solid var(--pp-blue);
-  outline-offset: 3px;
+/* ── Scrollbar ───────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
-[class*="card"], [class*="Card"] {
-  transition:
-    transform 220ms var(--ease),
-    box-shadow 220ms var(--ease),
-    border-color 220ms var(--ease);
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-[class*="badge"], [class*="Badge"], [class*="chip"], [class*="Chip"] {
-  transition:
-    background-color 180ms var(--ease),
-    color 180ms var(--ease),
-    border-color 180ms var(--ease);
+::-webkit-scrollbar-thumb {
+  background: var(--border-hover);
+  border-radius: 3px;
 }
 
-progress, [class*="progress"], [class*="Progress"] {
-  transition: width 600ms var(--ease-out-quart);
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-3);
 }
 
-/* ── Reduced Motion ──────────────────────────────────────────── */
+/* ── Seleção de texto ────────────────────────────────────────── */
+::selection {
+  background: rgba(53, 92, 245, 0.15);
+  color: var(--text-1);
+}
+
+/* ── Imagens ─────────────────────────────────────────────────── */
+img, svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* ── Botões base ─────────────────────────────────────────────── */
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+/* ── Inputs base ─────────────────────────────────────────────── */
+input, textarea, select {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text-1);
+}
+
+/* ── Motion global ───────────────────────────────────────────── */
+@media (prefers-reduced-motion: no-preference) {
+  button,
+  a,
+  [role="button"] {
+    transition:
+      background-color var(--duration-fast) var(--ease),
+      color var(--duration-fast) var(--ease),
+      border-color var(--duration-fast) var(--ease),
+      box-shadow var(--duration-fast) var(--ease),
+      opacity var(--duration-fast) var(--ease);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -287,9 +189,29 @@ progress, [class*="progress"], [class*="Progress"] {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  button:active, .btn:active, [role="button"]:active {
-    transform: none !important;
-  }
-  #custom-cursor { display: none; }
-  #scroll-progress { display: none; }
+}
+
+/* ── Utilitários globais ─────────────────────────────────────── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ── Scroll progress bar ─────────────────────────────────────── */
+#scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--pp-blue), var(--pp-orange));
+  z-index: 9999;
+  transform-origin: left;
+  pointer-events: none;
 }
