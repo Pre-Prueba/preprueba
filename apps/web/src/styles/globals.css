@@ -18,7 +18,7 @@
   --brand-gold:      #FF9B29;
   --brand-text:      #0D0D14;
   --brand-muted:     #7A7A8C;
-  --brand-surface:   #FBF6F2;  /* warm soft */
+  --brand-surface:   #F9F8F7;  /* quase-branco quente */
   --brand-border:    rgba(72, 40, 28, 0.08);
   --brand-white:     #FFFFFF;
 
@@ -80,14 +80,14 @@
   /* ── PALETA OFICIAL PREPRUEBA (warm premium) ──
      Tokens core vêm de tokens.css. Aqui repetimos para garantir
      fallback caso tokens.css não seja carregado antes. */
-  --bg:              #F7EFEA;
-  --bg-warm:         #F2E7E1;
-  --bg-soft:         #FBF6F2;
-  --bg-2:            #EDE2DB;
+  --bg:              #F9F8F7;
+  --bg-warm:         #F5F1EE;
+  --bg-soft:         #FAFAF9;
+  --bg-2:            #F2F0EE;
   --card:            #FFFFFF;
   --white:           #FFFFFF;
   --surface:         #FFFFFF;
-  --surface-alt:     #FDF9F6;
+  --surface-alt:     #F8F7F6;
 
   --text:            #111827;
   --text-primary:    #111827;
@@ -163,8 +163,8 @@
   --pp-amber:      #FF9B29;
   --pp-amber-dark: #E55A1A;
   --pp-cream:      #F2E7E1;
-  --pp-base:       #F7EFEA;
-  --pp-raised:     #EDE2DB;
+  --pp-base:       #F9F8F7;
+  --pp-raised:     #F2F0EE;
   --pp-card:       #FFFFFF;
   --pp-text-1:     #111827;
   --pp-text-2:     #5F6470;

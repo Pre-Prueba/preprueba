@@ -7,13 +7,13 @@
 /* ── SIMPLE LANDING PAGE ─────────────────────────────────────── */
 .simpleLanding {
   min-height: 100vh;
-  background: #F5F5F5;
+  background: var(--bg);
   font-family: 'DM Sans', system-ui, sans-serif;
-  color: #0D1525;
+  color: var(--text-1);
 }
 
 .heroBannerSimple {
-  background: linear-gradient(135deg, #0038BC 0%, #0052D4 100%);
+  background: linear-gradient(135deg, var(--pp-blue-dark) 0%, var(--pp-blue) 100%);
   padding: 60px 40px;
   border-radius: 20px;
   margin: 40px;
@@ -61,7 +61,7 @@
 }
 
 .heroBtnSimple {
-  background: #00D97E;
+  background: var(--pp-orange);
   color: white;
   border: none;
   border-radius: 10px;
@@ -89,7 +89,7 @@
 
 .simpleSectionContent {
   background: white;
-  border: 1px solid #EBEBEB;
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 40px;
   text-align: center;
@@ -104,17 +104,17 @@
   font-size: 16px;
   font-weight: 600;
   margin: 0 0 20px 0;
-  color: #0D1525;
+  color: var(--text-1);
 }
 
 .simpleSectionContent p {
   font-size: 14px;
-  color: #6B7280;
+  color: var(--text-2);
   margin: 0;
 }
 
 .simpleBtnSecondary {
-  background: #0038BC;
+  background: var(--pp-blue);
   color: white;
   border: none;
   border-radius: 10px;
@@ -140,7 +140,7 @@
   font-size: 18px;
   font-weight: 600;
   margin: 0 0 16px 0;
-  color: #0D1525;
+  color: var(--text-1);
 }
 
 /* Responsive */
@@ -236,7 +236,7 @@
   transition: background 0.25s, box-shadow 0.25s, transform 0.2s, color 0.25s;
 }
 .navCta:hover {
-  background: #0a1540;
+  background: var(--pp-blue-dark);
   box-shadow: var(--shadow-glow-navy);
   transform: scale(1.03);
 }
@@ -260,7 +260,7 @@
   box-shadow: 0 8px 28px rgba(240,140,26,0.35);
   transition: background 0.25s, box-shadow 0.25s;
 }
-.btnPrimary:hover { background: #d47a10; box-shadow: var(--shadow-glow-orange); }
+.btnPrimary:hover { background: var(--pp-amber-dark); box-shadow: var(--shadow-glow-orange); }
 
 .btnGhost {
   display: inline-flex; align-items: center;
@@ -296,7 +296,7 @@
 .heroMinimalBackground {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at center 40%, #0d2f99 0%, var(--brand-navy) 100%);
+  background: radial-gradient(circle at center 40%, var(--pp-blue) 0%, var(--brand-navy) 100%);
   z-index: 1;
 }
 
@@ -801,7 +801,7 @@
 
 .pricingCard {
   position: relative; overflow: hidden;
-  background: #12121C; border: 1px solid rgba(255,255,255,0.08);
+  background: var(--pp-blue-dark); border: 1px solid rgba(255,255,255,0.08);
   border-radius: var(--radius-2xl); padding: var(--sp-12);
   width: 100%; max-width: 480px; text-align: center;
   box-shadow: 0 30px 60px rgba(0,0,0,0.4);
@@ -989,7 +989,7 @@
 }
 .barFillGray { background: rgba(255,255,255,0.25); }
 .barFillOrange { background: linear-gradient(90deg, var(--brand-orange), #FF9B29); }
-.barFillBlue { background: linear-gradient(90deg, #3B6BFF, #7CA3FF); }
+.barFillBlue { background: linear-gradient(90deg, var(--pp-blue), var(--blue-support, #5B8CFF)); }
 
 .comparisonFootnote {
   margin-top: var(--sp-8);
@@ -1176,7 +1176,7 @@
   border: none;
   box-shadow: 0 8px 24px rgba(240,140,26,0.35);
 }
-.pricingCardCtaPopular:hover { background: #d47a10; box-shadow: var(--shadow-glow-orange); }
+.pricingCardCtaPopular:hover { background: var(--pp-amber-dark); box-shadow: var(--shadow-glow-orange); }
 
 .pricingSharedFeatures {
   list-style: none; width: 100%; max-width: 480px;

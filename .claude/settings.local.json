@@ -31,7 +31,9 @@
       "Bash(curl -s http://localhost:5173)",
       "Bash(npx playwright:*)",
       "Bash(ls apps/web/playwright*)",
-      "Bash(rtk read *)"
+      "Bash(rtk read *)",
+      "Bash(cp /c/Users/vivim/.claude/hooks/crg-enforce.sh /c/Users/vivim/.claude/hooks/crg-enforce.sh.bak)",
+      "Bash(cat)"
     ]
   }
 }

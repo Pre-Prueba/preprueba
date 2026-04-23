@@ -462,7 +462,7 @@
 }
 
 .ctaBtn:hover:not(:disabled) {
-  background: var(--blue-hover, #052c85);
+  background: var(--blue-hover, #2B4FE8);
 }
 
 .ctaBtn:focus-visible {

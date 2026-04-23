@@ -126,7 +126,7 @@
 
 /* ── Simulado Card ── */
 .simuladoCard {
-  background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+  background: linear-gradient(135deg, var(--pp-blue-dark) 0%, var(--pp-blue) 100%);
   padding: 28px;
   border-radius: var(--r-2xl);
   display: flex;

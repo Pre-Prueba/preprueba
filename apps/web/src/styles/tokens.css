@@ -14,14 +14,14 @@
   --pp-amber-dark:  #E55A1A;
   --pp-cream:       #F2E7E1;
 
-  /* ── Backgrounds (warm neutral base — era cinza frio) ── */
-  --bg:            #F7EFEA;
-  --bg-warm:       #F2E7E1;
-  --bg-soft:       #FBF6F2;
-  --bg-2:          #EDE2DB;
+  /* ── Backgrounds (quase-branco com toque quente — option A) ── */
+  --bg:            #F9F8F7;
+  --bg-warm:       #F5F1EE;
+  --bg-soft:       #FAFAF9;
+  --bg-2:          #F2F0EE;
   --card:          #FFFFFF;
   --surface:       #FFFFFF;
-  --surface-alt:   #FDF9F6;
+  --surface-alt:   #F8F7F6;
 
   /* ── Text ── */
   --text:          #111827;
