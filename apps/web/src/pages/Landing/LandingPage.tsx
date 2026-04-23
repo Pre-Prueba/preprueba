@@ -109,7 +109,15 @@ const NAV_SECTION_IDS = ['como-funciona', 'materias', 'precio'];
 
 export function LandingPage() {
   const navigate = useNavigate();
-  const goRegister = () => navigate('/register');
+  const goRegister = (priceId?: string) => {
+    if (priceId) {
+      localStorage.setItem('preprueba_selected_price_id', priceId);
+      navigate(`/register?priceId=${encodeURIComponent(priceId)}`);
+      return;
+    }
+
+    navigate('/register');
+  };
 
   useScrollProgress();
   useCustomCursor();

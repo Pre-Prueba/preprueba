@@ -1,8 +1,11 @@
+import { useEffect, useMemo, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import styles from '../Landing.module.css';
 import { staggerContainer, slideUp, VIEWPORT_ONCE } from '../lib/landingAnimations';
 import { MagneticButton } from '../../../components/ui/MagneticButton';
 import { SpotlightCard } from '../../../components/ui/SpotlightCard';
+import { stripe as stripeApi } from '../../../services/api';
+import type { StripePrice } from '../../../services/api';
 
 const FEATURES = [
   'Acceso a todas las materias y pruebas',
@@ -24,14 +27,28 @@ async function fireConfetti() {
 }
 
 interface PricingSectionProps {
-  onCta: () => void;
+  onCta: (priceId?: string) => void;
 }
 
-const PLANS = [
+interface LandingPlan {
+  id: string;
+  priceId?: string;
+  period: string;
+  currency: string;
+  price: string;
+  per: string;
+  total: string | null;
+  badge: string | null;
+  popular: boolean;
+}
+
+const FALLBACK_PLANS: LandingPlan[] = [
   {
     id: 'mensual',
     period: 'Mensual',
+    currency: '€',
     price: '9,99',
+    per: '/mes',
     total: null,
     badge: null,
     popular: false,
@@ -39,7 +56,9 @@ const PLANS = [
   {
     id: 'trimestral',
     period: 'Trimestral',
+    currency: '€',
     price: '7,49',
+    per: '/mes',
     total: '€22,47 total · ahorra 25%',
     badge: 'MÁS POPULAR',
     popular: true,
@@ -47,19 +66,131 @@ const PLANS = [
   {
     id: 'anual',
     period: 'Anual',
+    currency: '€',
     price: '4,99',
+    per: '/mes',
     total: '€59,88/año · ahorra 50%',
     badge: 'AHORRA 50%',
     popular: false,
   },
 ];
 
+const CURRENCY_SYMBOLS: Record<string, string> = {
+  eur: '€',
+  usd: '$',
+  gbp: '£',
+};
+
+function getIntervalMonths(price: StripePrice): number {
+  if (price.interval === 'month') return price.intervalCount;
+  if (price.interval === 'year') return price.intervalCount * 12;
+  return 1;
+}
+
+function getPeriodLabel(price: StripePrice): string {
+  const customLabel = price.metadata.display_period || price.productMetadata.display_period;
+  if (customLabel) return customLabel;
+
+  if (price.interval === 'month' && price.intervalCount === 1) return 'Mensual';
+  if (price.interval === 'month' && price.intervalCount === 3) return 'Trimestral';
+  if (price.interval === 'year' && price.intervalCount === 1) return 'Anual';
+
+  const intervalLabels: Record<StripePrice['interval'], string> = {
+    day: 'día',
+    week: 'semana',
+    month: 'mes',
+    year: 'año',
+  };
+  return `${price.intervalCount} ${intervalLabels[price.interval]}`;
+}
+
+function getPerLabel(price: StripePrice, months: number): string {
+  if (months > 1 || price.interval === 'month') return '/mes';
+  if (price.interval === 'year') return '/año';
+  if (price.interval === 'week') return '/semana';
+  return '/día';
+}
+
+function formatAmount(amountInCents: number): string {
+  return new Intl.NumberFormat('es-ES', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amountInCents / 100);
+}
+
+function formatCurrency(amountInCents: number, currency: string): string {
+  return new Intl.NumberFormat('es-ES', {
+    style: 'currency',
+    currency: currency.toUpperCase(),
+  }).format(amountInCents / 100);
+}
+
+function buildPlans(prices: StripePrice[]): LandingPlan[] {
+  const sortedPrices = [...prices].sort((a, b) => getIntervalMonths(a) - getIntervalMonths(b));
+  const monthlyBase = sortedPrices.find((price) => getIntervalMonths(price) === 1);
+  const baseMonthlyAmount = monthlyBase?.unitAmount;
+  const popularPriceId =
+    sortedPrices.find((price) => price.metadata.popular === 'true' || price.productMetadata.popular === 'true')?.id ??
+    sortedPrices.find((price) => getIntervalMonths(price) === 3)?.id ??
+    sortedPrices[1]?.id ??
+    sortedPrices[0]?.id;
+
+  return sortedPrices.map((price) => {
+    const months = getIntervalMonths(price);
+    const monthlyAmount = months > 1 ? Math.round(price.unitAmount / months) : price.unitAmount;
+    const savings =
+      baseMonthlyAmount && months > 1 && monthlyAmount < baseMonthlyAmount
+        ? Math.round((1 - monthlyAmount / baseMonthlyAmount) * 100)
+        : 0;
+    const customBadge = price.metadata.badge || price.productMetadata.badge;
+    const customTotal = price.metadata.total_label || price.productMetadata.total_label;
+    const popular = price.id === popularPriceId;
+
+    return {
+      id: price.id,
+      priceId: price.id,
+      period: getPeriodLabel(price),
+      currency: CURRENCY_SYMBOLS[price.currency] ?? price.currency.toUpperCase(),
+      price: formatAmount(monthlyAmount),
+      per: getPerLabel(price, months),
+      total:
+        customTotal ??
+        (months > 1
+          ? `${formatCurrency(price.unitAmount, price.currency)} total${savings ? ` · ahorra ${savings}%` : ''}`
+          : null),
+      badge: customBadge ?? (popular ? 'MÁS POPULAR' : savings ? `AHORRA ${savings}%` : null),
+      popular,
+    };
+  });
+}
+
 export function PricingSection({ onCta }: PricingSectionProps) {
   const prefersReduced = useReducedMotion();
+  const [stripePlans, setStripePlans] = useState<LandingPlan[] | null>(null);
 
-  const handleCta = () => {
+  useEffect(() => {
+    let mounted = true;
+
+    stripeApi.prices()
+      .then(({ prices }) => {
+        if (mounted && prices.length > 0) {
+          setStripePlans(buildPlans(prices));
+        }
+      })
+      .catch(() => {
+        if (mounted) setStripePlans(null);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const plans = useMemo(() => stripePlans ?? FALLBACK_PLANS, [stripePlans]);
+
+  const handleCta = (priceId?: string) => {
     if (!prefersReduced) fireConfetti();
-    onCta();
+    onCta(priceId);
   };
 
   return (
@@ -91,7 +222,7 @@ export function PricingSection({ onCta }: PricingSectionProps) {
           whileInView="show"
           viewport={VIEWPORT_ONCE}
         >
-          {PLANS.map((plan) => (
+          {plans.map((plan) => (
             <motion.div
               key={plan.id}
               variants={slideUp(0)}
@@ -120,16 +251,16 @@ export function PricingSection({ onCta }: PricingSectionProps) {
 
                 {/* Price */}
                 <div className={styles.pricingCardPrice}>
-                  <span className={styles.pricingCardCurrency}>€</span>
+                  <span className={styles.pricingCardCurrency}>{plan.currency}</span>
                   <span className={styles.pricingCardAmount}>{plan.price}</span>
-                  <span className={styles.pricingCardPer}>/mes</span>
+                  <span className={styles.pricingCardPer}>{plan.per}</span>
                 </div>
 
                 <p className={styles.pricingCardTotal}>{plan.total ?? '\u00A0'}</p>
 
                 <MagneticButton
                   className={`${styles.pricingCardCta} ${plan.popular ? styles.pricingCardCtaPopular : ''}`}
-                  onClick={handleCta}
+                  onClick={() => handleCta(plan.priceId)}
                 >
                   <span className={styles.btnShimmer} aria-hidden="true" />
                   {plan.popular ? 'Empezar ahora →' : 'Empezar ahora'}
