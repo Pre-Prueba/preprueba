@@ -1,18 +1,19 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Check, 
-  Sparkles, 
-  RefreshCcw, 
-  Calendar, 
-  Target, 
-  Play, 
-  Plus, 
-  Trash2, 
+import {
+  Check,
+  Sparkles,
+  RefreshCcw,
+  Calendar,
+  Target,
+  Play,
+  Plus,
+  Trash2,
   X,
   MoreVertical
 } from 'lucide-react';
+import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { usePlanner, useToggleTask, useSuggestPlan, useSyncPlanner } from '../../hooks/usePlanner';
 import { useMaterias } from '../../hooks/useMaterias';
@@ -100,10 +101,47 @@ export function PlannerPage() {
     setIsModalOpen(false);
   };
 
+  const pendingDeleteRef = useRef<{ id: string; task: any; timeout: ReturnType<typeof setTimeout> } | null>(null);
+
   const handleDeleteTask = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
+    const taskToDelete = tasks.find(t => t.id === id);
+    if (!taskToDelete) return;
+
+    // Cancelar delete anterior pendiente
+    if (pendingDeleteRef.current) {
+      clearTimeout(pendingDeleteRef.current.timeout);
+    }
+
+    // Otimisticamente remover do UI
     const newTasks = tasks.filter(t => t.id !== id);
     syncPlanner(newTasks);
+
+    toast('Tarea eliminada', {
+      description: `${taskToDelete.materia?.nombre || 'Tarea'} ha sido eliminada.`,
+      action: {
+        label: 'Deshacer',
+        onClick: () => {
+          if (pendingDeleteRef.current) {
+            clearTimeout(pendingDeleteRef.current.timeout);
+            pendingDeleteRef.current = null;
+          }
+          // Restaurar tarea
+          syncPlanner([...newTasks, taskToDelete]);
+          toast.success('Tarea restaurada');
+        },
+      },
+      duration: 5000,
+    });
+
+    // Backup: se não desfizer em 5s, não faz nada (já foi salvo)
+    pendingDeleteRef.current = {
+      id,
+      task: taskToDelete,
+      timeout: setTimeout(() => {
+        pendingDeleteRef.current = null;
+      }, 5000),
+    };
   };
 
   if (loading && tasks.length === 0) {

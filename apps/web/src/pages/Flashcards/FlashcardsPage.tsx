@@ -1,7 +1,8 @@
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { Layers } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Layers, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 import { flashcards as flashcardsApi } from '../../services/api';
 import { useMaterias } from '../../hooks/useMaterias';
 import { staggerContainer, fadeUp } from '../../lib/animations';
@@ -9,12 +10,14 @@ import { FlashcardStudyMode } from './FlashcardStudyMode';
 import s from './Flashcards.module.css';
 
 export function FlashcardsPage() {
+  const queryClient = useQueryClient();
   const { data: materiasData } = useMaterias();
   const materias = materiasData ?? [];
 
   const [filtroMateria, setFiltroMateria] = useState('');
   const [filtroEstado, setFiltroEstado] = useState<'todos' | 'pendiente' | 'facil' | 'dificil'>('todos');
   const [isStudying, setIsStudying] = useState(false);
+  const pendingDeleteRef = useRef<{ timeout: ReturnType<typeof setTimeout> } | null>(null);
 
   const { data: items = [], isLoading } = useQuery({
     queryKey: ['flashcards', filtroMateria, filtroEstado],
@@ -23,6 +26,41 @@ export function FlashcardsPage() {
       ...(filtroEstado !== 'todos' ? { estado: filtroEstado } : {}),
     }),
   });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => flashcardsApi.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['flashcards'] });
+    },
+  });
+
+  function handleDelete(item: typeof items[0]) {
+    if (pendingDeleteRef.current) clearTimeout(pendingDeleteRef.current.timeout);
+
+    // Otimistic delete
+    const prevItems = items;
+    queryClient.setQueryData(['flashcards', filtroMateria, filtroEstado], prevItems.filter((i: any) => i.id !== item.id));
+
+    toast('Flashcard eliminada', {
+      description: item.frente.slice(0, 40) + (item.frente.length > 40 ? '...' : ''),
+      action: {
+        label: 'Deshacer',
+        onClick: () => {
+          if (pendingDeleteRef.current) clearTimeout(pendingDeleteRef.current.timeout);
+          queryClient.setQueryData(['flashcards', filtroMateria, filtroEstado], prevItems);
+          toast.success('Flashcard restaurada');
+        },
+      },
+      duration: 5000,
+    });
+
+    pendingDeleteRef.current = {
+      timeout: setTimeout(() => {
+        deleteMutation.mutate(item.id);
+        pendingDeleteRef.current = null;
+      }, 5000),
+    };
+  }
 
   return (
     <div className={s.page}>
@@ -101,9 +139,19 @@ export function FlashcardsPage() {
                 <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-2)', fontWeight: 600 }}>
                   {item.materia?.nombre || 'General'}
                 </span>
-                <span className={`${s.cardEstado} ${s[`estado-${item.estado}`]}`}>
-                  {item.estado.charAt(0).toUpperCase() + item.estado.slice(1)}
-                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span className={`${s.cardEstado} ${s[`estado-${item.estado}`]}`}>
+                    {item.estado.charAt(0).toUpperCase() + item.estado.slice(1)}
+                  </span>
+                  <button
+                    className={s.deleteBtn}
+                    onClick={(e) => { e.stopPropagation(); handleDelete(item); }}
+                    aria-label="Eliminar flashcard"
+                    title="Eliminar"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </div>
               </div>
               <p className={s.cardFrente}>{item.frente}</p>
             </motion.div>

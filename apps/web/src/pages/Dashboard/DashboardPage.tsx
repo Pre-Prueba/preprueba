@@ -9,6 +9,10 @@ import {
 import { useAuthStore } from '../../store/auth';
 import { useMaterias } from '../../hooks/useMaterias';
 import { useStats } from '../../hooks/useStats';
+import { useErrores } from '../../hooks/useErrores';
+import { useDashboardRecommendations } from '../../hooks/useDashboardRecommendations';
+import { stats as statsApi } from '../../services/api';
+import { useQuery } from '@tanstack/react-query';
 import s from './Dashboard.module.css';
 
 /* ─────────────── Helpers ─────────────── */
@@ -122,14 +126,46 @@ function getSubjectStyle(name: string | null | undefined) {
   return { sym };
 }
 
+/* ─────────────── Empty states ─────────────── */
+function EmptyState({ icon, title, subtitle, cta, onCta }: { icon: React.ReactNode; title: string; subtitle: string; cta?: string; onCta?: () => void }) {
+  return (
+    <div className={s.emptyState}>
+      <div className={s.emptyIcon}>{icon}</div>
+      <div className={s.emptyTitle}>{title}</div>
+      <div className={s.emptySubtitle}>{subtitle}</div>
+      {cta && onCta && (
+        <button className={s.emptyCta} onClick={onCta}>
+          {cta}
+        </button>
+      )}
+    </div>
+  );
+}
+
+/* ─────────────── useRanking hook inline ─────────────── */
+function useRanking() {
+  const { user, subscription } = useAuthStore();
+  const isAdmin = user?.role === 'ADMIN';
+  const hasSubscription = isAdmin || (subscription?.status === 'ACTIVE' || subscription?.status === 'TRIALING');
+  return useQuery({
+    queryKey: ['stats', 'ranking'],
+    queryFn: () => statsApi.ranking(),
+    enabled: !!user && hasSubscription,
+    placeholderData: (previousData) => previousData,
+  });
+}
+
 /* ════════════════════════════════════════════════════════
-   DASHBOARD PAGE — Exactamente como na imagem
+   DASHBOARD PAGE — Dados reais, sem mock
    ════════════════════════════════════════════════════════ */
 export function DashboardPage() {
   const navigate = useNavigate();
   const { user } = useAuthStore();
   const { isLoading: loadingMaterias } = useMaterias();
   const { data: stats, isLoading: loadingStats } = useStats();
+  const { data: erroresData, isLoading: loadingErrores } = useErrores({ page: 1 });
+  const { data: rankingData, isLoading: loadingRanking } = useRanking();
+  const { data: recommendations, isLoading: loadingRecommendations } = useDashboardRecommendations();
 
   const racha = stats?.racha ?? 0;
   const total = stats?.totalRespuestas ?? 0;
@@ -152,36 +188,10 @@ export function DashboardPage() {
   const todayDone = Math.min(total % todayGoal || (total > 0 ? todayGoal : 0), todayGoal);
   const todayPct = Math.round((todayDone / todayGoal) * 100);
 
-  /* Mock data para widgets que ainda não têm API */
-  const mockMateriasAll = [
-    { id: 1, nombre: 'Lengua Castellana y Literatura', pct: 80 },
-    { id: 2, nombre: 'Historia de España', pct: 70 },
-    { id: 3, nombre: 'Inglés', pct: 65 },
-    { id: 4, nombre: 'Biología', pct: 55 },
-    { id: 5, nombre: 'Química', pct: 55 },
-    { id: 6, nombre: 'Matemáticas Aplicadas a las CCSS', pct: 45 },
-    { id: 7, nombre: 'Geografía', pct: 35 },
-  ];
+  const errores = erroresData?.items?.slice(0, 4) ?? [];
+  const ranking = rankingData?.slice(0, 3) ?? [];
 
-  const mockErrores = [
-    { tema: 'Funciones exponenciales', materia: 'Matemáticas', veces: 3, prioridad: 'Alta' },
-    { tema: 'Cinética química', materia: 'Química', veces: 2, prioridad: 'Alta' },
-    { tema: 'Comentario de texto', materia: 'Lengua Castellana', veces: 2, prioridad: 'Media' },
-    { tema: 'Meiosis y gametogénesis', materia: 'Biología', veces: 2, prioridad: 'Media' },
-  ];
-
-  const mockFlashcards = [
-    { tema: 'Reacciones orgánicas', materia: 'Química', tarjetas: 24 },
-    { tema: 'Biomoléculas', materia: 'Biología', tarjetas: 18 },
-    { tema: 'Conectores y oraciones', materia: 'Lengua Castellana', tarjetas: 32 },
-  ];
-
-  const mockRanking = [
-    { pos: 1, sigla: 'Qm', nombre: 'Química', pct: 65 },
-    { pos: 2, sigla: 'En', nombre: 'Inglés', pct: 65 },
-    { pos: 3, sigla: 'Lc', nombre: 'Lengua Castellana', pct: 60 },
-  ];
-
+  // Actividad semanal mock ainda (backend nao tem ainda)
   const mockActividad = [
     { dia: 'L', val: 35 },
     { dia: 'M', val: 65 },
@@ -275,7 +285,7 @@ export function DashboardPage() {
               { icon: <Flame size={18} />, val: racha, suf: '', lab: 'Días de racha', trend: '+2', trendUp: true },
               { icon: <BookOpen size={18} />, val: total, suf: '', lab: 'Preguntas respondidas', trend: '+18%', trendUp: true },
               { icon: <Target size={18} />, val: acierto, suf: '%', lab: 'Acierto medio', trend: '+6%', trendUp: true },
-              { icon: <Layers size={18} />, val: materiasPracticadas.length || 8, suf: '', lab: 'Materias activas', trend: '=', trendUp: null },
+              { icon: <Layers size={18} />, val: materiasPracticadas.length, suf: '', lab: 'Materias activas', trend: '=', trendUp: null },
             ].map(({ icon, val, suf, lab, trend, trendUp }, i) => (
               <div key={i} className={s.kpiChip}>
                 <div className={s.kpiIcon}>{icon}</div>
@@ -304,7 +314,6 @@ export function DashboardPage() {
             <div className={s.tabsHeader}>
               <div className={s.tabsList}>
                 <button className={`${s.tab} ${s.tabActive}`}>Mis materias</button>
-                <button className={s.tab}>Actividad reciente</button>
               </div>
               <button className={s.verTodoLink} onClick={() => navigate('/stats')}>
                 Ver todas <ChevronRight size={14} />
@@ -318,40 +327,46 @@ export function DashboardPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
           >
-            {(materiasPracticadas.length > 0 ? materiasPracticadas : mockMateriasAll.map((m) => ({
-              materiaId: m.id,
-              materiaNombre: m.nombre,
-              porcentajeAcierto: m.pct,
-            }))).slice(0, 5).map((m: any, idx: number) => {
-              const st = getSubjectStyle(m.materiaNombre);
-              const pct = m.porcentajeAcierto;
-              return (
-                <motion.div
-                  key={m.materiaId}
-                  className={s.materiaCard}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.22 + idx * 0.04, duration: 0.3 }}
-                  onClick={() => navigate('/practice')}
-                >
-                  <div className={s.materiaTop}>
-                    <span className={s.materiaNum}>{idx + 1}</span>
-                    <span className={s.materiaPct}>{pct}%</span>
-                  </div>
-                  <span className={s.materiaSymbol}>{st.sym}</span>
-                  <span className={s.materiaName}>{m.materiaNombre}</span>
-                  <div className={s.materiaTrack}>
-                    <motion.div
-                      className={s.materiaFill}
-                      initial={{ scaleX: 0 }}
-                      animate={{ scaleX: pct / 100 }}
-                      transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.3 + idx * 0.05 }}
-                      style={{ transformOrigin: 'left' }}
-                    />
-                  </div>
-                </motion.div>
-              );
-            })}
+            {materiasPracticadas.length === 0 ? (
+              <EmptyState
+                icon={<BookOpen size={28} />}
+                title="Aún no has practicado"
+                subtitle="Empieza con una sesión para ver tu progreso por materia."
+                cta="Practicar ahora"
+                onCta={() => navigate('/practice')}
+              />
+            ) : (
+              materiasPracticadas.slice(0, 5).map((m: any, idx: number) => {
+                const st = getSubjectStyle(m.materiaNombre);
+                const pct = m.porcentajeAcierto;
+                return (
+                  <motion.div
+                    key={m.materiaId}
+                    className={s.materiaCard}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.22 + idx * 0.04, duration: 0.3 }}
+                    onClick={() => navigate('/practice')}
+                  >
+                    <div className={s.materiaTop}>
+                      <span className={s.materiaNum}>{idx + 1}</span>
+                      <span className={s.materiaPct}>{pct}%</span>
+                    </div>
+                    <span className={s.materiaSymbol}>{st.sym}</span>
+                    <span className={s.materiaName}>{m.materiaNombre}</span>
+                    <div className={s.materiaTrack}>
+                      <motion.div
+                        className={s.materiaFill}
+                        initial={{ scaleX: 0 }}
+                        animate={{ scaleX: pct / 100 }}
+                        transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.3 + idx * 0.05 }}
+                        style={{ transformOrigin: 'left' }}
+                      />
+                    </div>
+                  </motion.div>
+                );
+              })
+            )}
           </motion.div>
 
           {/* ── BOTTOM ROW: Repaso + Errores ── */}
@@ -361,27 +376,38 @@ export function DashboardPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1], delay: 0.25 }}
           >
-            {/* Repaso inteligente */}
+            {/* Recomendaciones de PIPO */}
             <div className={s.bottomCard}>
               <div className={s.bottomCardHeader}>
                 <div className={s.bottomCardHeaderLeft}>
                   <div>
-                    <div className={s.bottomCardTitle}>Repaso inteligente</div>
-                    <div className={s.bottomCardSubtitle}>Flashcards recomendadas para ti</div>
+                    <div className={s.bottomCardTitle}>Recomendaciones de PIPO</div>
+                    <div className={s.bottomCardSubtitle}>Basadas en tu progreso real</div>
                   </div>
                 </div>
-                <button className={s.bottomCardArrow} onClick={() => navigate('/flashcards')}>
-                  <ChevronRight size={18} />
-                </button>
               </div>
               <div className={s.flashcardsList}>
-                {mockFlashcards.map((fc, i) => (
-                  <div key={i} className={s.flashcardItem} onClick={() => navigate('/flashcards')}>
-                    <div className={s.flashcardTitle}>{fc.tema}</div>
-                    <div className={s.flashcardMeta}>{fc.materia}</div>
-                    <div className={s.flashcardCount}>{fc.tarjetas} tarjetas</div>
-                  </div>
-                ))}
+                {loadingRecommendations ? (
+                  <Sk h={60} r={8} />
+                ) : !recommendations || recommendations.length === 0 ? (
+                  <EmptyState
+                    icon={<Sparkles size={24} />}
+                    title="¡Vas bien!"
+                    subtitle="No hay recomendaciones pendientes. Sigue con tu plan de estudio."
+                    cta="Practicar"
+                    onCta={() => navigate('/practice')}
+                  />
+                ) : (
+                  recommendations.slice(0, 3).map((rec, i) => (
+                    <div key={i} className={s.flashcardItem} onClick={() => navigate(rec.link)}>
+                      <div className={s.flashcardTitle}>{rec.title}</div>
+                      <div className={s.flashcardMeta}>{rec.message}</div>
+                      <div className={s.flashcardCount} style={{ color: rec.priority === 'high' ? 'var(--pp-red)' : 'var(--text-3)' }}>
+                        {rec.priority === 'high' ? 'Prioridad alta' : 'Sugerencia'}
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
 
@@ -396,19 +422,31 @@ export function DashboardPage() {
                 </button>
               </div>
               <div className={s.erroresList}>
-                {mockErrores.map((err, i) => (
-                  <div key={i} className={s.errorItem} onClick={() => navigate('/errores')}>
-                    <div className={s.errorDot} />
-                    <div className={s.errorInfo}>
-                      <div className={s.errorTema}>{err.tema}</div>
-                      <div className={s.errorMeta}>{err.materia} · Fallado {err.veces} veces</div>
+                {loadingErrores ? (
+                  <Sk h={60} r={8} />
+                ) : errores.length === 0 ? (
+                  <EmptyState
+                    icon={<Target size={24} />}
+                    title="¡Excelente!"
+                    subtitle="No tienes errores pendientes. Sigue practicando."
+                    cta="Practicar"
+                    onCta={() => navigate('/practice')}
+                  />
+                ) : (
+                  errores.map((err) => (
+                    <div key={err.id} className={s.errorItem} onClick={() => navigate('/errores')}>
+                      <div className={s.errorDot} />
+                      <div className={s.errorInfo}>
+                        <div className={s.errorTema}>{err.pregunta.tema || err.pregunta.enunciado.slice(0, 40)}</div>
+                        <div className={s.errorMeta}>{err.pregunta.materia.nombre}</div>
+                      </div>
+                      <span className={`${s.errorTag} ${s.errorTagHigh}`}>
+                        Revisar
+                      </span>
+                      <ChevronRight size={14} className={s.errorChevron} />
                     </div>
-                    <span className={`${s.errorTag} ${err.prioridad === 'Alta' ? s.errorTagHigh : s.errorTagMedium}`}>
-                      {err.prioridad}
-                    </span>
-                    <ChevronRight size={14} className={s.errorChevron} />
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           </motion.div>
@@ -499,18 +537,31 @@ export function DashboardPage() {
               </div>
             </div>
             <div className={s.rankingList}>
-              {mockRanking.map((item) => (
-                <div key={item.pos} className={s.rankingItem}>
-                  <div className={s.rankingLeft}>
-                    <span className={`${s.rankingPos} ${item.pos === 1 ? s.rankingPos1 : item.pos === 2 ? s.rankingPos2 : s.rankingPos3}`}>
-                      {item.pos}º
-                    </span>
-                    <span className={s.rankingSigla}>{item.sigla}</span>
-                    <span className={s.rankingName}>{item.nombre}</span>
-                  </div>
-                  <span className={s.rankingPct}>{item.pct}%</span>
-                </div>
-              ))}
+              {loadingRanking ? (
+                <Sk h={60} r={8} />
+              ) : ranking.length === 0 ? (
+                <EmptyState
+                  icon={<Trophy size={24} />}
+                  title="Sin datos de ranking"
+                  subtitle="Sigue practicando para aparecer en el ranking."
+                />
+              ) : (
+                ranking.map((item, idx) => {
+                  const st = getSubjectStyle(item.nombre);
+                  return (
+                    <div key={item.id} className={s.rankingItem}>
+                      <div className={s.rankingLeft}>
+                        <span className={`${s.rankingPos} ${idx === 0 ? s.rankingPos1 : idx === 1 ? s.rankingPos2 : s.rankingPos3}`}>
+                          {idx + 1}º
+                        </span>
+                        <span className={s.rankingSigla}>{st.sym}</span>
+                        <span className={s.rankingName}>{item.nombre}</span>
+                      </div>
+                      <span className={s.rankingPct}>{item.aciertos} ac.</span>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </motion.div>
 

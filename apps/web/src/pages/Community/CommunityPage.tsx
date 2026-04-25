@@ -9,6 +9,9 @@ import { LeftSidebar } from './components/LeftSidebar';
 import { CenterFeed } from './components/CenterFeed';
 import { RightSidebar } from './components/RightSidebar';
 import { PostDetailFeed } from './components/PostDetailFeed';
+import { SavedPostsFeed } from './components/SavedPostsFeed';
+import { MyPostsFeed } from './components/MyPostsFeed';
+import { UniversitiesFeed } from './components/UniversitiesFeed';
 
 export function CommunityPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -54,6 +57,9 @@ export function CommunityPage() {
       <main className={s.centerFeed}>
         <Routes>
           <Route path="post/:id" element={<PostDetailFeed />} />
+          <Route path="guardados" element={<SavedPostsFeed />} />
+          <Route path="mis-publicaciones" element={<MyPostsFeed />} />
+          <Route path="universidades" element={<UniversitiesFeed />} />
           <Route path="*" element={<CenterFeed />} />
         </Routes>
       </main>

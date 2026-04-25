@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { CommunityState, CommunityPost, PostType, CommunityFilters, CommunityComment } from '../../types/community';
+import { community as communityApi } from '../../services/api';
 
 const initialState: CommunityState & { posts: CommunityPost[] } = {
   feed: [],
@@ -32,65 +33,15 @@ const initialState: CommunityState & { posts: CommunityPost[] } = {
   error: null,
 };
 
-// Mock para simular fetch de dados (MVP)
 export const fetchCommunityFeed = createAsyncThunk(
   'community/fetchFeed',
-  async (_filters: CommunityFilters) => {
-    // Aqui no futuro chamaremos o service/api real
-    return new Promise<CommunityPost[]>((resolve) => {
-      setTimeout(() => {
-        resolve([
-          {
-            id: 'post-1',
-            type: 'DUDA',
-            title: '¿Alguien tiene apontes de los Reyes Católicos?',
-            content: 'Estoy atascado con este tema y no entiendo bien la política exterior. ¿Me ajudáis?',
-            author: { id: 'u1', name: 'María García', avatarUrl: '' },
-            materiaId: '1',
-            materiaName: 'Historia de España',
-            tags: ['#ReyesCatolicos', '#Historia'],
-            metrics: { likes: 12, comments: 2, reposts: 1 },
-            hasLiked: false,
-            hasSaved: false,
-            createdAt: new Date(Date.now() - 3600000).toISOString(), // 1h ago
-            comments: [
-              {
-                id: 'c1',
-                postId: 'post-1',
-                author: { id: 'u2', name: 'Carlos Ruiz' },
-                text: 'Te recomiendo mucho el libro de Historia Moderna de la UNED.',
-                createdAt: new Date(Date.now() - 1800000).toISOString(),
-                likes: 5,
-                hasLiked: false,
-                isLikedByAuthor: true
-              },
-              {
-                id: 'c2',
-                postId: 'post-1',
-                author: { id: 'u3', name: 'Ana Isabel' },
-                text: 'Yo tengo un esquema muy bueno, si quieres te lo paso por MD.',
-                createdAt: new Date(Date.now() - 900000).toISOString(),
-                likes: 2,
-                hasLiked: false
-              }
-            ]
-          },
-          {
-            id: 'post-2',
-            type: 'LOGRO',
-            title: '¡He aprobado el simulacro!',
-            content: 'Por fin he sacado más de un 8 en el simulacro general. ¡A seguir!',
-            author: { id: 'u2', name: 'Carlos Ruiz', avatarUrl: '' },
-            tags: ['#Simulacro', '#Motivacion'],
-            metrics: { likes: 45, comments: 0, reposts: 0 },
-            hasLiked: true,
-            hasSaved: false,
-            createdAt: new Date(Date.now() - 7200000).toISOString(), // 2h ago
-            comments: []
-          }
-        ]);
-      }, 500);
+  async (filters: CommunityFilters) => {
+    const data = await communityApi.list({
+      type: filters.type === 'TODO' ? undefined : filters.type,
+      materiaId: filters.materiaId ?? undefined,
+      q: filters.query || undefined,
     });
+    return data;
   }
 );
 
@@ -114,7 +65,6 @@ const communitySlice = createSlice({
       state.filters.tag = action.payload;
     },
     toggleLikePost: (state, action: PayloadAction<string>) => {
-      // update in posts
       const post = state.posts.find(p => p.id === action.payload);
       if (post) {
         post.hasLiked = !post.hasLiked;
@@ -137,8 +87,6 @@ const communitySlice = createSlice({
     },
     addPost: (state, action: PayloadAction<CommunityPost>) => {
       state.posts.unshift(action.payload);
-      
-      // Points gamification: Adicionando 10 pontos a cada post!
       const authorId = action.payload.author.id;
       const existingUser = state.topContributors.find(u => u.id === authorId);
       if (existingUser) {
@@ -150,7 +98,6 @@ const communitySlice = createSlice({
           points: 10
         });
       }
-      // Ordenar por points destrancando os prêmios
       state.topContributors.sort((a, b) => b.points - a.points);
     },
     addComment: (state, action: PayloadAction<CommunityComment>) => {
@@ -162,7 +109,6 @@ const communitySlice = createSlice({
     },
     addReply: (state, action: PayloadAction<{ commentId: string; reply: CommunityComment }>) => {
       const { commentId, reply } = action.payload;
-      // Search for the parent comment in all posts
       for (const post of state.posts) {
         const comment = post.comments.find(c => c.id === commentId);
         if (comment) {
@@ -199,10 +145,7 @@ const communitySlice = createSlice({
       })
       .addCase(fetchCommunityFeed.fulfilled, (state, action) => {
         state.status = 'idle';
-        // Mock backend responses initializing the real base
-        if (state.posts.length === 0) {
-          state.posts = action.payload;
-        }
+        state.posts = action.payload;
       })
       .addCase(fetchCommunityFeed.rejected, (state, action) => {
         state.status = 'failed';
@@ -233,7 +176,6 @@ export const selectFilteredFeed = (state: { community: CommunityState }) => {
   return data;
 };
 
-// Seletor para descobrir o Campeão (o cara da estrelinha)
 export const selectTopContributorId = (state: { community: CommunityState }) => {
   if (state.community.topContributors.length > 0) {
     return state.community.topContributors[0].id;

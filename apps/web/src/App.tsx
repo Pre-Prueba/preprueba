@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { useAuthStore } from './store/auth';
 import { Spinner } from './components/ui/Spinner';
 import { Toaster } from 'sonner';
@@ -18,22 +18,31 @@ import { PostDetailPage } from './pages/Forum/PostDetailPage';
 import { CreatePostPage } from './pages/Forum/CreatePostPage';
 import { PracticeHomePage } from './pages/Practice/PracticeHomePage';
 import { PracticePage } from './pages/Practice/PracticePage';
-import { StatsPage } from './pages/Stats/StatsPage';
 import { CheckoutPage } from './pages/Checkout/CheckoutPage';
 import { SettingsPage } from './pages/Settings/SettingsPage';
-import { AdminPage } from './pages/Admin/AdminPage';
 import { PrivacidadPage } from './pages/Legal/PrivacidadPage';
 import { TerminosPage } from './pages/Legal/TerminosPage';
 import { AppLayout } from './components/layout/AppLayout';
-import { ExamenesPage } from './pages/Examenes/ExamenesPage';
-import { ExamenDetallePage } from './pages/Examenes/ExamenDetallePage';
-import { ExamDocDetailPage } from './pages/Examenes/ExamDocDetailPage';
 import { ErroresPage } from './pages/Errores/ErroresPage';
-import { FlashcardsPage } from './pages/Flashcards/FlashcardsPage';
 import { FavoritosPage } from './pages/Favoritos/FavoritosPage';
 import { SimulacrosPage } from './pages/Simulacros/SimulacrosPage';
 import { QuestionWorkspace } from './pages/Workspace';
 import { CommunityPage } from './pages/Community/CommunityPage';
+
+const StatsPage = lazy(() => import('./pages/Stats/StatsPage').then(m => ({ default: m.StatsPage })));
+const FlashcardsPage = lazy(() => import('./pages/Flashcards/FlashcardsPage').then(m => ({ default: m.FlashcardsPage })));
+const AdminPage = lazy(() => import('./pages/Admin/AdminPage').then(m => ({ default: m.AdminPage })));
+const ExamenesPage = lazy(() => import('./pages/Examenes/ExamenesPage').then(m => ({ default: m.ExamenesPage })));
+const ExamenDetallePage = lazy(() => import('./pages/Examenes/ExamenDetallePage').then(m => ({ default: m.ExamenDetallePage })));
+const ExamDocDetailPage = lazy(() => import('./pages/Examenes/ExamDocDetailPage').then(m => ({ default: m.ExamDocDetailPage })));
+
+function PageSpinner() {
+  return (
+    <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <Spinner size={36} />
+    </div>
+  );
+}
 
 function PublicRoute({ children }: { children: React.ReactNode }) {
   const { user, initialized } = useAuthStore();
@@ -63,6 +72,14 @@ export default function App() {
   useEffect(() => {
     fetchMe();
   }, [fetchMe]);
+
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {
+        // ignore
+      });
+    }
+  }, []);
 
   if (!initialized) {
     return (
@@ -94,7 +111,7 @@ export default function App() {
           <Route path="/practice" element={<PracticeHomePage />} />
           <Route path="/practice/:materiaId" element={<PracticeSetupPage />} />
           <Route path="/practice/:materiaId/session" element={<PracticePage />} />
-          <Route path="/stats" element={<StatsPage />} />
+          <Route path="/stats" element={<Suspense fallback={<PageSpinner />}><StatsPage /></Suspense>} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/planner" element={<PlannerPage />} />
           <Route path="/history" element={<HistoryPage />} />
@@ -103,18 +120,18 @@ export default function App() {
           <Route path="/forum/:id" element={<PostDetailPage />} />
           <Route path="/forum/new" element={<CreatePostPage />} />
           <Route path="/comunidad/*" element={<CommunityPage />} />
-          <Route path="/examenes" element={<ExamenesPage />} />
-          <Route path="/examenes/doc/:id" element={<ExamDocDetailPage />} />
-          <Route path="/examenes/:key" element={<ExamenDetallePage />} />
+          <Route path="/examenes" element={<Suspense fallback={<PageSpinner />}><ExamenesPage /></Suspense>} />
+          <Route path="/examenes/doc/:id" element={<Suspense fallback={<PageSpinner />}><ExamDocDetailPage /></Suspense>} />
+          <Route path="/examenes/:key" element={<Suspense fallback={<PageSpinner />}><ExamenDetallePage /></Suspense>} />
           <Route path="/errores" element={<ErroresPage />} />
-          <Route path="/flashcards" element={<FlashcardsPage />} />
+          <Route path="/flashcards" element={<Suspense fallback={<PageSpinner />}><FlashcardsPage /></Suspense>} />
           <Route path="/favoritos" element={<FavoritosPage />} />
           <Route path="/simulacros" element={<SimulacrosPage />} />
         </Route>
 
         <Route path="/checkout" element={<PrivateRoute><CheckoutPage /></PrivateRoute>} />
         <Route path="/workspace" element={<PrivateRoute><QuestionWorkspace /></PrivateRoute>} />
-        <Route path="/admin" element={<AdminGuard><AdminPage /></AdminGuard>} />
+        <Route path="/admin" element={<AdminGuard><Suspense fallback={<PageSpinner />}><AdminPage /></Suspense></AdminGuard>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

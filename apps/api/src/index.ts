@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import 'express-async-errors';
 import * as Sentry from '@sentry/node';
 import cors from 'cors';
 import express, { type NextFunction, type Request, type Response } from 'express';
@@ -19,6 +20,10 @@ import flashcardsRoutes from './routes/flashcards';
 import examenesRoutes from './routes/examenes';
 import examDocsRoutes from './routes/exam-docs';
 import simulacrosRoutes from './routes/simulacros';
+import communityRoutes from './routes/community';
+import notificationsRoutes from './routes/notifications';
+import searchRoutes from './routes/search';
+import dashboardRoutes from './routes/dashboard';
 
 const sentryDsn = process.env.SENTRY_DSN;
 
@@ -61,6 +66,10 @@ app.use('/flashcards', flashcardsRoutes);
 app.use('/examenes', examenesRoutes);
 app.use('/exam-docs', examDocsRoutes);
 app.use('/simulacros', simulacrosRoutes);
+app.use('/community', communityRoutes);
+app.use('/notifications', notificationsRoutes);
+app.use('/search', searchRoutes);
+app.use('/dashboard', dashboardRoutes);
 
 app.get('/health', async (_req, res) => {
   try {

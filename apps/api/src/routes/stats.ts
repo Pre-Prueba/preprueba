@@ -16,7 +16,7 @@ router.get('/resumen', requireAuth, requireSubscription, async (req: Request, re
     prisma.respuestaUsuario.count({ where: { userId: user.id } }),
     prisma.respuestaUsuario.findMany({
       where: { userId: user.id },
-      select: { esCorrecta: true, createdAt: true, pregunta: { select: { materiaId: true } } },
+      select: { esCorrecta: true, createdAt: true, tiempoRespuesta: true, pregunta: { select: { materiaId: true } } },
     }),
     prisma.materia.findMany({ where: { activa: true }, select: { id: true, nombre: true } }),
   ]);
@@ -58,6 +58,9 @@ router.get('/resumen', requireAuth, requireSubscription, async (req: Request, re
     const aciertos = resp.filter((r) => r.esCorrecta).length;
     const pct = total > 0 ? Math.round((aciertos / total) * 100) : 0;
 
+    const tiempos = resp.map((r) => r.tiempoRespuesta).filter((t): t is number => t !== null && t > 0);
+    const avgTime = tiempos.length > 0 ? Math.round(tiempos.reduce((a, b) => a + b, 0) / tiempos.length) : 0;
+
     const ultSemana = resp.filter((r) => ahora - r.createdAt.getTime() < semana);
     const semAnt = resp.filter((r) => {
       const diff = ahora - r.createdAt.getTime();
@@ -69,10 +72,35 @@ router.get('/resumen', requireAuth, requireSubscription, async (req: Request, re
     const tendencia: 'mejorando' | 'estable' | 'bajando' =
       pctUlt > pctAnt + 0.05 ? 'mejorando' : pctUlt < pctAnt - 0.05 ? 'bajando' : 'estable';
 
-    return { materiaId: materia.id, materiaNombre: materia.nombre, totalRespondidas: total, porcentajeAcierto: pct, tendencia };
+    return { materiaId: materia.id, materiaNombre: materia.nombre, totalRespondidas: total, porcentajeAcierto: pct, tendencia, avgTime };
   });
 
-  res.json({ totalSesiones, totalRespuestas, porcentajeAcierto, racha, porMateria });
+  // Global average time per question
+  const allTiempos = respuestasAll.map((r) => r.tiempoRespuesta).filter((t): t is number => t !== null && t > 0);
+  const globalAvgTime = allTiempos.length > 0 ? Math.round(allTiempos.reduce((a, b) => a + b, 0) / allTiempos.length) : 45;
+
+  // Weekly evolution (last 7 days)
+  const diasSemana = ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'];
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+  const weeklyEvolution = Array.from({ length: 7 }).map((_, i) => {
+    const dia = new Date(hoy);
+    dia.setDate(dia.getDate() - (6 - i));
+    const diaSig = diasSemana[dia.getDay()];
+    const respDia = respuestasAll.filter((r) => {
+      const d = new Date(r.createdAt);
+      d.setHours(0, 0, 0, 0);
+      return d.getTime() === dia.getTime();
+    });
+    const aciertosDia = respDia.filter((r) => r.esCorrecta).length;
+    const totalDia = respDia.length;
+    return {
+      name: diaSig,
+      acierto: totalDia > 0 ? Math.round((aciertosDia / totalDia) * 100) : 0,
+    };
+  });
+
+  res.json({ totalSesiones, totalRespuestas, porcentajeAcierto, racha, porMateria, weeklyEvolution, globalAvgTime });
 });
 
 // GET /stats/tips - Gerar dicas de estudo IA

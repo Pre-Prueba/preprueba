@@ -1,17 +1,43 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { 
-  ArrowLeft, User, CreditCard, LogOut, Camera, 
-  MapPin, Phone, Mail, FileText, Calendar 
+import {
+  ArrowLeft, User, CreditCard, LogOut, Camera,
+  MapPin, Phone, Mail, FileText, Calendar, Moon, Sun
 } from 'lucide-react';
 import { useAuthStore } from '../../store/auth';
 import { stripe as stripeApi, auth as authApi } from '../../services/api';
+import { useTheme } from '../../hooks/useTheme';
 import { Button } from '../../components/ui/Button';
 import { staggerContainer } from '../../lib/animations';
 import s from './Settings.module.css';
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+
+function ThemeToggle() {
+  const { theme, toggle } = useTheme();
+  return (
+    <button
+      onClick={toggle}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 10,
+        padding: '10px 14px',
+        borderRadius: 10,
+        border: '1px solid var(--border)',
+        background: 'var(--card)',
+        cursor: 'pointer',
+        width: '100%',
+        fontSize: 14,
+        color: 'var(--text-1)',
+      }}
+    >
+      {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+      <span>{theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}</span>
+    </button>
+  );
+}
 
 export function SettingsPage() {
   const navigate = useNavigate();
@@ -276,6 +302,17 @@ export function SettingsPage() {
               {saveLoading ? 'Guardando...' : 'Guardar Cambios'}
             </Button>
           </div>
+
+          {/* ── Apariencia */}
+          <section className={s.section}>
+            <header className={s.sectionHeader}>
+              <div className={s.sectionIcon}><Moon size={16} /></div>
+              <h2 className={s.sectionTitle}>Apariencia</h2>
+            </header>
+            <div className={s.sectionBody}>
+              <ThemeToggle />
+            </div>
+          </section>
 
           {/* ── Suscripción */}
           <section className={s.section}>

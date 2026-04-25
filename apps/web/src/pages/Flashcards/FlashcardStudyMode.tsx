@@ -6,6 +6,40 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { FlashcardItem } from '../../services/api';
 import s from './Flashcards.module.css';
 
+const STORAGE_KEY = 'preprueba_flashcard_progress';
+
+interface SavedProgress {
+  deckId: string;
+  currentIndex: number;
+  evaluations: Record<string, number>;
+  timestamp: number;
+}
+
+function getSavedProgress(deckId: string): SavedProgress | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const data: SavedProgress = JSON.parse(raw);
+    if (data.deckId !== deckId) return null;
+    // Expira após 7 dias
+    if (Date.now() - data.timestamp > 7 * 24 * 60 * 60 * 1000) {
+      localStorage.removeItem(STORAGE_KEY);
+      return null;
+    }
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+function saveProgress(deckId: string, currentIndex: number, evaluations: Record<string, number>) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ deckId, currentIndex, evaluations, timestamp: Date.now() }));
+  } catch {
+    // ignore
+  }
+}
+
 interface FlashcardStudyModeProps {
   cards: FlashcardItem[];
   onClose: () => void;
@@ -13,33 +47,47 @@ interface FlashcardStudyModeProps {
 
 export function FlashcardStudyMode({ cards, onClose }: FlashcardStudyModeProps) {
   const queryClient = useQueryClient();
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const deckId = cards.map((c) => c.id).join(',');
+  const saved = getSavedProgress(deckId);
+
+  const [currentIndex, setCurrentIndex] = useState(saved?.currentIndex ?? 0);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [evaluations, setEvaluations] = useState<Record<string, number>>(saved?.evaluations ?? {});
   
   const currentCard = cards[currentIndex];
 
   const updateEstadoMutation = useMutation({
-    mutationFn: ({ id, estado }: { id: string; estado: 'facil' | 'dificil' | 'pendiente' }) => 
-      flashcardsApi.updateEstado(id, estado),
+    mutationFn: ({ id, estado, rating }: { id: string; estado: 'facil' | 'dificil' | 'pendiente'; rating?: 1 | 2 | 3 }) =>
+      flashcardsApi.updateEstado(id, estado, rating),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['flashcards'] });
     }
   });
 
-  const handleNext = useCallback((estado?: 'facil' | 'dificil' | 'pendiente') => {
+  const handleNext = useCallback((estado?: 'facil' | 'dificil' | 'pendiente', rating?: 1 | 2 | 3) => {
     if (estado && currentCard) {
-      updateEstadoMutation.mutate({ id: currentCard.id, estado });
+      updateEstadoMutation.mutate({ id: currentCard.id, estado, rating });
+      if (rating) {
+        setEvaluations((prev) => {
+          const next = { ...prev, [currentCard.id]: rating };
+          saveProgress(deckId, currentIndex + 1, next);
+          return next;
+        });
+      }
     }
-    
+
+    const nextIndex = currentIndex + 1;
     setIsFlipped(false);
     setTimeout(() => {
       if (currentIndex < cards.length - 1) {
-        setCurrentIndex(prev => prev + 1);
+        setCurrentIndex(nextIndex);
+        saveProgress(deckId, nextIndex, evaluations);
       } else {
+        localStorage.removeItem(STORAGE_KEY);
         onClose(); // Finished studying
       }
     }, 200);
-  }, [currentIndex, cards.length, currentCard, updateEstadoMutation, onClose]);
+  }, [currentIndex, cards.length, currentCard, updateEstadoMutation, onClose, deckId, evaluations]);
 
   const handlePrev = useCallback(() => {
     if (currentIndex > 0) {
@@ -54,6 +102,15 @@ export function FlashcardStudyMode({ cards, onClose }: FlashcardStudyModeProps) 
     setIsFlipped(prev => !prev);
   }, []);
 
+  // Persist progress on tab close
+  useEffect(() => {
+    function handleBeforeUnload() {
+      saveProgress(deckId, currentIndex, evaluations);
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [deckId, currentIndex, evaluations]);
+
   // Keyboard support
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -66,9 +123,9 @@ export function FlashcardStudyMode({ cards, onClose }: FlashcardStudyModeProps) 
       } else if (e.code === 'ArrowLeft') {
         handlePrev();
       } else if (isFlipped) {
-        if (e.key === '1') handleNext('dificil');
-        if (e.key === '2') handleNext('pendiente');
-        if (e.key === '3') handleNext('facil');
+        if (e.key === '1') handleNext('dificil', 1);
+        if (e.key === '2') handleNext('pendiente', 2);
+        if (e.key === '3') handleNext('facil', 3);
       }
     };
 
@@ -181,29 +238,29 @@ export function FlashcardStudyMode({ cards, onClose }: FlashcardStudyModeProps) 
 
         <div className={`${s.studyActions} ${isFlipped ? s.visible : ''}`}>
           <div className={s.actionGroup}>
-            <motion.button 
+            <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className={`${s.actionBtnStudy} ${s.btnDificil}`} 
-              onClick={() => handleNext('dificil')}
+              className={`${s.actionBtnStudy} ${s.btnDificil}`}
+              onClick={() => handleNext('dificil', 1)}
             >
               <span className={s.btnKbd}>1</span>
               Aún es difícil
             </motion.button>
-            <motion.button 
+            <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className={`${s.actionBtnStudy} ${s.btnPendiente}`} 
-              onClick={() => handleNext('pendiente')}
+              className={`${s.actionBtnStudy} ${s.btnPendiente}`}
+              onClick={() => handleNext('pendiente', 2)}
             >
               <span className={s.btnKbd}>2</span>
               Dudoso / Revisar
             </motion.button>
-            <motion.button 
+            <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className={`${s.actionBtnStudy} ${s.btnFacil}`} 
-              onClick={() => handleNext('facil')}
+              className={`${s.actionBtnStudy} ${s.btnFacil}`}
+              onClick={() => handleNext('facil', 3)}
             >
               <span className={s.btnKbd}>3</span>
               ¡Entendido!

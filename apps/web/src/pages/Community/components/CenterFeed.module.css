@@ -1,0 +1,17 @@
+.feed {
+  padding: 0;
+}
+
+.feedTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-1);
+  margin-bottom: 16px;
+  padding: 0 4px;
+}
+
+.empty {
+  font-size: 14px;
+  color: var(--text-3);
+  padding: 24px 4px;
+}

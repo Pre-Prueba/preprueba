@@ -7,6 +7,329 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id               String             @id @default(cuid())
+  email            String             @unique
+  passwordHash     String
+  nombre           String?
+  pruebaType       PruebaType?
+  comunidad        String?
+  onboardingDone   Boolean            @default(false)
+  stripeCustomerId String?            @unique
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  role             UserRole           @default(USER)
+  fechaExamen      DateTime?
+  avatarUrl        String?
+  bio              String?
+  pais             String             @default("España")
+  phone            String?
+  provincia        String?
+  comment_likes      comment_likes[]
+  communityComments  CommunityComment[]
+  communityLikes     CommunityLike[]
+  communityPosts     CommunityPost[]
+  communitySaves     CommunitySave[]
+  favoritos          Favorito[]
+  flashcards         Flashcard[]
+  forumComments      ForumComment[]
+  forumPosts         ForumPost[]
+  forumReports       ForumReport[]
+  notifications      Notification[]
+  post_likes         post_likes[]
+  refresh_tokens     refresh_tokens[]
+  respuestas         RespuestaUsuario[]
+  sesiones           Sesion[]
+  subscription       Subscription?
+  tareasPlan         TareaPlan[]
+
+  @@map("users")
+}
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  userId               String             @unique
+  stripeSubscriptionId String             @unique
+  status               SubscriptionStatus
+  currentPeriodEnd     DateTime
+  cancelAtPeriodEnd    Boolean            @default(false)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  user                 User               @relation(fields: [userId], references: [id])
+
+  @@map("subscriptions")
+}
+
+model Materia {
+  id          String       @id @default(cuid())
+  nombre      String
+  descripcion String?
+  pruebaType  PruebaType[]
+  fase        String
+  orden       Int          @default(0)
+  activa      Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  communityPosts CommunityPost[]
+  flashcards     Flashcard[]
+  forumPosts     ForumPost[]
+  preguntas      Pregunta[]
+  sesiones       Sesion[]
+  tareasPlan     TareaPlan[]
+
+  @@map("materias")
+}
+
+model Pregunta {
+  id          String             @id @default(cuid())
+  materiaId   String
+  enunciado   String
+  tipo        TipoPregunta       @default(TEST)
+  dificultad  Dificultad         @default(INTERMEDIO)
+  fuente      FuentePregunta     @default(OFICIAL)
+  anio        Int?
+  comunidad   String?
+  activa      Boolean            @default(true)
+  createdAt   DateTime           @default(now())
+  tema        String?
+  universidad String?
+  codigo      String?            @unique
+  secundaria  String?
+  favoritos   Favorito[]
+  flashcards  Flashcard[]
+  opciones    Opcion[]
+  materia     Materia            @relation(fields: [materiaId], references: [id])
+  respuestas  RespuestaUsuario[]
+
+  @@map("preguntas")
+}
+
+model Opcion {
+  id         String             @id @default(cuid())
+  preguntaId String
+  texto      String
+  esCorrecta Boolean            @default(false)
+  orden      Int                @default(0)
+  pregunta   Pregunta           @relation(fields: [preguntaId], references: [id])
+  respuestas RespuestaUsuario[]
+
+  @@map("opciones")
+}
+
+model Sesion {
+  id               String             @id @default(cuid())
+  userId           String
+  materiaId        String
+  totalPreguntas   Int
+  aciertos         Int                @default(0)
+  completada       Boolean            @default(false)
+  duracionSegundos Int?
+  createdAt        DateTime           @default(now())
+  currentIndex     Int                @default(0)
+  estado           SesionEstado       @default(INICIADA)
+  respuestas       RespuestaUsuario[]
+  materia          Materia            @relation(fields: [materiaId], references: [id])
+  user             User               @relation(fields: [userId], references: [id])
+
+  @@map("sesiones")
+}
+
+model RespuestaUsuario {
+  id              String   @id @default(cuid())
+  userId          String
+  preguntaId      String
+  sesionId        String
+  opcionId        String?
+  respuestaTexto  String?
+  esCorrecta      Boolean
+  feedbackIA      String?  @map("feedbackMentor")
+  tiempoRespuesta Int?
+  createdAt       DateTime @default(now())
+  revisado        Boolean  @default(false)
+  opcion          Opcion?  @relation(fields: [opcionId], references: [id])
+  pregunta        Pregunta @relation(fields: [preguntaId], references: [id])
+  sesion          Sesion   @relation(fields: [sesionId], references: [id])
+  user            User     @relation(fields: [userId], references: [id])
+
+  @@map("respuestas_usuario")
+}
+
+model TareaPlan {
+  id         String   @id @default(cuid())
+  userId     String
+  materiaId  String
+  diaSemana  Int
+  completada Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  materia    Materia  @relation(fields: [materiaId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@map("tareas_plan")
+}
+
+model ForumPost {
+  id                String         @id @default(cuid())
+  userId            String
+  materiaId         String?
+  titulo            String
+  contenido         String
+  likesCount        Int            @default(0)
+  isSolved          Boolean        @default(false)
+  acceptedCommentId String?        @unique
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  quotePostId       String?
+  comments          ForumComment[] @relation("PostComments")
+  materia           Materia?       @relation(fields: [materiaId], references: [id])
+  quotePost         ForumPost?     @relation("QuotePost", fields: [quotePostId], references: [id])
+  quotedBy          ForumPost[]    @relation("QuotePost")
+  user              User           @relation(fields: [userId], references: [id])
+  reports           ForumReport[]
+  post_likes        post_likes[]
+
+  @@map("forum_posts")
+}
+
+model ForumComment {
+  id            String          @id @default(cuid())
+  postId        String
+  userId        String
+  contenido     String
+  likesCount    Int             @default(0)
+  isAccepted    Boolean         @default(false)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  comment_likes comment_likes[]
+  post          ForumPost       @relation("PostComments", fields: [postId], references: [id], onDelete: Cascade)
+  user          User            @relation(fields: [userId], references: [id])
+
+  @@map("forum_comments")
+}
+
+model ForumReport {
+  id        String    @id @default(cuid())
+  postId    String
+  userId    String
+  razon     String
+  createdAt DateTime  @default(now())
+  post      ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("forum_reports")
+}
+
+model Flashcard {
+  id             String    @id @default(cuid())
+  userId         String
+  preguntaId     String?
+  materiaId      String?
+  frente         String
+  dorso          String
+  estado         String    @default("pendiente")
+  nextReviewDate DateTime?
+  interval       Int       @default(0)   // dias
+  easeFactor     Float     @default(2.5) // SM-2 ease factor
+  reps           Int       @default(0)   // repetições bem-sucedidas
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  materia        Materia?  @relation(fields: [materiaId], references: [id])
+  pregunta       Pregunta? @relation(fields: [preguntaId], references: [id])
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, nextReviewDate])
+  @@map("flashcards")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String   // STREAK_RISK, PAU_COUNTDOWN, FLASHCARD_REVIEW, PLANNER_PENDING, SYSTEM
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  link      String?  // rota opcional ao clicar
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+model ExamDocument {
+  id            String          @id @default(cuid())
+  title         String
+  subject       String
+  community     String
+  university    String
+  year          Int
+  call          String?
+  documentType  TipoDocumento
+  sourceUrl     String
+  sourceName    String
+  pdfUrl        String?
+  isOfficial    Boolean         @default(true)
+  isInteractive Boolean         @default(false)
+  status        DocumentoStatus @default(FOUND)
+  notes         String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@index([community])
+  @@index([university])
+  @@index([subject])
+  @@index([year])
+  @@index([documentType])
+  @@index([status])
+  @@map("exam_documents")
+}
+
+model Favorito {
+  id         String   @id @default(cuid())
+  userId     String
+  preguntaId String
+  createdAt  DateTime @default(now())
+  pregunta   Pregunta @relation(fields: [preguntaId], references: [id])
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, preguntaId])
+  @@map("favoritos")
+}
+
+model comment_likes {
+  id             String       @id
+  commentId      String
+  userId         String
+  createdAt      DateTime     @default(now())
+  forum_comments ForumComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  users          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, userId])
+}
+
+model post_likes {
+  id          String    @id
+  postId      String
+  userId      String
+  createdAt   DateTime  @default(now())
+  forum_posts ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  users       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+}
+
+model refresh_tokens {
+  id        String   @id
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  users     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
 enum PruebaType {
   MAYORES_25
   MAYORES_40
@@ -16,6 +339,9 @@ enum PruebaType {
 enum TipoPregunta {
   TEST
   ABIERTA
+  COMPLETAR
+  RELACIONAR
+  SENALAR
 }
 
 enum Dificultad {
@@ -65,272 +391,55 @@ enum SesionEstado {
   FINALIZADA
 }
 
-model User {
-  id               String      @id @default(cuid())
-  email            String      @unique
-  passwordHash     String
-  nombre           String?
-  pruebaType       PruebaType?
-  comunidad        String?
-  onboardingDone   Boolean     @default(false)
-  role             UserRole    @default(USER)
-  stripeCustomerId String?     @unique
-  createdAt        DateTime    @default(now())
-  updatedAt        DateTime    @updatedAt
-  fechaExamen      DateTime?
-  
-  // Perfil detalhado
-  avatarUrl        String?
-  phone            String?
-  provincia        String?
-  bio              String?     @db.Text
-  pais             String      @default("España")
-
-  subscription  Subscription?
-  sesiones      Sesion[]
-  respuestas    RespuestaUsuario[]
-  tareasPlan    TareaPlan[]
-  forumPosts    ForumPost[]
-  forumComments ForumComment[]
-  forumReports  ForumReport[]
-  flashcards    Flashcard[]
-  favoritos     Favorito[]
-
-  @@map("users")
-}
-
-model Subscription {
-  id                   String             @id @default(cuid())
-  userId               String             @unique
-  stripeSubscriptionId String             @unique
-  status               SubscriptionStatus
-  currentPeriodEnd     DateTime
-  cancelAtPeriodEnd    Boolean            @default(false)
-  createdAt            DateTime           @default(now())
-  updatedAt            DateTime           @updatedAt
-
-  user User @relation(fields: [userId], references: [id])
-
-  @@map("subscriptions")
-}
-
-model Materia {
-  id          String       @id @default(cuid())
-  nombre      String
-  descripcion String?
-  pruebaType  PruebaType[]
-  fase        String
-  orden       Int          @default(0)
-  activa      Boolean      @default(true)
-  createdAt   DateTime     @default(now())
-
-  preguntas  Pregunta[]
-  sesiones   Sesion[]
-  tareasPlan TareaPlan[]
-  forumPosts ForumPost[]
-  flashcards Flashcard[]
-
-  @@map("materias")
-}
-
-model Pregunta {
-  id         String         @id @default(cuid())
-  materiaId  String
-  enunciado  String
-  tipo       TipoPregunta   @default(TEST)
-  dificultad Dificultad     @default(INTERMEDIO)
-  fuente     FuentePregunta @default(OFICIAL)
-  tema       String?
-  anio       Int?
-  comunidad  String?
-  universidad String?
-  activa     Boolean        @default(true)
-  createdAt  DateTime       @default(now())
-
-  materia    Materia            @relation(fields: [materiaId], references: [id])
-  opciones   Opcion[]
-  respuestas RespuestaUsuario[]
-  flashcards Flashcard[]
-  favoritos  Favorito[]
-
-  @@map("preguntas")
-}
-
-model Opcion {
-  id         String @id @default(cuid())
-  preguntaId String
-  texto      String
-  esCorrecta Boolean @default(false)
-  orden      Int     @default(0)
-
-  pregunta   Pregunta           @relation(fields: [preguntaId], references: [id])
-  respuestas RespuestaUsuario[]
-
-  @@map("opciones")
-}
-
-model Sesion {
-  id               String   @id @default(cuid())
-  userId           String
-  materiaId        String
-  totalPreguntas   Int
-  aciertos         Int      @default(0)
-  completada       Boolean  @default(false)
-  estado           SesionEstado @default(INICIADA)
-  currentIndex     Int      @default(0)
-  duracionSegundos Int?
-  createdAt        DateTime @default(now())
-
-  user       User               @relation(fields: [userId], references: [id])
-  materia    Materia            @relation(fields: [materiaId], references: [id])
-  respuestas RespuestaUsuario[]
-
-  @@map("sesiones")
-}
-
-model RespuestaUsuario {
-  id              String   @id @default(cuid())
-  userId          String
-  preguntaId      String
-  sesionId        String
-  opcionId        String?
-  respuestaTexto  String?
-  esCorrecta      Boolean
-  feedbackIA      String?
-  tiempoRespuesta Int?
-  revisado        Boolean  @default(false)
-  createdAt       DateTime @default(now())
-
-  user     User     @relation(fields: [userId], references: [id])
-  pregunta Pregunta @relation(fields: [preguntaId], references: [id])
-  sesion   Sesion   @relation(fields: [sesionId], references: [id])
-  opcion   Opcion?  @relation(fields: [opcionId], references: [id])
-
-  @@map("respuestas_usuario")
-}
-
-model TareaPlan {
-  id        String   @id @default(cuid())
+model CommunityPost {
+  id        String             @id @default(cuid())
   userId    String
-  materiaId String
-  diaSemana Int      // 0 (Lunes) a 6 (Domingo)
-  completada Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  type      String             @default("TODO")
+  title     String
+  content   String
+  materiaId String?
+  tags      String[]           @default([])
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+  comments  CommunityComment[]
+  likes     CommunityLike[]
+  saves     CommunitySave[]
+  materia   Materia?           @relation(fields: [materiaId], references: [id])
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  user      User     @relation(fields: [userId], references: [id])
-  materia   Materia  @relation(fields: [materiaId], references: [id])
-
-  @@map("tareas_plan")
+  @@map("community_posts")
 }
 
-model ForumPost {
-  id                String   @id @default(cuid())
-  userId            String
-  materiaId         String?
-  titulo            String
-  contenido         String   @db.Text
-  likesCount        Int      @default(0)
-  isSolved          Boolean  @default(false)
-  acceptedCommentId String?  @unique
-  quotePostId       String?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-
-  user      User           @relation(fields: [userId], references: [id])
-  materia   Materia?       @relation(fields: [materiaId], references: [id])
-  quotePost ForumPost?     @relation("QuotePost", fields: [quotePostId], references: [id])
-  quotedBy  ForumPost[]    @relation("QuotePost")
-  comments  ForumComment[] @relation("PostComments")
-  reports   ForumReport[]
-
-  @@map("forum_posts")
-}
-
-model ForumComment {
-  id         String   @id @default(cuid())
-  postId     String
-  userId     String
-  contenido  String   @db.Text
-  likesCount Int      @default(0)
-  isAccepted Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  post ForumPost @relation("PostComments", fields: [postId], references: [id], onDelete: Cascade)
-  user User      @relation(fields: [userId], references: [id])
-
-  @@map("forum_comments")
-}
-
-model ForumReport {
-  id        String   @id @default(cuid())
+model CommunityComment {
+  id        String        @id @default(cuid())
   postId    String
   userId    String
-  razon     String
-  createdAt DateTime @default(now())
+  text      String
+  createdAt DateTime      @default(now())
+  post      CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  post ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
-  user User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("forum_reports")
+  @@map("community_comments")
 }
 
-model Flashcard {
-  id         String   @id @default(cuid())
-  userId     String
-  preguntaId String?
-  materiaId  String?
-  frente     String   @db.Text
-  dorso      String   @db.Text
-  estado     String   @default("pendiente")
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+model CommunityLike {
+  id     String        @id @default(cuid())
+  postId String
+  userId String
+  post   CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  pregunta Pregunta? @relation(fields: [preguntaId], references: [id])
-  materia  Materia?  @relation(fields: [materiaId], references: [id])
-
-  @@map("flashcards")
+  @@unique([postId, userId])
+  @@map("community_likes")
 }
 
-model ExamDocument {
-  id            String          @id @default(cuid())
-  title         String
-  subject       String
-  community     String
-  university    String
-  year          Int
-  call          String?         // "ordinaria" | "extraordinaria" | null
-  documentType  TipoDocumento
-  sourceUrl     String          // URL oficial de origen
-  sourceName    String          // nombre fuente oficial (ej: "UCM - Pruebas mayores 25")
-  pdfUrl        String?         // URL directa al PDF si disponible
-  isOfficial    Boolean         @default(true)
-  isInteractive Boolean         @default(false)
-  status        DocumentoStatus @default(FOUND)
-  notes         String?         @db.Text
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+model CommunitySave {
+  id     String        @id @default(cuid())
+  postId String
+  userId String
+  post   CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([community])
-  @@index([university])
-  @@index([subject])
-  @@index([year])
-  @@index([documentType])
-  @@index([status])
-  @@map("exam_documents")
-}
-
-model Favorito {
-  id         String   @id @default(cuid())
-  userId     String
-  preguntaId String
-  createdAt  DateTime @default(now())
-
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  pregunta Pregunta @relation(fields: [preguntaId], references: [id])
-
-  @@unique([userId, preguntaId])
-  @@map("favoritos")
+  @@unique([postId, userId])
+  @@map("community_saves")
 }

@@ -299,6 +299,28 @@ export const forum = {
     request<{ likes: number }>(`/forum/comments/${id}/like`, { method: 'POST' }),
 };
 
+// Community
+export const community = {
+  list: (params?: { type?: string; materiaId?: string; q?: string }) => {
+    const qs = new URLSearchParams(
+      Object.fromEntries(Object.entries(params ?? {}).filter(([, v]) => v !== undefined).map(([k, v]) => [k, String(v)]))
+    ).toString();
+    return request<any[]>(`/community?${qs}`);
+  },
+  create: (data: { type?: string; title: string; content: string; materiaId?: string; tags?: string[] }) =>
+    request<any>('/community', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  like: (id: string) => request<{ liked: boolean }>(`/community/${id}/like`, { method: 'POST' }),
+  save: (id: string) => request<{ saved: boolean }>(`/community/${id}/save`, { method: 'POST' }),
+  comment: (id: string, text: string) =>
+    request<any>(`/community/${id}/comments`, {
+      method: 'POST',
+      body: JSON.stringify({ text }),
+    }),
+};
+
 // Errores
 export const errores = {
   list: (params?: { materiaId?: string; tema?: string; revisado?: boolean; page?: number }) => {
@@ -340,13 +362,39 @@ export const flashcards = {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-  updateEstado: (id: string, estado: 'pendiente' | 'facil' | 'dificil') =>
+  updateEstado: (id: string, estado: 'pendiente' | 'facil' | 'dificil', rating?: 1 | 2 | 3) =>
     request<{ success: boolean }>(`/flashcards/${id}/estado`, {
       method: 'PATCH',
-      body: JSON.stringify({ estado }),
+      body: JSON.stringify({ estado, rating }),
     }),
   delete: (id: string) =>
     request<{ success: boolean }>(`/flashcards/${id}`, { method: 'DELETE' }),
+};
+
+// Dashboard
+export const dashboard = {
+  recommendations: () => request<{ type: string; title: string; message: string; link: string; priority: 'high' | 'medium' | 'low' }[]>('/dashboard/recommendations'),
+};
+
+// Notifications
+export const notifications = {
+  list: (params?: { unreadOnly?: boolean }) => {
+    const qs = new URLSearchParams(
+      Object.fromEntries(Object.entries(params ?? {}).filter(([, v]) => v !== undefined).map(([k, v]) => [k, String(v)]))
+    ).toString();
+    return request<{ id: string; type: string; title: string; message: string; read: boolean; link?: string; createdAt: string }[]>(`/notifications?${qs}`);
+  },
+  unreadCount: () => request<{ count: number }>('/notifications/unread-count'),
+  markRead: (id: string) => request<{ success: boolean }>(`/notifications/${id}/read`, { method: 'PATCH' }),
+  markAllRead: () => request<{ success: boolean }>('/notifications/mark-all-read', { method: 'POST' }),
+};
+
+// Search
+export const search = {
+  global: (q: string, type?: 'all' | 'questions' | 'topics' | 'errors' | 'flashcards') => {
+    const qs = new URLSearchParams({ q, ...(type ? { type } : {}) }).toString();
+    return request<Record<string, { id: string; type: string; title: string; subtitle: string; link: string }[]>>('/search?' + qs);
+  },
 };
 
 // Examenes

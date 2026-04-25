@@ -48,15 +48,7 @@ export function StatsPage() {
   const fortes = sorted.filter(m => m.porcentajeAcierto >= 60);
   const fracas = sorted.filter(m => m.porcentajeAcierto < 60);
 
-  const mockTemporalData = [
-    { name: 'Lun', acierto: 45 },
-    { name: 'Mar', acierto: 52 },
-    { name: 'Mie', acierto: 48 },
-    { name: 'Jue', acierto: 60 },
-    { name: 'Vie', acierto: 58 },
-    { name: 'Sab', acierto: 65 },
-    { name: 'Hoy', acierto: data?.porcentajeAcierto || 70 },
-  ];
+  const temporalData = data?.weeklyEvolution ?? [];
 
   return (
     <div className={s.statsPage}>
@@ -124,7 +116,7 @@ export function StatsPage() {
             <h2 className={s.sectionLabel}>Evolución Semanal</h2>
             <div style={{ width: '100%', height: 300 }}>
               <ResponsiveContainer>
-                <BarChart data={mockTemporalData}>
+                <BarChart data={temporalData}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(226, 232, 240, 0.6)" />
                   <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: 'var(--text-3)', fontSize: 12, fontWeight: 500}} dy={10} />
                   <YAxis axisLine={false} tickLine={false} tick={{fill: 'var(--text-3)', fontSize: 12, fontWeight: 500}} dx={-10} domain={[0, 100]} />

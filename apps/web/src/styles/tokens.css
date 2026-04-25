@@ -189,3 +189,49 @@
   --color-border:     var(--border);
   --color-white:      #FFFFFF;
 }
+
+/* ── Dark Mode ── */
+.dark {
+  --bg:          #0B0E14;
+  --bg-warm:     #0F1219;
+  --bg-soft:     #11151E;
+  --bg-2:        #151A26;
+  --card:        #151A26;
+  --surface:     #151A26;
+  --surface-alt: #1A2030;
+
+  --text:   #E8EAEF;
+  --text-1: #E8EAEF;
+  --text-2: #A0A8B8;
+  --text-3: #6B7280;
+
+  --border:       rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.14);
+  --border-light: rgba(255, 255, 255, 0.04);
+  --border-blue:  rgba(53, 92, 245, 0.30);
+
+  --blue-soft:  rgba(53, 92, 245, 0.15);
+  --blue-dim:   rgba(53, 92, 245, 0.12);
+
+  --orange-soft: rgba(255, 102, 36, 0.15);
+  --orange-dim:  rgba(255, 102, 36, 0.12);
+
+  --success-bg: rgba(22, 163, 74, 0.15);
+  --error-bg:   rgba(239, 68, 68, 0.15);
+  --warn-bg:    rgba(255, 155, 41, 0.15);
+  --info-bg:    rgba(53, 92, 245, 0.15);
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.30);
+  --shadow:    0 4px 12px rgba(0,0,0,0.35);
+  --shadow-md: 0 8px 24px rgba(0,0,0,0.40);
+  --shadow-lg: 0 16px 40px rgba(0,0,0,0.50);
+  --shadow-xl: 0 24px 60px rgba(0,0,0,0.55);
+
+  --sidebar-bg:        #12152A;
+  --sidebar-border:    rgba(255, 255, 255, 0.08);
+  --sidebar-text:      rgba(255, 255, 255, 0.70);
+  --sidebar-text-hover: #FFFFFF;
+  --sidebar-active-bg: rgba(53, 92, 245, 0.25);
+  --sidebar-active-border: #355CF5;
+  --sidebar-hover-bg:  rgba(255, 255, 255, 0.06);
+}

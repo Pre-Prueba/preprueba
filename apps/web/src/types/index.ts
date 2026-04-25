@@ -87,7 +87,10 @@ export interface StatsResumen {
     totalRespondidas: number;
     porcentajeAcierto: number;
     tendencia: 'mejorando' | 'estable' | 'bajando';
+    avgTime: number;
   }[];
+  weeklyEvolution: { name: string; acierto: number }[];
+  globalAvgTime: number;
 }
 
 export interface ForumPost {

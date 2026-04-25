@@ -182,6 +182,12 @@ export function PracticeHomePage() {
   const displayedMaterias = showAllMaterias ? materiasList : materiasList.slice(0, 6);
   const dominadas         = materiasList.filter(m => m.miProgreso.porcentajeAcierto > 80).length;
 
+  // Estimated time
+  const avgTimePerQuestion = config.materiaId
+    ? (statsData?.porMateria.find(m => m.materiaId === config.materiaId)?.avgTime ?? statsData?.globalAvgTime ?? 45)
+    : (statsData?.globalAvgTime ?? 45);
+  const estimatedMinutes = Math.max(1, Math.round((config.cantidad * avgTimePerQuestion) / 60));
+
   /* ── Loading skeleton ── */
   if (loading) {
     return (
@@ -359,22 +365,27 @@ export function PracticeHomePage() {
             <span>Temporizador</span>
           </div>
 
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            className={s.ctaBtn}
-            onClick={handleStartSession}
-            disabled={starting || materiasList.length === 0}
-            aria-busy={starting}
-          >
-            {starting ? (
-              <span className={s.ctaSpinner} aria-hidden="true" />
-            ) : (
-              <>
-                <Play size={15} aria-hidden="true" />
-                Comenzar práctica
-              </>
-            )}
-          </motion.button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <span style={{ fontSize: 13, color: 'var(--text-3)', whiteSpace: 'nowrap' }}>
+              ~{estimatedMinutes} min estimados
+            </span>
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              className={s.ctaBtn}
+              onClick={handleStartSession}
+              disabled={starting || materiasList.length === 0}
+              aria-busy={starting}
+            >
+              {starting ? (
+                <span className={s.ctaSpinner} aria-hidden="true" />
+              ) : (
+                <>
+                  <Play size={15} aria-hidden="true" />
+                  Comenzar práctica
+                </>
+              )}
+            </motion.button>
+          </div>
         </div>
       </section>
 
