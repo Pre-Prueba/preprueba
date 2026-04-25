@@ -4,10 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Heart, CheckCircle2, MessageCircle, MoreHorizontal, Trash2, AlertTriangle } from 'lucide-react';
 import { forum as forumApi } from '../../services/api';
 import { useAuthStore } from '../../store/auth';
-import type { ForumPost, ForumComment } from '../../types';
+import type { ForumPost } from '../../types';
 import { Button } from '../../components/ui/Button';
 import { ReportModal } from './components/ReportModal';
-import { fadeUp, staggerContainer, listItem } from '../../lib/animations';
+import { fadeUp } from '../../lib/animations';
 import { toast } from 'sonner';
 import s from './Forum.module.css';
 

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { Heart, MessageSquare, Send, X, CornerDownRight, CheckCircle2 } from 'lucide-react';
-import { useDispatch, useSelector } from 'react-redux';
-import type { RootState, AppDispatch } from '../../../store';
+import { useState } from 'react';
+import { Heart, MessageSquare, Send, CheckCircle2 } from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import { useAuthStore } from '../../../store/auth';
+import type { AppDispatch } from '../../../store';
 import type { CommunityComment } from '../../../types/community';
 import { toggleLikeComment, addReply } from '../../../features/community/communitySlice';
 import { Button } from '../../../components/ui/Button';
@@ -20,7 +21,7 @@ export function CommentItem({ comment, postId, parentId, isPostAuthor }: Props) 
   const dispatch = useDispatch<AppDispatch>();
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [replyText, setReplyText] = useState('');
-  const { user } = useSelector((state: RootState) => state.auth || { user: { id: 'u0', nombre: 'Test User' } });
+  const { user } = useAuthStore();
 
   const handleLike = () => {
     dispatch(toggleLikeComment({ postId, commentId: comment.id, parentId }));

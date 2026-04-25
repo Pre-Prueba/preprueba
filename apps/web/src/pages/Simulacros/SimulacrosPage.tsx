@@ -18,12 +18,12 @@ export function SimulacrosPage() {
   const [customTime, setCustomTime] = useState(30); // minutes
 
   const iniciarMutation = useMutation({
-    mutationFn: ({ materiaId, limit, time }: { materiaId?: string, limit: number, time?: number }) => 
+    mutationFn: ({ materiaId, limit }: { materiaId?: string; limit: number; time?: number }) => 
       sesionesApi.iniciar(materiaId || (materias[0]?.id as string) || '1', {
         tipo: 'TEST',
         totalPreguntas: limit,
       }),
-    onSuccess: (data, variables) => {
+    onSuccess: (_data, variables) => {
       const timeInSec = (variables.time || 45) * 60;
       navigate(`/practice/${variables.materiaId || '1'}/session?simulacro=true&duracion=${timeInSec}`);
     },

@@ -1,32 +1,24 @@
-import { useState, useEffect } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { Outlet } from 'react-router-dom';
 import { AppSidebar } from './AppSidebar';
-import { AppTopbar } from './AppTopbar';
+import { DashboardTopbar } from './DashboardTopbar';
 import s from './Layout.module.css';
 
 export function AppLayout() {
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const location = useLocation();
-
-  // close mobile nav on route change
-  useEffect(() => { setMobileNavOpen(false); }, [location.pathname]);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <div className={s.shell}>
-      <AppSidebar mobileOpen={mobileNavOpen} onClose={() => setMobileNavOpen(false)} />
+      <AppSidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
+      {mobileOpen && (
+        <div className={s.mobileBackdrop} onClick={() => setMobileOpen(false)} />
+      )}
       <div className={s.main}>
-        <AppTopbar onMobileMenu={() => setMobileNavOpen((v) => !v)} />
+        <DashboardTopbar onMenuClick={() => setMobileOpen(true)} />
         <main className={s.content}>
           <Outlet />
         </main>
       </div>
-      {mobileNavOpen && (
-        <div
-          className={s.mobileBackdrop}
-          onClick={() => setMobileNavOpen(false)}
-          aria-hidden
-        />
-      )}
     </div>
   );
 }

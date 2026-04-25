@@ -1,8 +1,8 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard, BookOpen, CalendarDays, BarChart3,
-  FileText, Sparkles, Users, Layers, Settings, LogOut,
-  Zap, Heart, AlertCircle
+  LayoutDashboard, Dumbbell, BookMarked, ClipboardList,
+  BarChart2, FileText, AlertCircle, Users,
+  Settings, LogOut, ChevronRight, Star,
 } from 'lucide-react';
 import { useAuthStore } from '../../store/auth';
 import s from './Layout.module.css';
@@ -12,91 +12,77 @@ interface AppSidebarProps {
   onClose: () => void;
 }
 
-interface NavItem {
-  to: string;
-  label: string;
-  Icon: React.ComponentType<{ size?: number; strokeWidth?: number }>;
-  group?: string;
-}
-
-const PRIMARY_NAV: NavItem[] = [
-  { to: '/dashboard',  label: 'Inicio',       Icon: LayoutDashboard, group: 'ESTUDIAR' },
-  { to: '/practice',   label: 'Practicar',    Icon: Zap,             group: 'ESTUDIAR' },
-  { to: '/flashcards', label: 'Flashcards',   Icon: Layers,          group: 'ESTUDIAR' },
-  { to: '/simulacros', label: 'Simulacros',   Icon: Sparkles,        group: 'ESTUDIAR' },
-
-  { to: '/planner',    label: 'Planificador', Icon: CalendarDays,    group: 'ORGANIZAR' },
-  { to: '/stats',      label: 'Desempeño',    Icon: BarChart3,       group: 'ORGANIZAR' },
-  { to: '/examenes',   label: 'Exámenes',     Icon: FileText,        group: 'ORGANIZAR' },
-  { to: '/errores',    label: 'Mis errores',  Icon: AlertCircle,     group: 'ORGANIZAR' },
-  { to: '/favoritos',  label: 'Favoritos',    Icon: Heart,           group: 'ORGANIZAR' },
-
-  { to: '/comunidad',  label: 'Comunidad',    Icon: Users,           group: 'RED' },
+const ESTUDIAR = [
+  { to: '/dashboard', label: 'Inicio',     Icon: LayoutDashboard },
+  { to: '/practice',  label: 'Practicar',  Icon: Dumbbell },
+  { to: '/flashcards', label: 'Flashcards', Icon: BookMarked },
+  { to: '/simulacros', label: 'Simulados',  Icon: ClipboardList },
 ];
 
-function groupItems(items: NavItem[]) {
-  const groups: Record<string, NavItem[]> = {};
-  for (const it of items) {
-    const g = it.group ?? 'OTROS';
-    (groups[g] ||= []).push(it);
-  }
-  return groups;
-}
+const RENDIMIENTO = [
+  { to: '/stats',    label: 'Desempeño',    Icon: BarChart2 },
+  { to: '/examenes', label: 'Exámenes',     Icon: FileText },
+  { to: '/errores',  label: 'Mis errores',  Icon: AlertCircle },
+];
+
+const COMUNIDAD = [
+  { to: '/comunidad', label: 'Comunidad', Icon: Users },
+];
+
+const CONFIGURACION = [
+  { to: '/settings', label: 'Configuraciones', Icon: Settings },
+];
+
+const NAV_GROUPS = [
+  { label: 'ESTUDIAR',      items: ESTUDIAR },
+  { label: 'RENDIMIENTO',   items: RENDIMIENTO },
+  { label: 'COMUNIDAD',     items: COMUNIDAD },
+  { label: 'CONFIGURACIÓN', items: CONFIGURACION },
+];
 
 export function AppSidebar({ mobileOpen, onClose }: AppSidebarProps) {
+  const { user, subscription, logout } = useAuthStore();
   const navigate = useNavigate();
-  const { user, logout } = useAuthStore();
-  const grouped = groupItems(PRIMARY_NAV);
 
   const initials = user?.nombre
-    ? user.nombre.split(' ').map((w: string) => w[0]).slice(0, 2).join('').toUpperCase()
-    : 'PP';
+    ? user.nombre.split(' ').map((w) => w[0]).join('').toUpperCase().slice(0, 2)
+    : 'UD';
 
-  const firstName = user?.nombre?.split(' ')[0] ?? 'Estudiante';
-  const isPremium = user?.subscription?.status === 'active';
+  const isPremium = subscription?.status === 'ACTIVE' || subscription?.status === 'TRIALING';
 
-  const handleLogout = () => {
+  function handleLogout() {
     logout();
     navigate('/login');
-    onClose();
-  };
+  }
 
   return (
-    <aside className={`${s.sidebar} ${mobileOpen ? s.sidebarMobileOpen : ''}`}>
+    <aside className={[s.sidebar, mobileOpen ? s.sidebarMobileOpen : ''].filter(Boolean).join(' ')}>
       {/* Brand */}
       <div className={s.brandBlock}>
-        <div
-          className={s.brand}
-          onClick={() => { navigate('/dashboard'); onClose(); }}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => { if (e.key === 'Enter') { navigate('/dashboard'); onClose(); } }}
-        >
-          <div className={s.brandMark}>P</div>
-          <div className={s.brandWord}>prep<em>rueba</em></div>
-        </div>
+        <NavLink to="/dashboard" className={s.brand} onClick={onClose}>
+          <img src="/assets/icon.png" alt="" aria-hidden className={s.brandMark} />
+          <span className={s.brandWord}>preprueba</span>
+        </NavLink>
       </div>
 
-      {/* Nav */}
-      <nav className={s.nav} aria-label="Navegación principal">
-        {Object.entries(grouped).map(([group, items]) => (
-          <div key={group} className={s.navGroup}>
-            <div className={s.navGroupLabel}>{group}</div>
+      {/* Navigation */}
+      <nav className={s.nav}>
+        {NAV_GROUPS.map(({ label, items }) => (
+          <div key={label} className={s.navGroup}>
+            <span className={s.navGroupLabel}>{label}</span>
             <ul className={s.navList}>
-              {items.map(({ to, label, Icon }) => (
+              {items.map(({ to, label: itemLabel, Icon }) => (
                 <li key={to}>
                   <NavLink
                     to={to}
-                    className={({ isActive }) =>
-                      `${s.navItem} ${isActive ? s.navItemActive : ''}`
-                    }
-                    onClick={onClose}
                     end={to === '/dashboard'}
+                    onClick={onClose}
+                    className={({ isActive }) =>
+                      [s.navItem, isActive ? s.navItemActive : ''].filter(Boolean).join(' ')
+                    }
                   >
-                    <span className={s.navItemIcon} aria-hidden="true">
-                      <Icon size={16} strokeWidth={1.8} />
-                    </span>
-                    <span className={s.navItemLabel}>{label}</span>
+                    <span className={s.navItemIcon}><Icon size={16} /></span>
+                    <span className={s.navItemLabel}>{itemLabel}</span>
                   </NavLink>
                 </li>
               ))}
@@ -106,48 +92,22 @@ export function AppSidebar({ mobileOpen, onClose }: AppSidebarProps) {
       </nav>
 
       {/* User card */}
-      <div
-        className={s.userCard}
-        onClick={() => { navigate('/settings'); onClose(); }}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => { if (e.key === 'Enter') { navigate('/settings'); onClose(); } }}
-        aria-label="Ir a configuración"
-      >
-        <div className={s.userAvatar} aria-hidden="true">{initials}</div>
+      <NavLink to="/settings" className={s.userCard} onClick={onClose}>
+        <div className={s.userAvatar}>{initials}</div>
         <div className={s.userInfo}>
-          <div className={s.userName}>{firstName}</div>
-          <div className={`${s.userPlan} ${isPremium ? s.userPlanPremium : ''}`}>
-            {isPremium ? '✦ Premium' : 'Plan gratuito'}
+          <div className={s.userName}>{user?.nombre ?? 'Usuario'}</div>
+          <div className={[s.userPlan, isPremium ? s.userPlanPremium : ''].filter(Boolean).join(' ')}>
+            {isPremium ? <><Star size={10} style={{ display: 'inline', marginRight: 3 }} />Premium</> : 'Plan gratuito'}
           </div>
         </div>
-      </div>
+        <ChevronRight size={14} style={{ color: 'rgba(255,255,255,0.4)', flexShrink: 0 }} />
+      </NavLink>
 
       {/* Footer */}
       <div className={s.sidebarFooter}>
-        <NavLink
-          to="/settings"
-          className={({ isActive }) =>
-            `${s.navItemFooter} ${isActive ? s.navItemActive : ''}`
-          }
-          onClick={onClose}
-        >
-          <span className={s.navItemIcon} aria-hidden="true">
-            <Settings size={16} strokeWidth={1.8} />
-          </span>
-          <span>Configuración</span>
-        </NavLink>
-
-        <button
-          className={s.navItemFooter}
-          onClick={handleLogout}
-          type="button"
-          aria-label="Cerrar sesión"
-        >
-          <span className={s.navItemIcon} aria-hidden="true">
-            <LogOut size={16} strokeWidth={1.8} />
-          </span>
-          <span>Cerrar sesión</span>
+        <button className={s.navItemFooter} onClick={handleLogout}>
+          <span className={s.navItemIcon}><LogOut size={16} /></span>
+          <span className={s.navItemLabel}>Cerrar sesión</span>
         </button>
       </div>
     </aside>

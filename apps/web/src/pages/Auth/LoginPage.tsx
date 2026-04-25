@@ -77,7 +77,7 @@ export function LoginPage() {
           {/* Mobile logo */}
           <div className={styles.panelLogo} onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
           <img src="/1.svg" width="40" height="40" alt="Preprueba" style={{ borderRadius: '8px' }} />
-          <span className={styles.panelLogoText} style={{ color: 'var(--pp-blue)' }}>prep<em style={{ color: 'var(--pp-orange)', fontStyle: 'normal' }}>prueba</em></span>
+          <span className={styles.panelLogoText} style={{ color: '#063399' }}>prep<em style={{ color: 'var(--pp-orange)', fontStyle: 'normal' }}>prueba</em></span>
         </div>
 
           <p className={styles.topLink}>

@@ -3,7 +3,6 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { ArrowLeft, Play, Calendar, Building2, HelpCircle } from 'lucide-react';
 import { examenes as examenesApi, sesiones as sesionesApi } from '../../services/api';
 import { Badge } from '../../components/ui/Badge';
-import type { Examen } from '../../types';
 import s from './Examenes.module.css';
 
 export function ExamenDetallePage() {
@@ -16,13 +15,14 @@ export function ExamenDetallePage() {
       // The backend groups exams by key, so we need to fetch all and find it
       // or we can just fetch the questions for this key directly 
       // but we might need the examen metadata. Let's fetch questions and build meta.
-      const preguntas = await examenesApi.preguntas(key!);
+      const result = await examenesApi.getPreguntas(key!);
+      const preguntas = result.preguntas;
       if (!preguntas || preguntas.length === 0) return null;
       
       const p = preguntas[0];
       return {
         key: key!,
-        materiaId: p.materiaId,
+        materiaId: p.materia.id,
         materia: p.materia,
         anio: p.anio,
         comunidad: p.comunidad,
@@ -35,12 +35,11 @@ export function ExamenDetallePage() {
   });
 
   const iniciarMutation = useMutation({
-    mutationFn: () => sesionesApi.iniciar({
-      materiaId: examen!.materiaId,
+    mutationFn: () => sesionesApi.iniciar(examen!.materiaId, {
       tipo: 'TEST',
       totalPreguntas: examen!.totalPreguntas,
     }),
-    onSuccess: (data) => {
+    onSuccess: () => {
       navigate(`/practice/${examen!.materiaId}/session?duracion=5400`);
     },
   });

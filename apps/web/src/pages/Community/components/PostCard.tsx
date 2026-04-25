@@ -1,4 +1,4 @@
-import React from 'react';
+import type { MouseEvent } from 'react';
 import { Heart, MessageSquare, Repeat, Bookmark, MoreHorizontal, Star } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -40,7 +40,7 @@ export function PostCard({ post }: Props) {
   const config = TYPE_CONFIG[post.type];
 
   // Prevent parent click when clicking buttons
-  const executeAction = (e: React.MouseEvent, action: () => void) => {
+  const executeAction = (e: MouseEvent, action: () => void) => {
     e.stopPropagation();
     action();
   };
@@ -49,7 +49,7 @@ export function PostCard({ post }: Props) {
     navigate(`/comunidad/post/${post.id}`);
   };
 
-  const navigateToTag = (e: React.MouseEvent, tag: string) => {
+  const navigateToTag = (e: MouseEvent, tag: string) => {
     e.stopPropagation();
     navigate(`/comunidad/tags/${tag.replace('#', '')}`);
   };
@@ -63,7 +63,7 @@ export function PostCard({ post }: Props) {
           <div>
             <div className={s.authorName} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
               {post.author.name}
-              {isTopContributor && <Star size={14} color="var(--pp-orange)" fill="var(--pp-orange)" title="Top Contribuidor" />}
+              {isTopContributor && <Star size={14} color="#EF8F00" fill="#EF8F00" />}
             </div>
             <div className={s.metaInfo}>
               <span>{timeAgo(post.createdAt)}</span>

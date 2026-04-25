@@ -33,7 +33,10 @@
       "Bash(ls apps/web/playwright*)",
       "Bash(rtk read *)",
       "Bash(cp /c/Users/vivim/.claude/hooks/crg-enforce.sh /c/Users/vivim/.claude/hooks/crg-enforce.sh.bak)",
-      "Bash(cat)"
+      "Bash(cat)",
+      "Bash(rtk pnpm *)",
+      "Bash(node --env-file=.env -e \"require\\('child_process'\\).spawn\\('npx', ['tsx', 'watch', 'src/index.ts'], {stdio: 'inherit', shell: true, env: {...process.env}}\\)\")",
+      "Bash(curl -s http://localhost:3001/health)"
     ]
   }
 }

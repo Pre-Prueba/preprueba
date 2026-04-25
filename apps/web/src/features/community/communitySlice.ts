@@ -35,7 +35,7 @@ const initialState: CommunityState & { posts: CommunityPost[] } = {
 // Mock para simular fetch de dados (MVP)
 export const fetchCommunityFeed = createAsyncThunk(
   'community/fetchFeed',
-  async (filters: CommunityFilters) => {
+  async (_filters: CommunityFilters) => {
     // Aqui no futuro chamaremos o service/api real
     return new Promise<CommunityPost[]>((resolve) => {
       setTimeout(() => {
@@ -225,7 +225,7 @@ export const selectFilteredFeed = (state: { community: CommunityState }) => {
     data = data.filter(p => p.universidadId === filters.universidadId);
   }
   if (filters.tag) {
-    data = data.filter(p => p.tag && p.tags.includes(filters.tag));
+    data = data.filter(p => p.tags.includes(filters.tag!));
   }
   if (filters.query) {
     data = data.filter(p => p.content.toLowerCase().includes(filters.query.toLowerCase()));

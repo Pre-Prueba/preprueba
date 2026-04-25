@@ -8,7 +8,7 @@ import {
 import { useAuthStore } from '../../store/auth';
 import { stripe as stripeApi, auth as authApi } from '../../services/api';
 import { Button } from '../../components/ui/Button';
-import { fadeUp, staggerContainer } from '../../lib/animations';
+import { staggerContainer } from '../../lib/animations';
 import s from './Settings.module.css';
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
@@ -126,7 +126,7 @@ export function SettingsPage() {
           {success && <div className={`${s.alert} ${s.alertSuccess}`}>{success}</div>}
 
           {/* ── Identidad */}
-          <section className={`${s.section} ${s.subscriptionSection}`}>
+          <section className={s.section}>
             <header className={s.sectionHeader}>
               <div className={s.sectionIcon}><User size={16} /></div>
               <h2 className={s.sectionTitle}>Identidad</h2>
@@ -207,7 +207,7 @@ export function SettingsPage() {
           </section>
 
           {/* ── Residencia */}
-          <section className={`${s.section} ${s.subscriptionSection}`}>
+          <section className={s.section}>
             <header className={s.sectionHeader}>
               <div className={s.sectionIcon}><MapPin size={16} /></div>
               <h2 className={s.sectionTitle}>Ubicación</h2>

@@ -23,7 +23,7 @@ export function useToggleTask() {
       );
       return { previous };
     },
-    onError: (err, variables, context) => {
+    onError: (_err, _variables, context) => {
       queryClient.setQueryData(['planner'], context?.previous);
     },
     onSettled: () => {

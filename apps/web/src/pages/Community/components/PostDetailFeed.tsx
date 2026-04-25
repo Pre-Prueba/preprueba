@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { ArrowLeft, Send } from 'lucide-react';
 import type { RootState, AppDispatch } from '../../../store';
+import { useAuthStore } from '../../../store/auth';
 import { PostCard } from './PostCard';
 import { CommentItem } from './CommentItem';
 import { Button } from '../../../components/ui/Button';
@@ -15,7 +16,7 @@ export function PostDetailFeed() {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { posts } = useSelector((state: RootState) => state.community);
-  const { user } = useSelector((state: RootState) => state.auth || { user: { id: 'u0', nombre: 'Test User' } });
+  const { user } = useAuthStore();
   
   const post = posts.find((p) => p.id === id);
   const [commentText, setCommentText] = useState('');

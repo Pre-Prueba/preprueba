@@ -18,7 +18,7 @@ export function ForumPage() {
   const [materias, setMaterias] = useState<Materia[]>([]);
   const [selectedMateria, setSelectedMateria] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [, setError] = useState('');
   const [reportingPost, setReportingPost] = useState<string | null>(null);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Image as ImageIcon, MessageCircleQuestion, Lightbulb, Medal, Send } from 'lucide-react';
 import type { RootState, AppDispatch } from '../../../store';
+import { useAuthStore } from '../../../store/auth';
 import type { PostType } from '../../../types/community';
 import { addPost } from '../../../features/community/communitySlice';
 import { Button } from '../../../components/ui/Button';
@@ -17,7 +18,7 @@ const TYPE_OPTIONS: { icon: any; label: string; value: PostType }[] = [
 
 export function PostComposer() {
   const dispatch = useDispatch<AppDispatch>();
-  const { user } = useSelector((state: RootState) => state.auth || { user: { id: 'u0', nombre: 'Test User' } });
+  const { user } = useAuthStore();
   const { popularMaterias } = useSelector((state: RootState) => state.community);
 
   const [expanded, setExpanded] = useState(false);
@@ -44,7 +45,8 @@ export function PostComposer() {
       metrics: { likes: 0, comments: 0, reposts: 0 },
       hasLiked: false,
       hasSaved: false,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      comments: []
     }));
 
     // Reset state

@@ -1,4 +1,4 @@
-import { forwardRef, useId, useState } from 'react';
+import { forwardRef, useState } from 'react';
 import type { InputHTMLAttributes } from 'react';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -10,11 +10,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ label, error, hint, id, style, ...props }, ref) => {
     const [focused, setFocused] = useState(false);
-    const generatedId = useId();
-    const inputId = id ?? label?.toLowerCase().replace(/\s+/g, '-') ?? generatedId;
-    const errorId = error ? `${inputId}-error` : undefined;
-    const hintId = hint && !error ? `${inputId}-hint` : undefined;
-    const describedBy = [props['aria-describedby'], errorId, hintId].filter(Boolean).join(' ') || undefined;
+    const inputId = id ?? label?.toLowerCase().replace(/\s+/g, '-');
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%' }}>
@@ -33,11 +29,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           </label>
         )}
         <input
-          {...props}
           ref={ref}
           id={inputId}
-          aria-invalid={error ? true : props['aria-invalid']}
-          aria-describedby={describedBy}
           style={{
             background: 'var(--white)',
             border: `1.5px solid ${
@@ -51,23 +44,24 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             width: '100%',
             outline: 'none',
             boxShadow: focused && !error
-              ? '0 0 0 3px rgba(53, 92, 245, 0.14)'
+              ? '0 0 0 3px rgba(0, 56, 188, 0.10)'
               : error
-              ? '0 0 0 3px rgba(220, 38, 38, 0.12)'
+              ? '0 0 0 3px rgba(214, 69, 69, 0.10)'
               : 'none',
             transition: 'border-color 0.18s, box-shadow 0.18s',
             ...style,
           }}
           onFocus={(e) => { setFocused(true); props.onFocus?.(e); }}
           onBlur={(e) => { setFocused(false); props.onBlur?.(e); }}
+          {...props}
         />
         {error && (
-          <span id={errorId} style={{ fontSize: '12px', color: 'var(--error)', letterSpacing: '0.01em' }}>
+          <span style={{ fontSize: '12px', color: 'var(--error)', letterSpacing: '0.01em' }}>
             {error}
           </span>
         )}
         {hint && !error && (
-          <span id={hintId} style={{ fontSize: '12px', color: 'var(--text-2)' }}>
+          <span style={{ fontSize: '12px', color: 'var(--text-3)' }}>
             {hint}
           </span>
         )}

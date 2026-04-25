@@ -33,8 +33,8 @@
   position: sticky;
   top: 0;
   height: 100vh;
-  background: var(--sidebar-bg);
-  border-right: 1px solid var(--sidebar-border);
+  background: #0B0D1A;
+  border-right: 1px solid rgba(255,255,255,0.06);
   display: flex;
   flex-direction: column;
   padding: 0;
@@ -73,15 +73,8 @@
   width: 32px;
   height: 32px;
   border-radius: 9px;
-  background: linear-gradient(135deg, var(--pp-blue), var(--pp-blue-mid));
-  color: #fff;
-  font-weight: 800;
-  font-size: 15px;
-  letter-spacing: -0.02em;
-  display: grid;
-  place-items: center;
+  object-fit: cover;
   flex-shrink: 0;
-  font-family: var(--font-display);
 }
 
 .brandWord {
@@ -196,13 +189,13 @@
 
 /* Active state */
 .navItemActive {
-  background: var(--sidebar-active-bg);
-  color: var(--sidebar-active-text);
+  background: #FFFFFF;
+  color: #0B0D1A;
   font-weight: 600;
 }
 
 .navItemActive .navItemIcon {
-  color: var(--pp-blue);
+  color: #0B0D1A;
 }
 
 .navItemActive::before {
@@ -213,7 +206,7 @@
   transform: translateY(-50%);
   width: 3px;
   height: 18px;
-  background: var(--pp-blue);
+  background: #FFFFFF;
   border-radius: 0 2px 2px 0;
 }
 
@@ -281,7 +274,8 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--pp-blue), var(--pp-blue-dark));
+  background: #0B0D1A;
+  border: 2px solid rgba(255,255,255,0.15);
   color: #fff;
   font-size: 12px;
   font-weight: 700;
@@ -508,7 +502,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--pp-blue), var(--pp-blue-dark));
+  background: #0B0D1A;
   color: #fff;
   font-size: 12px;
   font-weight: 700;

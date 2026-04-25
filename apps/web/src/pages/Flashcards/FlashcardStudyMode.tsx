@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, RotateCcw, SkipForward, Keyboard } from 'lucide-react';
 import { flashcards as flashcardsApi } from '../../services/api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import type { FlashcardItem } from '../../types';
+import type { FlashcardItem } from '../../services/api';
 import s from './Flashcards.module.css';
 
 interface FlashcardStudyModeProps {
@@ -15,7 +15,6 @@ export function FlashcardStudyMode({ cards, onClose }: FlashcardStudyModeProps) 
   const queryClient = useQueryClient();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
-  const [showProgressHint, setShowProgressHint] = useState(true);
   
   const currentCard = cards[currentIndex];
 
