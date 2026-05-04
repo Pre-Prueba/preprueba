@@ -2,6 +2,8 @@
 
 SaaS para practicar pruebas de acceso a la universidad en España para mayores de 25, 40 y 45 años.
 
+El proyecto combina web app, API, base de datos, autenticación, generación de preguntas con IA, pagos y paneles de estudio. Está en desarrollo y se usa como prueba práctica de arquitectura full stack orientada a producto.
+
 ## Stack
 
 - Frontend: React 19 + Vite
@@ -45,21 +47,21 @@ Variables mínimas para la API:
 ```env
 DATABASE_URL="postgresql://user:password@host/preprueba?sslmode=require"
 JWT_SECRET="cambiar-por-secreto-largo-aleatorio-64-caracteres"
-GROQ_API_KEY="gsk_..."
-STRIPE_SECRET_KEY="sk_test_..."
-STRIPE_WEBHOOK_SECRET="whsec_..."
-STRIPE_PRICE_ID="price_..."
+GROQ_API_KEY="your-groq-api-key"
+STRIPE_SECRET_KEY="your-stripe-secret-key"
+STRIPE_WEBHOOK_SECRET="your-stripe-webhook-secret"
+STRIPE_PRICE_ID="your-stripe-price-id"
 FRONTEND_URL="http://localhost:5173"
 API_URL="http://localhost:3000"
 PORT=3000
-SENTRY_DSN="https://...@sentry.io/..."
+SENTRY_DSN="your-sentry-dsn"
 ```
 
 Crear `apps/web/.env.local` para el frontend:
 
 ```env
 VITE_API_URL=http://localhost:3000
-VITE_SENTRY_DSN=https://...@sentry.io/...
+VITE_SENTRY_DSN=your-sentry-dsn
 ```
 
 `SENTRY_DSN` y `VITE_SENTRY_DSN` son opcionales en local, pero recomendables para probar monitoring antes del deploy.
