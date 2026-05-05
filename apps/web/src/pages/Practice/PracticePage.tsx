@@ -7,6 +7,7 @@ import { broadcastUpdate } from '../../lib/queryClient';
 import type { Pregunta, RespuestaResult, SesionFinalizada } from '../../types';
 import { Button } from '../../components/ui/Button';
 import { ProgressBar } from '../../components/ui/ProgressBar';
+import { PipoMascot } from '../../components/PipoMascot';
 import { fadeUp, staggerContainer, slideInRight } from '../../lib/animations';
 import s from './PracticeSession.module.css';
 
@@ -297,7 +298,7 @@ export function PracticePage() {
   /* ── Result */
   if (state === 'result' && resultado) {
     const pct = resultado.porcentaje;
-    const emoji = pct >= 80 ? '🏆' : pct >= 40 ? '👍' : '💪';
+    const resultPipoVariant = pct >= 80 ? 'celebrate' : pct >= 40 ? 'hero' : 'sad';
     return (
       <div className={s.pageContainer} style={{ justifyContent: 'center', alignItems: 'center' }}>
         <main className={s.main}>
@@ -310,8 +311,13 @@ export function PracticePage() {
               className={s.resultCard}
               data-testid="resultado-final"
             >
-              <div className={s.resultEmojiWrapper}>
-                <span className={s.resultEmoji}>{emoji}</span>
+              <div className={s.resultMascot}>
+                <PipoMascot
+                  variant={resultPipoVariant}
+                  size={112}
+                  motion={pct >= 80 ? 'celebrate' : pct >= 40 ? 'idle' : 'sad'}
+                  title="PIPO"
+                />
               </div>
 
               <h2 className={s.resultTitle}>Sesión completada</h2>
@@ -606,8 +612,13 @@ export function PracticePage() {
                     const isGood = correctas >= 3;
                     return (
                       <>
-                        <div className={s.resultEmojiWrapper}>
-                          <span className={s.resultEmoji}>{isGood ? '🚀' : '⚠️'}</span>
+                        <div className={s.resultMascot}>
+                          <PipoMascot
+                            variant={isGood ? 'celebrate' : 'sad'}
+                            size={108}
+                            motion={isGood ? 'celebrate' : 'sad'}
+                            title="PIPO"
+                          />
                         </div>
                         <h2 className={s.resultTitle}>{isGood ? '¡Excelente racha!' : 'Alerta de rendimiento'}</h2>
                         <p className={s.resultFraction}>{correctas} de 5 correctas en esta ronda.</p>

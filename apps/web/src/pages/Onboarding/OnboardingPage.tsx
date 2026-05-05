@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GraduationCap, BookOpen, ArrowRight, ArrowLeft } from 'lucide-react';
+import { GraduationCap, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useAuthStore } from '../../store/auth';
 import { auth as authApi } from '../../services/api';
 import { Button } from '../../components/ui/Button';
+import { PipoMascot } from '../../components/PipoMascot';
 import { staggerContainer, fadeUp, slideInRight, slideInLeft } from '../../lib/animations';
 
 const PRUEBA_OPTIONS = [
@@ -232,13 +233,8 @@ export function OnboardingPage() {
             >
               <motion.div variants={staggerContainer} initial="hidden" animate="show" style={{ textAlign: 'center' }}>
                 <motion.div variants={fadeUp} style={{ marginBottom: '20px' }}>
-                  <div style={{
-                    width: '72px', height: '72px', borderRadius: '50%',
-                    background: 'var(--blue-soft)', border: '1px solid var(--blue-dim)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    margin: '0 auto',
-                  }}>
-                    <BookOpen size={32} color="var(--blue)" />
+                  <div style={{ display: 'flex', justifyContent: 'center', filter: 'drop-shadow(0 14px 22px rgba(17, 24, 39, 0.10))' }}>
+                    <PipoMascot variant="celebrate" size={108} motion="celebrate" title="PIPO" />
                   </div>
                 </motion.div>
 

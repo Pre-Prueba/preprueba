@@ -6,6 +6,7 @@ import { WorkspaceTopbar } from './components/WorkspaceTopbar';
 import { WorkspaceSidebar } from './components/WorkspaceSidebar';
 import { ResourceViewer } from './components/ResourceViewer';
 import { QuestionViewer } from './components/QuestionViewer';
+import { PipoMascot } from '../../components/PipoMascot';
 
 export const QuestionWorkspace: React.FC = () => {
   const dispatch = useDispatch();
@@ -131,7 +132,8 @@ export const QuestionWorkspace: React.FC = () => {
                   <QuestionViewer />
                 </>
               ) : (
-                <div className="flex justify-center items-center py-24 m-8 border border-dashed border-[#EAEAEA] rounded-lg">
+                <div className="flex flex-col justify-center items-center gap-4 py-24 m-8 border border-dashed border-[#EAEAEA] rounded-lg">
+                   <PipoMascot variant="focus" size={116} motion="focus" title="PIPO" />
                    <p className="text-sm text-[#787774]">Seleccione una pregunta para continuar</p>
                 </div>
               )}

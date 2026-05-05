@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Clock, ChevronRight, BookOpen } from 'lucide-react';
 import { sesiones as sesionesApi } from '../../services/api';
 import { staggerContainer, listItem } from '../../lib/animations';
+import { PipoEmptyState } from '../../components/PipoMascot';
 import s from './History.module.css';
 
 interface SessionListItem {
@@ -110,19 +111,14 @@ export function HistoryPage() {
               );
             })
           ) : (
-            <div className={s.empty}>
-              <p>Aún no has completado ninguna sesión de práctica.</p>
-              <button 
-                onClick={() => navigate('/dashboard')} 
-                style={{
-                  marginTop: '16px', color: 'var(--blue)', fontWeight: 600, 
-                  background: 'none', border: 'none', cursor: 'pointer',
-                  fontSize: '14px'
-                }}
-              >
-                Comenzar ahora →
-              </button>
-            </div>
+            <PipoEmptyState
+              className={s.empty}
+              variant="book"
+              title="Aún no has completado ninguna sesión"
+              description="Cuando termines una práctica, PIPO guardará aquí tu historial y feedback."
+              actionLabel="Comenzar ahora"
+              onAction={() => navigate('/dashboard')}
+            />
           )}
         </div>
 

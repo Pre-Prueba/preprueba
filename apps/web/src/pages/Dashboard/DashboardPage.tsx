@@ -13,6 +13,7 @@ import { useErrores } from '../../hooks/useErrores';
 import { useDashboardRecommendations } from '../../hooks/useDashboardRecommendations';
 import { stats as statsApi } from '../../services/api';
 import { useQuery } from '@tanstack/react-query';
+import { PipoEmptyState, PipoMascot, PipoRigMascot, type PipoMascotVariant } from '../../components/PipoMascot';
 import s from './Dashboard.module.css';
 
 /* ─────────────── Helpers ─────────────── */
@@ -90,14 +91,14 @@ function DashboardSkeleton() {
 function PIPOImage({ className }: { className?: string }) {
   return (
     <div className={`${s.pipoWrap} ${className || ''}`}>
-      <img src="/assets/Design%20sem%20nome.png" alt="PIPO" className={s.pipoImg} />
+      <PipoRigMascot className={s.pipoImg} motion="focus" title="PIPO" />
     </div>
   );
 }
 
 /* ─────────────── mitad.png face for footer card ─────────────── */
 function PIPOFaceMitad({ size = 44 }: { size?: number }) {
-  return <img src="/assets/mitad.png" alt="PIPO" width={size} height={size} style={{ display: 'block', borderRadius: 2, objectFit: 'cover' }} />;
+  return <PipoMascot variant="face" size={size} title="PIPO" />;
 }
 
 /* ─────────────── Subject styles ─────────────── */
@@ -127,18 +128,31 @@ function getSubjectStyle(name: string | null | undefined) {
 }
 
 /* ─────────────── Empty states ─────────────── */
-function EmptyState({ icon, title, subtitle, cta, onCta }: { icon: React.ReactNode; title: string; subtitle: string; cta?: string; onCta?: () => void }) {
+function EmptyState({
+  pipoVariant = 'book',
+  pipoSize = 92,
+  title,
+  subtitle,
+  cta,
+  onCta,
+}: {
+  pipoVariant?: PipoMascotVariant;
+  pipoSize?: number;
+  title: string;
+  subtitle: string;
+  cta?: string;
+  onCta?: () => void;
+}) {
   return (
-    <div className={s.emptyState}>
-      <div className={s.emptyIcon}>{icon}</div>
-      <div className={s.emptyTitle}>{title}</div>
-      <div className={s.emptySubtitle}>{subtitle}</div>
-      {cta && onCta && (
-        <button className={s.emptyCta} onClick={onCta}>
-          {cta}
-        </button>
-      )}
-    </div>
+    <PipoEmptyState
+      variant={pipoVariant}
+      mascotSize={pipoSize}
+      className={s.emptyState}
+      title={title}
+      description={subtitle}
+      actionLabel={cta}
+      onAction={onCta}
+    />
   );
 }
 
@@ -329,7 +343,7 @@ export function DashboardPage() {
           >
             {materiasPracticadas.length === 0 ? (
               <EmptyState
-                icon={<BookOpen size={28} />}
+                pipoVariant="book"
                 title="Aún no has practicado"
                 subtitle="Empieza con una sesión para ver tu progreso por materia."
                 cta="Practicar ahora"
@@ -391,7 +405,7 @@ export function DashboardPage() {
                   <Sk h={60} r={8} />
                 ) : !recommendations || recommendations.length === 0 ? (
                   <EmptyState
-                    icon={<Sparkles size={24} />}
+                    pipoVariant="celebrate"
                     title="¡Vas bien!"
                     subtitle="No hay recomendaciones pendientes. Sigue con tu plan de estudio."
                     cta="Practicar"
@@ -426,7 +440,7 @@ export function DashboardPage() {
                   <Sk h={60} r={8} />
                 ) : errores.length === 0 ? (
                   <EmptyState
-                    icon={<Target size={24} />}
+                    pipoVariant="celebrate"
                     title="¡Excelente!"
                     subtitle="No tienes errores pendientes. Sigue practicando."
                     cta="Practicar"
@@ -541,7 +555,7 @@ export function DashboardPage() {
                 <Sk h={60} r={8} />
               ) : ranking.length === 0 ? (
                 <EmptyState
-                  icon={<Trophy size={24} />}
+                  pipoVariant="focus"
                   title="Sin datos de ranking"
                   subtitle="Sigue practicando para aparecer en el ranking."
                 />

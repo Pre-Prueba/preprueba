@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  TrendingUp, TrendingDown, Clock, Target, Zap, BookOpen,
+  TrendingUp, TrendingDown, Clock, Target, BookOpen,
   ArrowRight, ChevronRight, Layers
 } from 'lucide-react';
 import { useAuthStore } from '../../store/auth';
@@ -11,32 +11,12 @@ import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis
 } from 'recharts';
+import { PipoEmptyState, PipoMascot } from '../../components/PipoMascot';
 import s from './Stats.module.css';
 
 /* ── PIPO Mascote ── */
 function PIPOFace({ size = 72 }: { size?: number }) {
-  return (
-    <div
-      style={{
-        width: size,
-        height: size,
-        borderRadius: size * 0.22,
-        background: '#FFD23F',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'relative',
-        flexShrink: 0,
-        boxShadow: '0 4px 14px rgba(255, 210, 63, 0.35)',
-      }}
-    >
-      <svg width={size * 0.55} height={size * 0.32} viewBox="0 0 48 28" fill="none">
-        <circle cx="14" cy="14" r="5" fill="#1F2937" />
-        <circle cx="34" cy="14" r="5" fill="#1F2937" />
-        <path d="M20 20 Q24 24 28 20" stroke="#1F2937" strokeWidth="2" strokeLinecap="round" fill="none" />
-      </svg>
-    </div>
-  );
+  return <PipoMascot variant="face" size={size} motion="idle" title="PIPO" />;
 }
 
 /* ── Gauge circular ── */
@@ -87,7 +67,7 @@ function KpiCard({ icon, label, value, trend, trendLabel, delay, trendType = 'up
   );
 }
 
-export default function StatsPage() {
+export function StatsPage() {
   const navigate = useNavigate();
   const { user, subscription } = useAuthStore();
   const { data, isLoading: loading } = useStats();
@@ -145,12 +125,14 @@ export default function StatsPage() {
           <h1 className={s.pageTitle}>Desempeño</h1>
           <p className={s.pageSubtitle}>Tu progreso, tu mejor guía.</p>
         </div>
-        <div className={s.emptyState}>
-          <div className={s.emptyIconWrapper}><Target size={40} /></div>
-          <p className={s.emptyTitle}>Estadísticas Avanzadas</p>
-          <p className={s.emptyDesc}>Desbloquea análisis detallados activando tu suscripción Premium.</p>
-          <button className={s.emptyBtn} onClick={() => navigate('/checkout')}>Ver planes</button>
-        </div>
+        <PipoEmptyState
+          className={s.emptyState}
+          variant="focus"
+          title="Estadísticas Avanzadas"
+          description="Desbloquea análisis detallados activando tu suscripción Premium."
+          actionLabel="Ver planes"
+          onAction={() => navigate('/checkout')}
+        />
       </div>
     );
   }
@@ -162,12 +144,14 @@ export default function StatsPage() {
           <h1 className={s.pageTitle}>Desempeño</h1>
           <p className={s.pageSubtitle}>Tu progreso, tu mejor guía.</p>
         </div>
-        <div className={s.emptyState}>
-          <div className={s.emptyIconWrapper}><Zap size={40} /></div>
-          <p className={s.emptyTitle}>Tu viaje comienza aquí</p>
-          <p className={s.emptyDesc}>Completa tu primera sesión para ver tu desempeño.</p>
-          <button className={s.emptyBtn} onClick={() => navigate('/practice')}>Empezar a practicar</button>
-        </div>
+        <PipoEmptyState
+          className={s.emptyState}
+          variant="hero"
+          title="Tu viaje comienza aquí"
+          description="Completa tu primera sesión para ver tu desempeño."
+          actionLabel="Empezar a practicar"
+          onAction={() => navigate('/practice')}
+        />
       </div>
     );
   }
@@ -409,3 +393,5 @@ export default function StatsPage() {
     </div>
   );
 }
+
+export default StatsPage;

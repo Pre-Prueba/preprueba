@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, CheckCircle, Circle, RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react';
+import { CheckCircle, Circle, RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { errores as erroresApi, flashcards as flashcardsApi } from '../../services/api';
 import { useMaterias } from '../../hooks/useMaterias';
 import { staggerContainer, fadeUp } from '../../lib/animations';
 import { Badge } from '../../components/ui/Badge';
+import { PipoEmptyState } from '../../components/PipoMascot';
 import { toast } from 'sonner';
 import s from './Errores.module.css';
 
@@ -54,6 +55,7 @@ export function ErroresPage() {
   const total = data?.total ?? 0;
   const pages = data?.pages ?? 1;
   const revisados = items.filter((i) => i.revisado).length;
+  const emptyWithoutFilters = total === 0 && !filtroMateria && !filtroTema && filtroRevisado === 'todos';
 
   function handleRevisado(id: string, revisado: boolean) {
     marcarRevisadoMutation.mutate({ id, revisado: !revisado });
@@ -131,24 +133,18 @@ export function ErroresPage() {
 
       {/* Empty */}
       {!isLoading && items.length === 0 && (
-        <div className={s.emptyState}>
-          <BookOpen size={40} color="var(--text-3)" />
-          <p className={s.emptyTitle}>
-            {total === 0 && !filtroMateria && !filtroTema
-              ? '¡Sin errores registrados!'
-              : 'No se encontraron errores con estos filtros'}
-          </p>
-          <p className={s.emptyDesc}>
-            {total === 0 && !filtroMateria && !filtroTema
-              ? 'Cuando falles una pregunta en la práctica, aparecerá aquí para que puedas repasarla.'
-              : 'Prueba con otros filtros.'}
-          </p>
-          {total === 0 && (
-            <button className={s.emptyBtn} onClick={() => navigate('/practice')}>
-              Ir a practicar
-            </button>
-          )}
-        </div>
+        <PipoEmptyState
+          className={s.emptyState}
+          variant={emptyWithoutFilters ? 'celebrate' : 'sad'}
+          title={emptyWithoutFilters ? '¡Sin errores registrados!' : 'No se encontraron errores con estos filtros'}
+          description={
+            emptyWithoutFilters
+              ? 'Cuando falles una pregunta en la práctica, PIPO la traerá aquí para repasarla contigo.'
+              : 'Prueba con otros filtros o vuelve a la práctica para generar nuevas revisiones.'
+          }
+          actionLabel={emptyWithoutFilters ? 'Ir a practicar' : undefined}
+          onAction={emptyWithoutFilters ? () => navigate('/practice') : undefined}
+        />
       )}
 
       {/* Lista */}

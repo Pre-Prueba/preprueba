@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Plus, Heart, CheckCircle2, MoreHorizontal, Trash2, AlertTriangle, Lock, Repeat } from 'lucide-react';
+import { MessageSquare, Plus, Heart, CheckCircle2, MoreHorizontal, Trash2, AlertTriangle, Repeat } from 'lucide-react';
 import { forum as forumApi, materias as materiasApi } from '../../services/api';
 import { useAuthStore } from '../../store/auth';
 import type { ForumPost, Materia } from '../../types';
 import { Button } from '../../components/ui/Button';
 import { ReportModal } from './components/ReportModal';
 import { staggerContainer, listItem } from '../../lib/animations';
+import { PipoEmptyState } from '../../components/PipoMascot';
 import { toast } from 'sonner';
 import s from './Forum.module.css';
 
@@ -66,22 +67,13 @@ export function ForumPage() {
     return (
       <div className={s.forumPage}>
         <div style={{ maxWidth: '600px', margin: '80px auto', textAlign: 'center' }}>
-          <div style={{ 
-            width: '80px', height: '80px', 
-            background: 'var(--blue-soft)', 
-            borderRadius: '50%', 
-            display: 'flex', alignItems: 'center', justifyContent: 'center', 
-            margin: '0 auto 24px' 
-          }}>
-            <Lock size={40} color="var(--blue)" />
-          </div>
-          <h1 className={s.title}>Comunidad Exclusiva</h1>
-          <p className={s.subtitle} style={{ marginBottom: '32px' }}>
-            El foro es un espacio premium para resolver dudas, compartir resúmenes y estudiar en grupo con otros opositores.
-          </p>
-          <Button variant="orange" size="lg" onClick={() => navigate('/checkout')}>
-            Suscribirme ahora
-          </Button>
+          <PipoEmptyState
+            variant="focus"
+            title="Comunidad Exclusiva"
+            description="El foro es un espacio premium para resolver dudas, compartir resúmenes y estudiar en grupo con otros opositores."
+            actionLabel="Suscribirme ahora"
+            onAction={() => navigate('/checkout')}
+          />
         </div>
       </div>
     );
@@ -234,9 +226,13 @@ export function ForumPage() {
                 </motion.div>
               ))
             ) : (
-              <div className={s.empty}>
-                <p>No se encontraron temas en esta categoría.</p>
-              </div>
+              <PipoEmptyState
+                className={s.empty}
+                variant="sleep"
+                mascotSize={112}
+                title="No se encontraron temas en esta categoría"
+                description="Cambia de materia o crea el primer tema para abrir la conversación."
+              />
             )}
           </div>
         )}

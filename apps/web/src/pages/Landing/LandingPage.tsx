@@ -17,6 +17,7 @@ import {
   Timer,
   type LucideIcon,
 } from 'lucide-react';
+import { PipoMascot, PipoRigMascot } from '../../components/PipoMascot';
 import styles from './Landing.module.css';
 
 type ValueItem = {
@@ -243,18 +244,13 @@ function BrandLogo() {
 function Pipo({ size = 'large' }: { size?: 'large' | 'small' | 'mini' }) {
   const sizeClass =
     size === 'mini' ? styles.pipoMini : size === 'small' ? styles.pipoSmall : styles.pipoLarge;
-  const src =
-    size === 'mini'
-      ? '/assets/pipo-book.png'
-      : size === 'small'
-        ? '/assets/pipo-celebrate.png'
-        : '/assets/pipo-hero.png';
+  const variant = size === 'mini' ? 'book' : size === 'small' ? 'celebrate' : 'hero';
 
-  return (
-    <div className={`${styles.pipo} ${sizeClass}`} aria-hidden="true">
-      <img src={src} alt="" loading={size === 'large' ? 'eager' : 'lazy'} decoding="async" />
-    </div>
-  );
+  if (size === 'large') {
+    return <PipoRigMascot className={`${styles.pipo} ${sizeClass}`} motion="talk" title="PIPO" />;
+  }
+
+  return <PipoMascot className={`${styles.pipo} ${sizeClass}`} variant={variant} animated />;
 }
 
 function LandingHeader({ onCta }: { onCta: () => void }) {
@@ -294,9 +290,9 @@ function HeroSection({ onCta }: { onCta: () => void }) {
             Aprueba este año.
           </h1>
           <p className={styles.heroLead}>
-            Prepárate para la PAU con sesiones breves,
+            Prepárate para la PAU con sesiones breves,{' '}
             <br />
-            seguimiento claro y el acompañamiento
+            seguimiento claro y el acompañamiento{' '}
             <br />
             de tu mentor PIPO.
           </p>

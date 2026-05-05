@@ -24,6 +24,7 @@ import {
 import { AnimatePresence, motion } from 'framer-motion';
 import { examDocs as examDocsApi } from '../../services/api';
 import { fadeUp, staggerContainer } from '../../lib/animations';
+import { PipoEmptyState } from '../../components/PipoMascot';
 import type { ExamDocFacetItem, ExamDocItem, TipoDocumento } from '../../services/api';
 import css from './Examenes.module.css';
 
@@ -778,15 +779,14 @@ export function ExamenesPage() {
         )}
 
         {!isLoading && docs.length === 0 && (
-          <div className={css.emptyState} role="status">
-            <div className={css.emptyIcon}>
-              <FileText size={34} aria-hidden />
-            </div>
-            <h3 className={css.emptyTitle}>No hemos encontrado documentos para esta búsqueda</h3>
-            <p className={css.emptyDesc}>
-              Ajusta los filtros o vuelve a entrar por comunidad, materia o últimos añadidos para
-              reabrir la navegación.
-            </p>
+          <PipoEmptyState
+            className={css.emptyState}
+            role="status"
+            variant="focus"
+            mascotSize={128}
+            title="No hemos encontrado documentos para esta búsqueda"
+            description="Ajusta los filtros o vuelve a entrar por comunidad, materia o últimos añadidos para reabrir la navegación."
+          >
             <div className={css.emptySuggestions}>
               {(highlights?.topCommunities ?? []).slice(0, 4).map((item) => (
                 <button
@@ -849,7 +849,7 @@ export function ExamenesPage() {
               <X size={13} aria-hidden />
               Limpiar filtros
             </button>
-          </div>
+          </PipoEmptyState>
         )}
 
         {!isLoading && docs.length > 0 && (

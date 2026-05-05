@@ -7,6 +7,7 @@ import { flashcards as flashcardsApi } from '../../services/api';
 import { useMaterias } from '../../hooks/useMaterias';
 import { staggerContainer, fadeUp } from '../../lib/animations';
 import { FlashcardStudyMode } from './FlashcardStudyMode';
+import { PipoEmptyState } from '../../components/PipoMascot';
 import s from './Flashcards.module.css';
 
 export function FlashcardsPage() {
@@ -116,13 +117,12 @@ export function FlashcardsPage() {
 
       {/* Empty */}
       {!isLoading && items.length === 0 && (
-        <div className={s.emptyState}>
-          <Layers size={40} color="var(--text-3)" />
-          <p className={s.emptyTitle}>Sin flashcards</p>
-          <p className={s.emptyDesc}>
-            No tienes tarjetas con estos filtros. Puedes crear flashcards desde tus Errores o guardarlas manualmente.
-          </p>
-        </div>
+        <PipoEmptyState
+          className={s.emptyState}
+          variant="book"
+          title="Sin flashcards"
+          description="No tienes tarjetas con estos filtros. PIPO puede ayudarte a convertir errores y conceptos clave en repaso rápido."
+        />
       )}
 
       {/* Grid */}

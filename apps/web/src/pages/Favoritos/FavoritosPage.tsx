@@ -7,6 +7,7 @@ import { favoritos as favoritosApi } from '../../services/api';
 import { useMaterias } from '../../hooks/useMaterias';
 import { staggerContainer, fadeUp } from '../../lib/animations';
 import { Badge } from '../../components/ui/Badge';
+import { PipoEmptyState } from '../../components/PipoMascot';
 import s from './Favoritos.module.css';
 
 export function FavoritosPage() {
@@ -73,16 +74,14 @@ export function FavoritosPage() {
 
       {/* Empty */}
       {!isLoading && items.length === 0 && (
-        <div className={s.emptyState}>
-          <Star size={40} color="var(--text-3)" />
-          <p className={s.emptyTitle}>Sin favoritos todavía</p>
-          <p className={s.emptyDesc}>
-            Durante la práctica, marca una pregunta con ★ para guardarla aquí.
-          </p>
-          <button className={s.emptyBtn} onClick={() => navigate('/practice')}>
-            Ir a practicar
-          </button>
-        </div>
+        <PipoEmptyState
+          className={s.emptyState}
+          variant="sleep"
+          title="Sin favoritos todavía"
+          description="Durante la práctica, marca una pregunta con ★ y PIPO la guardará aquí para repasarla después."
+          actionLabel="Ir a practicar"
+          onAction={() => navigate('/practice')}
+        />
       )}
 
       {/* Grid */}
