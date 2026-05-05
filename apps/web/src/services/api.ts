@@ -3,6 +3,20 @@ import type { Materia, SesionIniciada, RespuestaResult, SesionFinalizada, StatsR
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 const TOKEN_KEY = 'preprueba_token';
 
+export interface StripePrice {
+  id: string;
+  productId: string;
+  name: string;
+  description: string | null;
+  currency: string;
+  unitAmount: number;
+  interval: 'day' | 'week' | 'month' | 'year';
+  intervalCount: number;
+  lookupKey: string | null;
+  metadata: Record<string, string>;
+  productMetadata: Record<string, string>;
+}
+
 function resolveApiAssetUrl(url: string | null | undefined): string | null {
   if (!url) return null;
   if (/^https?:\/\//i.test(url)) return url;
@@ -171,7 +185,11 @@ export const stats = {
 
 // Stripe
 export const stripe = {
-  checkout: () => request<{ checkoutUrl: string }>('/stripe/checkout', { method: 'POST' }),
+  prices: () => request<{ prices: StripePrice[] }>('/stripe/prices'),
+  checkout: (priceId?: string) => request<{ checkoutUrl: string }>('/stripe/checkout', {
+    method: 'POST',
+    body: JSON.stringify(priceId ? { priceId } : {}),
+  }),
   portal: () => request<{ portalUrl: string }>('/stripe/portal'),
 };
 

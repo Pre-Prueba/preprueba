@@ -1,10 +1,13 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { stripe as stripeApi } from '../../services/api';
 import { Button } from '../../components/ui/Button';
 
+const SELECTED_PRICE_KEY = 'preprueba_selected_price_id';
+
 export function CheckoutPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -12,7 +15,8 @@ export function CheckoutPage() {
     setLoading(true);
     setError('');
     try {
-      const { checkoutUrl } = await stripeApi.checkout();
+      const selectedPriceId = searchParams.get('priceId') ?? localStorage.getItem(SELECTED_PRICE_KEY) ?? undefined;
+      const { checkoutUrl } = await stripeApi.checkout(selectedPriceId);
       window.location.href = checkoutUrl ?? '';
     } catch (err) {
       setError(err instanceof Error ? err.message : 'No se pudo conectar. Comprueba tu conexión e inténtalo de nuevo.');

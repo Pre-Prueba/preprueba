@@ -9,6 +9,9 @@
       "args": ["serve"],
       "type": "stdio",
       "env": { "PYTHONUTF8": "1" }
+    },
+    "stripe": {
+      "url": "https://mcp.stripe.com"
     }
   }
 }

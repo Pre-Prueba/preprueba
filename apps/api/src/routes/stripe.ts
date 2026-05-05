@@ -7,9 +7,92 @@ import { AuthRequest } from '../types';
 
 const router = Router();
 
+interface PublicStripePrice {
+  id: string;
+  productId: string;
+  name: string;
+  description: string | null;
+  currency: string;
+  unitAmount: number;
+  interval: Stripe.Price.Recurring.Interval;
+  intervalCount: number;
+  lookupKey: string | null;
+  metadata: Stripe.Metadata;
+  productMetadata: Stripe.Metadata;
+}
+
+function intervalToMonths(recurring: Pick<Stripe.Price.Recurring, 'interval' | 'interval_count'>): number {
+  if (recurring.interval === 'month') return recurring.interval_count;
+  if (recurring.interval === 'year') return recurring.interval_count * 12;
+  return 999;
+}
+
+function isStripeConfigured(): boolean {
+  const key = process.env.STRIPE_SECRET_KEY;
+  return Boolean(key && !key.includes('...') && !key.includes('mock_key'));
+}
+
+function serializePublicPrice(price: Stripe.Price): PublicStripePrice | null {
+  if (!price.active || !price.recurring || price.unit_amount === null) return null;
+  if (typeof price.product === 'string' || 'deleted' in price.product || !price.product.active) return null;
+
+  return {
+    id: price.id,
+    productId: price.product.id,
+    name: price.nickname || price.product.name,
+    description: price.product.description,
+    currency: price.currency,
+    unitAmount: price.unit_amount,
+    interval: price.recurring.interval,
+    intervalCount: price.recurring.interval_count,
+    lookupKey: price.lookup_key,
+    metadata: price.metadata,
+    productMetadata: price.product.metadata,
+  };
+}
+
+// GET /stripe/prices
+router.get('/prices', async (_req: Request, res: Response): Promise<void> => {
+  if (!isStripeConfigured()) {
+    res.json({ prices: [] });
+    return;
+  }
+
+  const prices = await stripe.prices.list({
+    active: true,
+    limit: 100,
+    expand: ['data.product'],
+  });
+
+  const publicPrices = prices.data
+    .map(serializePublicPrice)
+    .filter((price): price is PublicStripePrice => price !== null)
+    .sort(
+      (a, b) =>
+        intervalToMonths({ interval: a.interval, interval_count: a.intervalCount }) -
+        intervalToMonths({ interval: b.interval, interval_count: b.intervalCount })
+    );
+
+  res.json({ prices: publicPrices });
+});
+
 // POST /stripe/checkout
 router.post('/checkout', requireAuth, async (req: Request, res: Response): Promise<void> => {
   const user = (req as AuthRequest).user;
+  const body = req.body as { priceId?: unknown };
+  const requestedPriceId = typeof body.priceId === 'string' ? body.priceId : undefined;
+  const priceId = requestedPriceId ?? process.env.STRIPE_PRICE_ID;
+
+  if (!priceId || !isStripeConfigured()) {
+    res.status(400).json({ error: 'No hay un plan configurado para checkout.' });
+    return;
+  }
+
+  const price = await stripe.prices.retrieve(priceId, { expand: ['product'] });
+  if (!serializePublicPrice(price)) {
+    res.status(400).json({ error: 'Este plan no está disponible.' });
+    return;
+  }
 
   let customerId = user.stripeCustomerId;
 
@@ -23,7 +106,7 @@ router.post('/checkout', requireAuth, async (req: Request, res: Response): Promi
     customer: customerId,
     payment_method_types: ['card'],
     mode: 'subscription',
-    line_items: [{ price: process.env.STRIPE_PRICE_ID!, quantity: 1 }],
+    line_items: [{ price: price.id, quantity: 1 }],
     success_url: `${process.env.FRONTEND_URL}/dashboard?checkout=success`,
     cancel_url: `${process.env.FRONTEND_URL}/checkout?checkout=cancelled`,
     metadata: { userId: user.id },
